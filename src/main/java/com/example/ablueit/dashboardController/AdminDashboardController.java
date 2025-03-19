@@ -75,8 +75,6 @@ public class AdminDashboardController {
         User seller = new User();
         seller.setUsername(user.getUsername());
         seller.setPassword(passwordEncoder.encode(user.getPassword()));  // Mã hóa mật khẩu
-        String secretKey = UUID.randomUUID().toString();
-        seller.setSecretKey(secretKey);
         seller.setCreatedBy(createby);
 
         // Nếu email không được cung cấp, gán email mặc định

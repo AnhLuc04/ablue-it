@@ -35,8 +35,7 @@ CommandLineRunner init(UserRepository userRepository, RoleRepository roleReposit
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setEmail("admin@example.com");
-            admin.setRoles(Collections.singleton(adminRole)); // Gán role đã lưu
-            //admin.setApproved(true);
+            admin.setRoles(Collections.singleton(adminRole)); // Gán role đã lưu);
             userRepository.save(admin);
             System.out.println("✅ Tài khoản ADMIN đã được tạo thành công!");
         } else {
