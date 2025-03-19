@@ -19,26 +19,6 @@ public class AblueItApplication {
         SpringApplication.run(AblueItApplication.class, args);
     }
 
-//    @Bean
-//    CommandLineRunner init(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-//        return args -> {
-//            // Kiểm tra ROLE_ADMIN đã tồn tại chưa, nếu chưa thì tạo
-//            Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-//                    .orElseGet(() -> roleRepository.save(new Role("ROLE_ADMIN")));
-//
-//            // Kiểm tra admin user có tồn tại chưa
-//            if (userRepository.findByUsername("admin").isEmpty()) {
-//                User admin = new User();
-//                admin.setUsername("admin");
-//                admin.setPassword(passwordEncoder.encode("admin123"));
-//                admin.setRoles(Collections.singleton(adminRole)); // Gán quyền ROLE_ADMIN
-//                userRepository.save(admin);
-//                System.out.println("✅ Tài khoản ADMIN đã được tạo thành công!");
-//            } else {
-//                System.out.println("⚠️ Tài khoản ADMIN đã tồn tại, không cần tạo lại.");
-//            }
-//        };
-//    }
 @Bean
 CommandLineRunner init(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
     return args -> {
