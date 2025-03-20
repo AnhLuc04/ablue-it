@@ -78,7 +78,7 @@ public class SellerDashboardController {
             return "seller-dashboard/create-store";
         }
 
-        store.setCreatedAt(LocalDateTime.now());
+        store.setDateTime(LocalDateTime.now());
         store.setSeller(seller);
 
         storeRepository.save(store);

@@ -31,8 +31,10 @@ public class Store {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDateTime dateTime;
+//    @Column(nullable = false, updatable = false)
+//    private LocalDateTime createdAt;
 
     // Chủ cửa hàng (Seller)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,6 +44,9 @@ public class Store {
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories;
+//
+//    public void getDateTime(LocalDateTime now) {
+//    }
 
 //    // Tự động đặt thời gian khi tạo cửa hàng
 //    @PrePersist
