@@ -9,8 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
-
-    @Query(value = "SELECT * FROM stores WHERE user_id = :userId", nativeQuery = true)
+    @Query("SELECT s FROM Store s WHERE s.seller.id = :userId")
     List<Store> findStoresByUserId(@Param("userId") Long userId);
     @Query("SELECT s FROM Store s WHERE s.seller IN (SELECT u FROM User u JOIN u.roles r WHERE r.name = 'ROLE_SELLER' AND u.createdBy.username = :adminUsername)")
     List<Store> findStoresBySellersCreatedByAdmin(@Param("adminUsername") String adminUsername);

@@ -15,7 +15,7 @@
 
   <!-- Hiển thị thông báo thành công -->
   <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-  <form th:action="@{/seller/create-store}" method="post" th:object="${store}">
+  <form th:action="@{/store/dashboard/create-store}" method="post" th:object="${store}">
     <div class="mb-3">
       <label for="name" class="form-label">Tên cửa hàng:</label>
       <input type="text" class="form-control" id="name" th:field="*{name}" required/>

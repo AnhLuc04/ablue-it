@@ -46,56 +46,31 @@ public class SellerDashboardController {
 
     @GetMapping("/dashboard")
     public String sellerDashboard(Model model) {
-        List<User> sellers = userService.findUsersCreatedBySeller(); // Lấy danh sách nhân viên (role SELLER)
+
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        List<User> sellers = userService.findUsersCreatedBySeller(username); // Lấy danh sách nhân viên (role SELLER)
         User seller = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Seller not found"));
 
-        List<Store> websites = websiteService.findStoresByUserId(seller.getId()); // Lấy danh sách website
-
+        List<Store>websites=storeRepository.findStoresByUserId(seller.getId());
         model.addAttribute("role", "Seller");
         model.addAttribute("sellers", sellers);
         model.addAttribute("websites", websites);
 
-        return "seller-dashboard/seller-dashboard";
+        return "seller-dashboard/seller";
     }
 
-    @GetMapping("/create-store")
-    public String showCreateStoreForm(Model model) {
-        model.addAttribute("store", new Store());
-        return "seller-dashboard/create-store";
-    }
-
-    @PostMapping("/create-store")
-    public String createStore(@ModelAttribute("store") Store store, Model model) {
-        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        User seller = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Seller not found"));
-
-        // Kiểm tra nếu cửa hàng đã tồn tại
-        if (storeRepository.existsByName(store.getName()) || storeRepository.existsByEmail(store.getEmail())) {
-            model.addAttribute("errorMessage", "Tên cửa hàng hoặc email đã tồn tại!");
-            return "seller-dashboard/create-store";
-        }
-
-        store.setDateTime(LocalDateTime.now());
-        store.setSeller(seller);
-
-        storeRepository.save(store);
-        model.addAttribute("successMessage", "Cửa hàng đã được tạo thành công!");
-        return "seller-dashboard/create-store";
-    }
 
     @GetMapping("/create-user")
     public ModelAndView showCreateSellerForm() {
-        ModelAndView modelAndView = new ModelAndView("seller-dashboard/create-seller");
+        ModelAndView modelAndView = new ModelAndView("seller-dashboard/create-user");
         modelAndView.addObject("user", new User());
         return modelAndView;
     }
 
     @PostMapping("/create-user")
     public ModelAndView createSeller(@ModelAttribute("user") User user) {
-        ModelAndView modelAndView = new ModelAndView("seller-dashboard/create-seller");
+        ModelAndView modelAndView = new ModelAndView("seller-dashboard/create-user");
 
         if (userRepository.existsByUsername(user.getUsername())) {
             modelAndView.addObject("errorMessage", "Tài khoản đã tồn tại!");

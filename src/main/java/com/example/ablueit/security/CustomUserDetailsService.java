@@ -17,8 +17,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public List<User> getUsersCreatedBySeller() {
-        return userRepository.findUsersCreatedBySeller();
+    public List<User> getUsersCreatedBySeller(String username) {
+        return userRepository.findUsersCreatedBySeller(username);
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -14,9 +14,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     boolean existsByUsername(String username);
     // Tìm tất cả user do SELLER tạo
-    @Query("SELECT u FROM User u WHERE u.createdBy IN " +
-            "(SELECT seller FROM User seller JOIN seller.roles r WHERE r.name = 'ROLE_SELLER')")
-    List<User> findUsersCreatedBySeller();
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = 'ROLE_USER' AND u.createdBy.username = :currentUsername")
+    List<User> findUsersCreatedBySeller(@Param("currentUsername") String currentUsername);
+    ;
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = 'ROLE_SELLER' AND u.createdBy.username = :adminUsername")
     List<User> findSellersCreatedByAdmin(@Param("adminUsername") String adminUsername);
 
