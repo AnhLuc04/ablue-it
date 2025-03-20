@@ -1,12 +1,9 @@
 package com.example.ablueit.model;
 
-
-
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,22 +12,40 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 255)
     private String name;
 
-    private LocalDateTime date;
-    // Một cửa hàng có một chủ (Seller)
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @Column(unique = true, nullable = false, length = 255)
+    private String email;
+
+    @Column(nullable = false, length = 255)
+    private String phone;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    // Chủ cửa hàng (Seller)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
-    // Một cửa hàng có nhiều danh mục sản phẩm
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    // Danh sách danh mục sản phẩm thuộc cửa hàng này
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories;
+
+//    // Tự động đặt thời gian khi tạo cửa hàng
+//    @PrePersist
+//    protected void onCreate() {
+//        this.createdAt = LocalDateTime.now();
+//    }
 }

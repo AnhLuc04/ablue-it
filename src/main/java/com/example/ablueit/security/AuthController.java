@@ -3,13 +3,16 @@ package com.example.ablueit.security;
 import com.example.ablueit.model.User;
 import com.example.ablueit.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -111,9 +114,11 @@ public class AuthController {
 
 
 
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
-        request.getSession().invalidate();
-        return "redirect:/login";
+        request.getSession().invalidate(); // Xóa session hiện tại
+        return "redirect:/login?logout"; // Chuyển hướng sau khi logout
     }
+
 }

@@ -11,6 +11,52 @@
 
 <!-- Nút đi đến trang tạo tài khoản Seller -->
 <a th:href="@{/admin/create-seller}" class="btn btn-primary mt-3">Tạo tài khoản Seller</a>
-<a th:href="@{/admin/create-store}" class="btn btn-primary mt-3">Tạo Store</a>
+
+<hr>
+
+<!-- Danh sách Seller -->
+<h2>Danh sách Seller bạn đã tạo</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên đăng nhập</th>
+        <th>Email</th>
+        <th>Ngày tạo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="seller : ${sellers}">
+        <td th:text="${seller.id}"></td>
+        <td th:text="${seller.username}"></td>
+        <td th:text="${seller.email}"></td>
+        <td th:text="${#temporals.format(seller.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<!-- Danh sách Store -->
+<h2>Danh sách Cửa hàng của Seller</h2>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên Cửa Hàng</th>
+        <th>Chủ Sở Hữu</th>
+        <th>Ngày Tạo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="store : ${stores}">
+        <td th:text="${store.id}"></td>
+        <td th:text="${store.name}"></td>
+        <td th:text="${store.seller.username}"></td>
+        <td th:text="${#temporals.format(store.date, 'dd-MM-yyyy HH:mm')}"></td>
+    </tr>
+    </tbody>
+</table>
+
 </body>
 </html>

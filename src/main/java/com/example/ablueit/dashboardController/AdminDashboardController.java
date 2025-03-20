@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -42,12 +43,21 @@ public class AdminDashboardController {
     @GetMapping("/dashboard")
     public String adminDashboard(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         System.out.println("👤 User: " + userDetails.getUsername());
-        System.out.println("🔑 Roles: " + userDetails.getAuthorities()); // Kiểm tra quyền
+        System.out.println("🔑 Roles: " + userDetails.getAuthorities());
+
+        // Lấy danh sách user có vai trò ROLE_SELLER
+        List<User> sellerUsers = userRepository.findSellersCreatedByAdmin(userDetails.getUsername());
+
+        // Lấy danh sách store do seller tạo
+        List<Store> sellerStores = storeRepository.findStoresBySellersCreatedByAdmin(userDetails.getUsername());
+
         model.addAttribute("role", "Admin");
         model.addAttribute("username", userDetails.getUsername());
-        return "admin-dashboard/admin";
-    }
+        model.addAttribute("sellers", sellerUsers);
+        model.addAttribute("stores", sellerStores);
 
+        return "admin-dashboard/admin"; // Trả về template Thymeleaf
+    }
     @GetMapping("/create-seller")
     public ModelAndView showCreateSellerForm() {
         ModelAndView modelAndView = new ModelAndView("admin-dashboard/create-seller");
@@ -100,33 +110,4 @@ public class AdminDashboardController {
         return modelAndView;
     }
 
-    @GetMapping("/create-store")
-    public String showCreateStoreForm(Model model) {
-        model.addAttribute("store", new Store());
-        return "admin-dashboard/create-store";
-    }
-
-    @PostMapping("/create-store")
-    public String createStore(@ModelAttribute("store") Store store, Model model) {
-        // Lấy thông tin người dùng đang đăng nhập
-        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        User seller = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Seller not found"));
-
-        if (storeRepository.existsByName(store.getName())) {
-            model.addAttribute("errorMessage", "Seller này đã có cửa hàng!");
-            return "admin-dashboard/create-store";
-        }
-
-        // Gán ngày giờ hiện tại cho cửa hàng
-        store.setDate(LocalDateTime.now());  // Sử dụng LocalDateTime.now() để lấy ngày giờ hiện tại
-
-        // Gán Seller vào cửa hàng
-        store.setSeller(seller);
-
-        // Lưu cửa hàng vào database
-        storeRepository.save(store);
-        model.addAttribute("successMessage", "Cửa hàng đã được tạo thành công!");
-        return "admin-dashboard/create-store";
-    }
 }
