@@ -7,6 +7,7 @@ import com.ablueit.ecommerce.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/store/dashboard")
 @PreAuthorize("hasAnyRole('ROLE_SELLER')")
+@Slf4j(topic = "STORE-DASHBOARD_CONTROLLER")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StoreDashboardController {
 
@@ -67,15 +69,15 @@ public class StoreDashboardController {
 
     @GetMapping("/detail/{id}")
     public ModelAndView showDetail(@PathVariable("id") Long id) {
+        log.info("GET /detail/{}", id);
+
         ModelAndView modelAndView = new ModelAndView("store-dashboard/detail-store");
 
-        Store store = storeService.findById(id).orElseGet(null);
-        if (store == null) {
-            modelAndView.setViewName("error/404"); // Hiển thị trang lỗi nếu không tìm thấy
-            return modelAndView;
-        }
+        storeService.findById(id).ifPresentOrElse(
+                value -> modelAndView.addObject("store", value),
+                () -> modelAndView.setViewName("error/404")
+        );
 
-        modelAndView.addObject("store", store);
         return modelAndView;
     }
 
