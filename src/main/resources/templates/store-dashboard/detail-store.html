@@ -65,7 +65,7 @@
             <span class="material-icons icon">person</span> <strong>Chủ cửa hàng:</strong> <span th:text="${store.seller.username}"></span>
           </div>
           <div class="text-center">
-            <a href="/store/dashboard" class="btn btn-custom">
+            <a href="/seller/dashboard" class="btn btn-custom">
               <span class="material-icons">arrow_back</span> Quay lại
             </a>
             <a th:href="@{'/store/edit/' + ${store.id}}" class="btn btn-warning">

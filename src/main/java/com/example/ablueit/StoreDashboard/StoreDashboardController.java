@@ -1,10 +1,18 @@
 package com.example.ablueit.StoreDashboard;
 
 import com.example.ablueit.Service.StoreService;
+import com.example.ablueit.model.Category;
 import com.example.ablueit.model.Store;
 import com.example.ablueit.model.User;
+import com.example.ablueit.repository.CategoryRepository;
 import com.example.ablueit.repository.StoreRepository;
 import com.example.ablueit.repository.UserRepository;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,30 +24,65 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 
 @Controller
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SELLER')")
+@RequiredArgsConstructor
 @RequestMapping("/store/dashboard")
+@PreAuthorize("hasAnyRole('ROLE_SELLER')")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StoreDashboardController {
-    private final StoreRepository storeService;
-    private final UserRepository userRepository;
 
-    public StoreDashboardController(StoreRepository storeService, UserRepository userRepository) {
-        this.storeService = storeService;
-        this.userRepository = userRepository;
+    StoreRepository storeService;
+    UserRepository userRepository;
+    CategoryRepository categoryRepository;
+
+
+    @GetMapping("/{id}")
+    public ModelAndView showDetailDashboard(@PathVariable("id") Long id) {
+        ModelAndView modelAndView = new ModelAndView("store-dashboard/dashboard-store");
+
+        // 🔥 Lấy thông tin tài khoản đang đăng nhập
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Lấy username
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            modelAndView.setViewName("error/403"); // Không có quyền truy cập
+            return modelAndView;
+        }
+
+        User user = userOptional.get();
+
+        // 🔥 Kiểm tra Store có thuộc về tài khoản này không?
+//        Optional<Store> storeOptional = storeService.findByIdAndUser(id, user);
+//        if (storeOptional.isEmpty()) {
+//            modelAndView.setViewName("error/403"); // Không có quyền truy cập
+//            return modelAndView;
+//        }
+//
+//        Store store = storeOptional.get();
+
+        // 🔥 Lấy danh sách danh mục chỉ của Store mà User này sở hữu
+      //  List<Category> categories = categoryRepository.findByStoreIdAndUser(id, user);
+//        modelAndView.addObject("store", store);
+      //  modelAndView.addObject("categories", categories);
+        return modelAndView;
     }
+
 
     @GetMapping("/detail/{id}")
     public ModelAndView showDetail(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("store-dashboard/detail-store");
 
-        Store store = storeService.findById(id).orElseThrow(); // Đảm bảo có phương thức getStoreById(id)
+        Store store = storeService.findById(id).orElseGet(null);
         if (store == null) {
-            modelAndView.setViewName("error"); // Chuyển hướng đến trang lỗi nếu store không tồn tại
-        } else {
-            modelAndView.addObject("store", store);
+            modelAndView.setViewName("error/404"); // Hiển thị trang lỗi nếu không tìm thấy
+            return modelAndView;
         }
 
+        modelAndView.addObject("store", store);
         return modelAndView;
     }
 
@@ -62,12 +105,17 @@ public class StoreDashboardController {
             return "store-dashboard/create-store";
         }
 
+
         store.setDateTime(LocalDateTime.now());
+
+//        store.setDateTime(LocalDateTime.now());
+
         store.setSeller(seller);
 
         storeService.save(store);
         model.addAttribute("successMessage", "Cửa hàng đã được tạo thành công!");
         return "store-dashboard/create-store";
+
     }
 
 

@@ -40,6 +40,7 @@ public class Store {
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
+
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories;

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
     @Query("SELECT s FROM Store s WHERE s.seller.id = :userId")
@@ -15,4 +16,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findStoresBySellersCreatedByAdmin(@Param("adminUsername") String adminUsername);
     boolean existsByName(String name);
     boolean existsByEmail(String email); // ✅ Thêm kiểm tra email
+//    Optional<Store> findByIdAndUser(Long id, User user);
 }
