@@ -12,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,8 +25,8 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/seller")
 @RequiredArgsConstructor
+@RequestMapping("/seller")
 @PreAuthorize("hasRole('ROLE_SELLER')")
 @Slf4j(topic = "SELLER-DASHBOARD-CONTROLLER")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -38,7 +37,6 @@ public class SellerDashboardController {
     PasswordEncoder passwordEncoder;
     UserRepository userRepository;
     UserRepository userService;
-    StoreRepository websiteService;
     SellerService sellerService;
 
     @GetMapping("/dashboard")
@@ -128,7 +126,7 @@ public class SellerDashboardController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteStaff(@PathVariable Long id){
+    public String deleteStaff(@PathVariable Long id) {
         log.info("POST /delete/{}", id);
 
         sellerService.deleteStaff(id);

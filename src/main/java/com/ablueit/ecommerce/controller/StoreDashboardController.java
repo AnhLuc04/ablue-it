@@ -17,8 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -60,9 +58,9 @@ public class StoreDashboardController {
 //        Store store = storeOptional.get();
 
         // 🔥 Lấy danh sách danh mục chỉ của Store mà User này sở hữu
-      //  List<Category> categories = categoryRepository.findByStoreIdAndUser(id, user);
+        //  List<Category> categories = categoryRepository.findByStoreIdAndUser(id, user);
 //        modelAndView.addObject("store", store);
-      //  modelAndView.addObject("categories", categories);
+        //  modelAndView.addObject("categories", categories);
         return modelAndView;
     }
 
@@ -99,7 +97,7 @@ public class StoreDashboardController {
             model.addAttribute("errorMessage", "Tên cửa hàng hoặc email đã tồn tại!");
             return "store-dashboard/create-store";
         }
-       // store.setDateTime(LocalDateTime.now());
+        // store.setDateTime(LocalDateTime.now());
         store.setSeller(seller);
         storeService.save(store);
         model.addAttribute("successMessage", "Cửa hàng đã được tạo thành công!");
@@ -137,6 +135,7 @@ public class StoreDashboardController {
         storeService.deleteById(id);
         return "redirect:/store/dashboard";
     }
+
     private void checkPermission(Store store) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();

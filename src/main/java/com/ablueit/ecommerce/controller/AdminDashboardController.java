@@ -6,12 +6,15 @@ import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.RoleRepository;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder; // ✅ Import PasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,31 +26,30 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
+@RequestMapping("/admin")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-@RequestMapping("/admin") // Tất cả endpoint trong class này sẽ bắt đầu bằng /admin
+@Slf4j(topic = "ADMIN-DASHBOARD-CONTROLLER")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AdminDashboardController {
 
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder; // ✅ Inject PasswordEncoder
+    StoreRepository storeRepository;
+    RoleRepository roleRepository;
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     @GetMapping("/dashboard")
     public String adminDashboard(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        System.out.println("👤 User: " + userDetails.getUsername());
-        System.out.println("🔑 Roles: " + userDetails.getAuthorities());
+        log.info("GET /dashboard");
+
+        log.info("current user={} {}", userDetails.getUsername(), userDetails.getAuthorities());
 
         // Lấy danh sách user có vai trò ROLE_SELLER
         List<User> sellerUsers = userRepository.findSellersCreatedByAdmin(userDetails.getUsername());
 
         // Lấy danh sách store do seller tạo
         List<Store> sellerStores = storeRepository.findStoresBySellersCreatedByAdmin(userDetails.getUsername());
+
 
         model.addAttribute("role", "Admin");
         model.addAttribute("username", userDetails.getUsername());
@@ -56,8 +58,11 @@ public class AdminDashboardController {
 
         return "admin-dashboard/admin"; // Trả về template Thymeleaf
     }
+
     @GetMapping("/create-seller")
     public ModelAndView showCreateSellerForm() {
+        log.info("GET /create-seller");
+
         ModelAndView modelAndView = new ModelAndView("admin-dashboard/create-seller");
         modelAndView.addObject("user", new User());
         return modelAndView;
@@ -65,6 +70,8 @@ public class AdminDashboardController {
 
     @PostMapping("/create-seller")
     public ModelAndView createSeller(@ModelAttribute("user") User user) {
+        log.info("POST /create-seller");
+
         ModelAndView modelAndView = new ModelAndView("admin-dashboard/create-seller");
 
         if (userRepository.existsByUsername(user.getUsername())) {
