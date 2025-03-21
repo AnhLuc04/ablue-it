@@ -56,31 +56,56 @@
 <!--          <ul class="list-group">-->
 <!--            <li class="list-group-item" th:each="website : ${websites}" th:text="${website.name}"></li>-->
 <!--          </ul>-->
+<!--          <ul class="list-group">-->
+<!--            <li class="list-group-item" th:each="website : ${websites}">-->
+<!--              <a th:href="@{/store/dashboard/detail/{id}(id=${website.id})}" th:text="${website.name}"></a>-->
+<!--            <li class="list-group-item d-flex justify-content-between align-items-center" th:each="website : ${websites}">-->
+<!--              <span th:text="${website.name}"></span>-->
+<!--              <div>-->
+<!--                &lt;!&ndash; Nút Chi tiết &ndash;&gt;-->
+<!--                <a th:href="@{/store/dashboard/detail/{id}(id=${website.id})}" class="btn btn-sm btn-primary">Detail</a>-->
+
+<!--                &lt;!&ndash; Nút Xóa &ndash;&gt;-->
+<!--                <a th:href="@{/store/dashboard/delete/{id}(id=${website.id})}"-->
+<!--                   class="btn btn-sm btn-danger"-->
+<!--                   onclick="return confirm('Bạn có chắc chắn muốn xóa website này?');">-->
+<!--                  Delete-->
+<!--                </a>-->
+<!--                <a th:href="@{/store/dashboard/delete/{id}(id=${website.id})}"-->
+<!--                   class="btn btn-sm btn-success"-->
+<!--                   onclick="return confirm('Bạn có chắc chắn muốn xóa website này?');">-->
+<!--                  Oder-->
+<!--                </a>-->
+<!--                &lt;!&ndash; Nút Dashboard &ndash;&gt;-->
+<!--                <a th:href="@{/store/dashboard/{id}(id=${website.id})}" class="btn btn-sm btn-success">Category</a>-->
+<!--              </div>-->
+<!--            </li>-->
+<!--          </ul>-->
+
+
+
+
           <ul class="list-group">
-            <li class="list-group-item" th:each="website : ${websites}">
-              <a th:href="@{/store/dashboard/detail/{id}(id=${website.id})}" th:text="${website.name}"></a>
             <li class="list-group-item d-flex justify-content-between align-items-center" th:each="website : ${websites}">
               <span th:text="${website.name}"></span>
               <div>
                 <!-- Nút Chi tiết -->
-                <a th:href="@{/store/dashboard/detail/{id}(id=${website.id})}" class="btn btn-sm btn-primary">Detail</a>
+                <a th:href="@{/store/dashboard/detail/{id}(id=${website.id})}" class="btn btn-sm btn-primary">Chi tiết</a>
 
                 <!-- Nút Xóa -->
                 <a th:href="@{/store/dashboard/delete/{id}(id=${website.id})}"
                    class="btn btn-sm btn-danger"
                    onclick="return confirm('Bạn có chắc chắn muốn xóa website này?');">
-                  Delete
+                  Xóa
                 </a>
-                <a th:href="@{/store/dashboard/delete/{id}(id=${website.id})}"
-                   class="btn btn-sm btn-success"
-                   onclick="return confirm('Bạn có chắc chắn muốn xóa website này?');">
-                  Oder
-                </a>
+
                 <!-- Nút Dashboard -->
-                <a th:href="@{/store/dashboard/{id}(id=${website.id})}" class="btn btn-sm btn-success">Category</a>
+                <a th:href="@{/store/dashboard/{id}(id=${website.id})}" class="btn btn-sm btn-success">Dashboard</a>
               </div>
             </li>
           </ul>
+
+
 
         </div>
       </div>
