@@ -44,7 +44,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category; // Sản phẩm thuộc danh mục nào
+    private Categories category; // Sản phẩm thuộc danh mục nào
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images; // Danh sách ảnh sản phẩm

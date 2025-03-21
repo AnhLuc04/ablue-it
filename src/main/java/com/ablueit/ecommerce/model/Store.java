@@ -37,6 +37,6 @@ public class Store extends AbstractEntity<Long> {
 
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Category> categories;
+    private List<Categories> categories;
 
 }

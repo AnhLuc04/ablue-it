@@ -3,53 +3,126 @@
 <head>
   <title>Thêm Sản Phẩm</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script>
-        function toggleVariations() {
-            let isVariable = document.getElementById("isVariable").checked;
-            document.getElementById("variationContainer").style.display = isVariable ? "block" : "none";
-        }
-
-        function addVariation() {
-            let container = document.getElementById("variations");
-            let div = document.createElement("div");
-            div.className = "row mb-2";
-            div.innerHTML = `
-     
-                <div class="col"><input type="text" name="variations[].size" class="form-control" placeholder="Size"></div>
-                <div class="col"><input type="text" name="variations[].color" class="form-control" placeholder="Màu sắc"></div>
-                <div class="col"><input type="number" name="variations[].price" class="form-control" placeholder="Giá"></div>
-                <div class="col"><input type="number" name="variations[].stockQuantity" class="form-control" placeholder="Kho hàng"></div>
-                <div class="col"><button type="button" class="btn btn-danger" onclick="this.parentNode.parentNode.remove()">Xóa</button></div>
-            `;
-            container.appendChild(div);
-        }
-    </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<div class="container">
-  <h2 class="mt-4">Thêm Sản Phẩm</h2>
-  <form th:action="@{/products/add}" th:object="${product}" method="post">
-
-    <div class="mb-2">
-      <label>Tên sản phẩm:</label>
-      <input type="text" th:field="*{name}" class="form-control">
+<div class="container mt-4">
+  <h2 class="text-center">Thêm Sản Phẩm</h2>
+  <form th:action="@{/admin/products/save}" th:object="${product}" method="post" enctype="multipart/form-data">
+    <!-- Ảnh sản phẩm -->
+    <div class="mb-3">
+      <label class="form-label">Ảnh Sản Phẩm</label>
+      <input type="file" class="form-control" name="images" multiple>
     </div>
-    <div class="mb-2">
-      <label>Giá:</label>
-      <input type="number" th:field="*{price}" class="form-control">
-    </div>
-    <div class="mb-2">
-      <label><input type="checkbox" id="isVariable" th:field="*{isVariable}" onclick="toggleVariations()"> Sản phẩm có biến thể</label>
+    <!-- SKU và Tên Sản Phẩm -->
+    <div class="mb-3">
+      <label class="form-label">Tên Sản Phẩm</label>
+      <input type="text" class="form-control" th:field="*{name}" required>
     </div>
 
-    <div id="variationContainer" style="display: none;">
-      <h4>Biến thể sản phẩm</h4>
-      <div id="variations"></div>
-      <button type="button" class="btn btn-secondary mt-2" onclick="addVariation()">Thêm biến thể</button>
+    <div class="mb-3">
+      <label class="form-label">Mã SKU</label>
+      <input type="text" class="form-control" th:field="*{sku}" required>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Thêm Sản Phẩm</button>
+
+    <!-- Mô tả sản phẩm -->
+    <div class="mb-3">
+      <label class="form-label">Mô Tả</label>
+      <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+    </div>
+
+    <!-- Giá và Giá Khuyến Mãi -->
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Giá</label>
+        <input type="number" class="form-control" th:field="*{price}" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Giá Khuyến Mãi</label>
+        <input type="number" class="form-control" th:field="*{salePrice}">
+      </div>
+    </div>
+
+    <!-- Danh mục -->
+    <div class="mb-3">
+      <label class="form-label">Danh Mục</label>
+      <select class="form-control" th:field="*{category.id}">
+        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Loại Sản Phẩm</label>
+      <select class="form-control" th:field="*{isVariable}">
+        <option value="false">Sản Phẩm Đơn</option>
+        <option value="true">Sản Phẩm Biến Thể</option>
+      </select>
+    </div>
+
+    <!-- Nếu sản phẩm là đơn giản -->
+    <div id="simpleProductFields">
+      <div class="mb-3">
+        <label class="form-label">Số Lượng Tồn Kho</label>
+        <input type="number" class="form-control" th:field="*{stockQuantity}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Trạng Thái</label>
+        <select class="form-control" th:field="*{status}">
+          <option value="published">Công Khai</option>
+          <option value="draft">Bản Nháp</option>
+          <option value="pending">Chờ Duyệt</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Nếu sản phẩm có biến thể -->
+    <div id="variableProductFields" style="display: none;">
+      <h4>Biến Thể</h4>
+      <div id="variations">
+        <div class="variation-item">
+          <input type="text" class="form-control mb-2" placeholder="Màu sắc">
+          <input type="text" class="form-control mb-2" placeholder="Kích thước">
+          <input type="number" class="form-control mb-2" placeholder="Giá">
+          <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" id="addVariation">Thêm Biến Thể</button>
+    </div>
+
+    <button type="submit" class="btn btn-success">Thêm Sản Phẩm</button>
   </form>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('select[name="isVariable"]').change(function () {
+            if ($(this).val() === "true") {
+                $('#variableProductFields').show();
+                $('#simpleProductFields').hide();
+            } else {
+                $('#variableProductFields').hide();
+                $('#simpleProductFields').show();
+            }
+        });
+
+        // Thêm biến thể mới
+        $('#addVariation').click(function () {
+            $('#variations').append(`
+                <div class="variation-item">
+                    <input type="text" class="form-control mb-2" placeholder="Màu sắc">
+                    <input type="text" class="form-control mb-2" placeholder="Kích thước">
+                    <input type="number" class="form-control mb-2" placeholder="Giá">
+                    <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
+                </div>
+            `);
+        });
+
+        // Xóa biến thể
+        $(document).on('click', '.remove-variation', function () {
+            $(this).parent('.variation-item').remove();
+        });
+    });
+</script>
 </body>
 </html>
