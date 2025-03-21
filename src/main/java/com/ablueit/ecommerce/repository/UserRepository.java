@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findSellersCreatedByAdmin(@Param("adminUsername") String adminUsername);
 
     boolean existsByEmail(String email);
+
+    Optional<User> findUserById(Long id);
 }

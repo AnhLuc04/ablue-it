@@ -7,6 +7,11 @@ import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.RoleRepository;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
+import com.ablueit.ecommerce.service.SellerService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,43 +19,38 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasRole('ROLE_SELLER')")
 @RequestMapping("/seller")
+@RequiredArgsConstructor
+@PreAuthorize("hasRole('ROLE_SELLER')")
+@Slf4j(topic = "SELLER-DASHBOARD-CONTROLLER")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SellerDashboardController {
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private RoleRepository roleRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder; // ✅ Inject PasswordEncoder
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserRepository userService; // Service để lấy danh sách nhân viên
-
-    @Autowired
-    private StoreRepository websiteService; // Service để lấy danh sách website
+    StoreRepository storeRepository;
+    RoleRepository roleRepository;
+    PasswordEncoder passwordEncoder;
+    UserRepository userRepository;
+    UserRepository userService;
+    StoreRepository websiteService;
+    SellerService sellerService;
 
     @GetMapping("/dashboard")
     public String sellerDashboard(Model model) {
 
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        List<User> sellers = userService.findUsersCreatedBySeller(username); // Lấy danh sách nhân viên (role SELLER)
+        List<User> sellers = userService.findUsersCreatedBySeller(username)
+                .stream().filter(User::isEnabled).toList(); // Lấy danh sách nhân viên (role SELLER)
         User seller = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Seller not found"));
 
-        List<Store>websites=storeRepository.findStoresByUserId(seller.getId());
+        List<Store> websites = storeRepository.findStoresByUserId(seller.getId());
         model.addAttribute("role", "Seller");
         model.addAttribute("sellers", sellers);
         model.addAttribute("websites", websites);
@@ -110,4 +110,30 @@ public class SellerDashboardController {
         modelAndView.addObject("successMessage", "Tạo tài khoản SELLER thành công!");
         return modelAndView;
     }
+
+    @GetMapping("/profile")
+    public String profile(Model model, Principal principal) {
+        log.info("GET /profile");
+
+        return sellerService.getDetails(model, principal);
+    }
+
+    @PostMapping("/update")
+    public ModelAndView updateProfile(@ModelAttribute("user") User seller, Principal principal) {
+        log.info("POST /update");
+
+        ModelAndView modelAndView = new ModelAndView("seller-dashboard/profile");
+
+        return sellerService.updateProfile(modelAndView, seller, principal);
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteStaff(@PathVariable Long id){
+        log.info("POST /delete/{}", id);
+
+        sellerService.deleteStaff(id);
+
+        return "redirect:/seller/dashboard";
+    }
+
 }

@@ -23,16 +23,16 @@ import java.util.stream.Collectors;
 public class User extends AbstractEntity<Long> implements UserDetails {
 
     @Column(unique = true, nullable = false)
-    private String username;
+    String username;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    String email;
 
     @Column(nullable = false)
-    private String password;
+    String password;
 
 
-    private boolean enabled = true;
+    Boolean enabled = true;
 
     // Một người dùng có thể có nhiều role
     @ManyToMany(fetch = FetchType.EAGER)
@@ -78,6 +78,6 @@ public class User extends AbstractEntity<Long> implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled; // Trả về trạng thái enabled của user
+        return this.enabled; // Trả về trạng thái enabled của user
     }
 }
