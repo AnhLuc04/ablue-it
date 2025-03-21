@@ -63,7 +63,7 @@
             <span class="material-icons icon">location_on</span> <strong>Địa chỉ:</strong> <span th:text="${store.address}"></span>
           </div>
           <div class="mb-3">
-            <span class="material-icons icon">calendar_today</span> <strong>Ngày tạo:</strong> <span th:text="${#temporals.format(store.dateTime, 'dd/MM/yyyy HH:mm')}"></span>
+            <span class="material-icons icon">calendar_today</span> <strong>Ngày tạo:</strong> <span th:text="${#temporals.format(store.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
           </div>
           <div class="mb-3">
             <span class="material-icons icon">person</span> <strong>Chủ cửa hàng:</strong> <span th:text="${store.seller.username}"></span>
