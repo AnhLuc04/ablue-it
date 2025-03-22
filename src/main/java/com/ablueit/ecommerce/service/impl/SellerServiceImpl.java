@@ -37,24 +37,24 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public ModelAndView updateProfile(ModelAndView modelAndView, User seller, Principal principal) {
+    public String updateProfile(User seller, Principal principal, Model model) {
         log.info("updateProfile={}", seller.getUsername());
 
         User oldSeller = getUserByUserName(principal.getName());
 
-
-
         if(Objects.nonNull(seller.getEmail()) && userRepository.existsByEmail(seller.getEmail())){
-            modelAndView.addObject("errorMessage", "Email existed");
-            return modelAndView;
+            model.addAttribute("errorMessage", "Email existed");
+            return "seller-dashboard/profile";
         }
 
-
+        oldSeller.setEmail(seller.getEmail());
 
         log.info("updated seller profile to database");
         userRepository.save(oldSeller);
 
-        return modelAndView;
+        model.addAttribute("successMessage", "Change email successfully");
+
+        return "seller-dashboard/profile";
     }
 
     @Override
@@ -66,7 +66,6 @@ public class SellerServiceImpl implements SellerService {
         staff.setEnabled(false);
 
         userRepository.save(staff);
-
     }
 
     User getUserByUserName(String username){

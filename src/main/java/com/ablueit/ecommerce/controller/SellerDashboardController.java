@@ -116,13 +116,11 @@ public class SellerDashboardController {
         return sellerService.getDetails(model, principal);
     }
 
-    @PostMapping("/update")
-    public ModelAndView updateProfile(@ModelAttribute("user") User seller, Principal principal) {
+    @PostMapping("/profile")
+    public String updateProfile(@ModelAttribute("user") User seller, Principal principal, Model model) {
         log.info("POST /update");
 
-        ModelAndView modelAndView = new ModelAndView("seller-dashboard/profile");
-
-        return sellerService.updateProfile(modelAndView, seller, principal);
+        return sellerService.updateProfile(seller, principal, model);
     }
 
     @PostMapping("/delete/{id}")
