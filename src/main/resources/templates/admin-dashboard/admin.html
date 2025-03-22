@@ -88,9 +88,10 @@
                     </thead>
                     <tbody>
                     <tr th:each="store : ${stores}">
+                        <td th:text="${store.id}"></td>
                         <td th:text="${store.name}"></td>
                         <td th:text="${store.seller.username}"></td>
-                        <td th:text="${#temporals.format(store.date, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${#temporals.format(store.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
                     </tr>
                     </tbody>
                 </table>
