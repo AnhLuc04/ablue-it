@@ -31,6 +31,8 @@ public class Store extends AbstractEntity<Long> {
     @ManyToOne
     User createdBy;
 
+    Boolean enabled = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private User seller;

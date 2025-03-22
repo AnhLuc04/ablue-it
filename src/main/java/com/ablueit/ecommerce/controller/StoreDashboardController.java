@@ -100,6 +100,10 @@ public class StoreDashboardController {
         // store.setDateTime(LocalDateTime.now());
         store.setSeller(seller);
         storeService.save(store);
+
+        seller.setStore(store);
+        userRepository.save(seller);
+
         model.addAttribute("successMessage", "Cửa hàng đã được tạo thành công!");
         return "store-dashboard/create-store";
 

@@ -98,6 +98,7 @@
                         <th>ID</th>
                         <th>Name Store</th>
                         <th>Name Seller</th>
+                        <th>Status</th>
                         <th>Date</th>
                     </tr>
                     </thead>
@@ -106,6 +107,11 @@
                         <td th:text="${store.id}"></td>
                         <td th:text="${store.name}"></td>
                         <td th:text="${store.seller.username}"></td>
+                        <td>
+                            <span th:classappend="${store.enabled} ? 'badge bg-success' : 'badge bg-danger'"
+                                  th:text="${store.enabled} ? 'Active' : 'Disable'">
+                            </span>
+                        </td>
                         <td th:text="${#temporals.format(store.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
                     </tr>
                     </tbody>

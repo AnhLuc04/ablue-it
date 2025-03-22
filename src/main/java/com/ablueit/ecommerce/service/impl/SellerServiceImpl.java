@@ -3,6 +3,7 @@ package com.ablueit.ecommerce.service.impl;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.UserRepository;
 import com.ablueit.ecommerce.service.SellerService;
+import com.ablueit.ecommerce.service.StoreService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +23,7 @@ import java.util.Objects;
 public class SellerServiceImpl implements SellerService {
 
     UserRepository userRepository;
+    StoreService storeService;
 
     @Override
     public String getDetails(Model model, Principal principal) {
@@ -65,6 +67,12 @@ public class SellerServiceImpl implements SellerService {
 
         staff.setEnabled(false);
 
+        if(Objects.nonNull(staff.getStore())){
+            log.info("this is store manager");
+            storeService.deleteByEntity(staff.getStore());
+        }
+
+        log.warn("change user staff to disable");
         userRepository.save(staff);
     }
 
