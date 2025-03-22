@@ -2,7 +2,9 @@ package com.ablueit.ecommerce.controller;
 
 import com.ablueit.ecommerce.model.Categories;
 import com.ablueit.ecommerce.model.Product;
+import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.repository.CategoriesRepository;
+import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,14 +23,19 @@ public class ProductDashboardController {
     @Autowired
     private CategoriesRepository categoryRepository;
 
+    @Autowired
+    private StoreRepository storeRepository;
+
+
     @GetMapping("/add/{storeId}")
     public String showAddProductForm(@PathVariable("storeId") Long storeId, Model model) {
         Product product = new Product();
         product.setVariations(new ArrayList<>());
 
         // Lấy danh sách danh mục theo storeId
+        Store store =storeRepository.findById(storeId).get();
         List<Categories> categories = categoryRepository.findByStoreId(storeId);
-
+        model.addAttribute("idStore",store.getId());
         model.addAttribute("product", product);
         model.addAttribute("categories", categories);
         return "product-dashboard/create-product";

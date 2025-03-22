@@ -27,6 +27,9 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description; // Mô tả sản phẩm
 
+    @Column(columnDefinition = "TEXT")
+    private String shortDescription; // Mô tả sản phẩm
+
     @Column(nullable = false)
     private BigDecimal price; // Giá sản phẩm
 
