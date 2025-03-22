@@ -36,6 +36,6 @@ public class Store extends AbstractEntity<Long> {
     private User seller;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Category> categories;
+    private List<Categories> categories;
 
 }

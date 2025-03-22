@@ -15,16 +15,13 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String imageUrl;
+    private String imageUrl; // URL ảnh sản phẩm
 
-    // Thuộc về sản phẩm nào
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Product product; // Liên kết đến sản phẩm chính (nếu có)
 
-    // Ai là người up ảnh (Designer)
     @ManyToOne
-    @JoinColumn(name = "uploaded_by")
-    private User uploadedBy;
+    @JoinColumn(name = "variation_id")
+    private ProductVariation variation; // Liên kết đến biến thể (nếu có)
 }
