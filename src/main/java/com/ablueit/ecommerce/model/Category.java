@@ -2,24 +2,27 @@ package com.ablueit.ecommerce.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.springframework.data.annotation.CreatedBy;
 
 import java.util.List;
 
-@Entity
-@Table(name = "category")
 @Getter
 @Setter
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Categories {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "category")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Category extends AbstractEntity<Long> {
 
     @Column(nullable = false)
-    private String name;
+    String name;
 
+    @ManyToOne
+    @CreatedBy
+    User createdBy;
 
     // Danh mục thuộc về cửa hàng nào
     @ManyToOne
@@ -28,5 +31,5 @@ public class Categories {
 
     // Một danh mục có nhiều sản phẩm
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Product> products;
+    List<Product> products;
 }

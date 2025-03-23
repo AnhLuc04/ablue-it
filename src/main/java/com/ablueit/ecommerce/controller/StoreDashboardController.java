@@ -1,9 +1,11 @@
 package com.ablueit.ecommerce.controller;
 
+import com.ablueit.ecommerce.model.Category;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
+import com.ablueit.ecommerce.service.CategoryService;
 import com.ablueit.ecommerce.service.StoreService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -32,6 +35,7 @@ public class StoreDashboardController {
     StoreRepository storeRepository;
     UserRepository userRepository;
     StoreService storeService;
+    CategoryService categoryService;
 
 
     @GetMapping("/{id}")
@@ -48,23 +52,13 @@ public class StoreDashboardController {
             return modelAndView;
         }
 
+        Store store = userOptional.get().getStore();
+
+        List<Category> categories = categoryService.getCategoriesByStore(store);
+
         modelAndView.addObject("storeId", id);
+        modelAndView.addObject("categories", categories);
 
-        User user = userOptional.get();
-
-        // 🔥 Kiểm tra Store có thuộc về tài khoản này không?
-//        Optional<Store> storeOptional = storeRepository.findByIdAndUser(id, user);
-//        if (storeOptional.isEmpty()) {
-//            modelAndView.setViewName("error/403"); // Không có quyền truy cập
-//            return modelAndView;
-//        }
-
-//        Store store = storeOptional.get();
-
-        // 🔥 Lấy danh sách danh mục chỉ của Store mà User này sở hữu
-        //  List<Category> categories = categoryRepository.findByStoreIdAndUser(id, user);
-//        modelAndView.addObject("store", store);
-        //  modelAndView.addObject("categories", categories);
         return modelAndView;
     }
 
