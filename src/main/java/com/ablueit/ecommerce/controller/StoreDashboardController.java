@@ -4,6 +4,7 @@ import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
+import com.ablueit.ecommerce.service.StoreService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,8 +29,9 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StoreDashboardController {
 
-    StoreRepository storeService;
+    StoreRepository storeRepository;
     UserRepository userRepository;
+    StoreService storeService;
 
 
     @GetMapping("/{id}")
@@ -46,10 +48,12 @@ public class StoreDashboardController {
             return modelAndView;
         }
 
+        modelAndView.addObject("storeId", id);
+
         User user = userOptional.get();
 
         // 🔥 Kiểm tra Store có thuộc về tài khoản này không?
-//        Optional<Store> storeOptional = storeService.findByIdAndUser(id, user);
+//        Optional<Store> storeOptional = storeRepository.findByIdAndUser(id, user);
 //        if (storeOptional.isEmpty()) {
 //            modelAndView.setViewName("error/403"); // Không có quyền truy cập
 //            return modelAndView;
@@ -71,7 +75,7 @@ public class StoreDashboardController {
 
         ModelAndView modelAndView = new ModelAndView("store-dashboard/detail-store");
 
-        storeService.findById(id).ifPresentOrElse(
+        storeRepository.findById(id).ifPresentOrElse(
                 value -> modelAndView.addObject("store", value),
                 () -> modelAndView.setViewName("error/404")
         );
@@ -93,13 +97,13 @@ public class StoreDashboardController {
                 .orElseThrow(() -> new RuntimeException("Seller not found"));
 
         // Kiểm tra nếu cửa hàng đã tồn tại
-        if (storeService.existsByName(store.getName()) || storeService.existsByEmail(store.getEmail())) {
+        if (storeRepository.existsByName(store.getName()) || storeRepository.existsByEmail(store.getEmail())) {
             model.addAttribute("errorMessage", "Tên cửa hàng hoặc email đã tồn tại!");
             return "store-dashboard/create-store";
         }
         // store.setDateTime(LocalDateTime.now());
         store.setSeller(seller);
-        storeService.save(store);
+        storeRepository.save(store);
 
         seller.setStore(store);
         userRepository.save(seller);
@@ -113,7 +117,7 @@ public class StoreDashboardController {
     // 4️⃣ Hiển thị form chỉnh sửa Store
     @GetMapping("/edit/{id}")
     public String showEditStoreForm(@PathVariable Long id, Model model) {
-        Store store = storeService.findById(id)
+        Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
         model.addAttribute("store", store);
         return "store-dashboard/store-form";
@@ -122,21 +126,24 @@ public class StoreDashboardController {
     // 5️⃣ Cập nhật Store (Admin hoặc chủ sở hữu)
     @PostMapping("/update/{id}")
     public String updateStore(@PathVariable Long id, @ModelAttribute Store updatedStore) {
-        Store existingStore = storeService.findById(id)
+        Store existingStore = storeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
         checkPermission(existingStore);
 
         existingStore.setName(updatedStore.getName());
         existingStore.setAddress(updatedStore.getAddress());
-        storeService.save(existingStore);
+        storeRepository.save(existingStore);
 
         return "redirect:/store/dashboard";
     }
 
     // 6️⃣ Xóa Store
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteStore(@PathVariable Long id) {
-        storeService.deleteById(id);
+        log.info("POST /delete/{}", id);
+
+        storeService.deleteStoreById(id);
+
         return "redirect:/store/dashboard";
     }
 
