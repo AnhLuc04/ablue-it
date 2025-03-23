@@ -74,7 +74,8 @@ public class SellerServiceImpl implements SellerService {
         List<Store> listStoreOwnerBySeller = storeRepository.findStoresBySellersCreatedByAdmin(staff.getUsername());
 
         if(!listStoreOwnerBySeller.isEmpty()){
-
+            log.info("delete all store owner by seller");
+            storeService.deleteListStoreByEntity(listStoreOwnerBySeller);
         }
 
         log.warn("change user staff to disable");
