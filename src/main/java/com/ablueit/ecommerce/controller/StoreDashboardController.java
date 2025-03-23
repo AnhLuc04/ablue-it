@@ -115,26 +115,24 @@ public class StoreDashboardController {
 
 
     // 4️⃣ Hiển thị form chỉnh sửa Store
-    @GetMapping("/edit/{id}")
+    @GetMapping("/update/{id}")
     public String showEditStoreForm(@PathVariable Long id, Model model) {
-        Store store = storeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
+        log.info("GET /update/{}", id);
+
+        Store store = storeService.getStoryById(id);
+        log.info("store name={}", store.getName());
+
         model.addAttribute("store", store);
-        return "store-dashboard/store-form";
+
+        return "store-dashboard/update-store";
     }
 
     // 5️⃣ Cập nhật Store (Admin hoặc chủ sở hữu)
     @PostMapping("/update/{id}")
-    public String updateStore(@PathVariable Long id, @ModelAttribute Store updatedStore) {
-        Store existingStore = storeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
-        checkPermission(existingStore);
+    public String updateStore(@PathVariable Long id, @ModelAttribute Store request, Model model) {
+        log.info("POST /update/{}", id);
 
-        existingStore.setName(updatedStore.getName());
-        existingStore.setAddress(updatedStore.getAddress());
-        storeRepository.save(existingStore);
-
-        return "redirect:/store/dashboard";
+        return storeService.updateStore(id, request, model);
     }
 
     // 6️⃣ Xóa Store
@@ -147,19 +145,6 @@ public class StoreDashboardController {
         return "redirect:/seller/dashboard";
     }
 
-    private void checkPermission(Store store) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Chuyển đổi danh sách roles thành chuỗi và kiểm tra quyền
-        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
-        boolean isOwner = store.getSeller().equals(user);
-
-        if (!isAdmin && !isOwner) {
-            throw new RuntimeException("Unauthorized to modify this store");
-        }
-    }
 
 }
