@@ -50,9 +50,12 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center" th:each="category : ${categories}">
                             <span th:text="${category.name}"></span>
-                            <a th:href="@{'/category/delete/' + ${category.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
-                                <span class="material-icons">delete</span>
-                            </a>
+                            <form th:action="@{'/category/delete/' + ${category.id}}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </form>
+
                         </li>
                     </ul>
                 </div>

@@ -13,4 +13,6 @@ public interface CategoryService {
 
     List<Category> getCategoriesByStore(Store store);
 
+    String delete(Long id);
+
 }

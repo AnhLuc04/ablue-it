@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -28,6 +29,12 @@ public class CategoryController {
         return categoryService.create(request, redirectAttributes);
     }
 
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Long id){
+        log.info("POST /category/delete/{}", id);
 
+
+        return categoryService.delete(id);
+    }
 
 }

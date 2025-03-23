@@ -1,5 +1,6 @@
 package com.ablueit.ecommerce.service.impl;
 
+import com.ablueit.ecommerce.exception.ResourceNotFoundException;
 import com.ablueit.ecommerce.model.Category;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
@@ -63,6 +64,24 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("getCategoriesByStore={}", store.getName());
 
         return categoriesRepository.findByStore(store);
+    }
+
+    @Override
+    public String delete(Long id) {
+        log.info("delete={}", id);
+
+        Category category = categoriesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        // get owner store
+        Store store = category.getStore();
+
+        log.warn("delete category ={}", id);
+        categoriesRepository.delete(category);
+
+        // get owner store
+
+        return "redirect:/store/dashboard/" + store.getId();
     }
 
     private User getUserFromAuthenticated(){
