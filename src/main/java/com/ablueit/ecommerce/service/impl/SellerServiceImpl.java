@@ -1,6 +1,8 @@
 package com.ablueit.ecommerce.service.impl;
 
+import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
+import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
 import com.ablueit.ecommerce.service.SellerService;
 import com.ablueit.ecommerce.service.StoreService;
@@ -14,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -24,6 +27,7 @@ public class SellerServiceImpl implements SellerService {
 
     UserRepository userRepository;
     StoreService storeService;
+    private final StoreRepository storeRepository;
 
     @Override
     public String getDetails(Model model, Principal principal) {
@@ -67,9 +71,10 @@ public class SellerServiceImpl implements SellerService {
 
         staff.setEnabled(false);
 
-        if(Objects.nonNull(staff.getStore())){
-            log.info("this is store manager");
-            storeService.deleteByEntity(staff.getStore());
+        List<Store> listStoreOwnerBySeller = storeRepository.findStoresBySellersCreatedByAdmin(staff.getUsername());
+
+        if(!listStoreOwnerBySeller.isEmpty()){
+
         }
 
         log.warn("change user staff to disable");

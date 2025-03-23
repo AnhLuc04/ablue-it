@@ -9,6 +9,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j(topic = "SELLER-SERVICE")
@@ -18,12 +20,12 @@ public class StoreServiceImpl implements StoreService {
     StoreRepository storeRepository;
 
     @Override
-    public void deleteByEntity(Store store) {
-        log.info("delete={}", store.getId());
+    public void deleteListStoreByEntity(List<Store> stores) {
+        log.info("deleteListStoreByEntity");
 
-        store.setEnabled(false);
+        stores.stream().filter(Store::getEnabled).forEach(x -> x.setEnabled(false));
 
-        log.warn("change store status to disable");
-        storeRepository.save(store);
+        log.warn("change all store status to disabled");
+        storeRepository.saveAll(stores);
     }
 }
