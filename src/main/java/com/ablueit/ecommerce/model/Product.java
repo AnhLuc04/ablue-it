@@ -64,6 +64,9 @@ public class Product {
 //    @JoinColumn(name = "brand_id")
 //    private Brand brand; // Nhãn hiệu sản phẩm (tương tự WooCommerce)
 
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
     @OneToMany(mappedBy = "parentProduct", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariation> variations; // Danh sách các biến thể (size, màu)
 

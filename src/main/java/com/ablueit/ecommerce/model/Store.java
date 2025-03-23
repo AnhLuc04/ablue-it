@@ -3,6 +3,7 @@ package com.ablueit.ecommerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,7 +34,8 @@ public class Store extends AbstractEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private User seller;
-
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
 
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)

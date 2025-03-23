@@ -153,62 +153,74 @@
 <body>
 <div class="container mt-4">
   <h2 class="text-center mb-4">Thêm Sản Phẩm</h2>
-  <form th:action="@{/admin/products/save}" th:object="${product}" method="post" enctype="multipart/form-data">
+  <form th:action="@{/products/dashboard/add}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="storeId" th:value="${idStore}">
+
     <table class="table table-bordered">
       <tbody>
       <tr>
         <th>Ảnh Sản Phẩm</th>
-        <td><input type="file" class="form-control" name="images" multiple></td>
+       <td><input type="file" id="files" name="files" multiple required></td>
       </tr>
       <tr>
         <th>Tên Sản Phẩm</th>
-        <td><input type="text" class="form-control" th:field="*{name}" required></td>
+        <td><input type="text" class="form-control" name="name" required></td>
       </tr>
       <tr>
         <th>Mã SKU</th>
-        <td><input type="text" class="form-control" th:field="*{sku}" required></td>
+        <td><input type="text" class="form-control" name="sku" required></td>
       </tr>
       <tr>
         <th>Mô Tả</th>
-        <td><textarea class="form-control" th:field="*{description}" rows="3"></textarea></td>
+        <td><textarea class="form-control" name="description" rows="3"></textarea></td>
       </tr>
       <tr>
         <th>Mô Tả Ngắn</th>
-        <td><textarea class="form-control" th:field="*{shortDescription}" rows="3"></textarea></td>
+        <td><textarea class="form-control" name="shortDescription" rows="3"></textarea></td>
       </tr>
       <tr>
         <th>Giá</th>
-        <td><input type="number" class="form-control" th:field="*{price}" required></td>
+        <td><input type="BigDecimal" class="form-control" name="price" required></td>
       </tr>
       <tr>
         <th>Giá Khuyến Mãi</th>
-        <td><input type="number" class="form-control" th:field="*{salePrice}"></td>
+        <td><input type="BigDecimal" class="form-control" name="salePrice"></td>
       </tr>
       <tr>
         <th>Danh Mục</th>
         <td>
-          <select class="form-control" th:field="*{category.id}">
+          <select class="form-control" name="category">
             <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
           </select>
         </td>
       </tr>
-      <tr>
-        <th>Loại Sản Phẩm</th>
+<!--      <tr>-->
+<!--        <th>Loại Sản Phẩm</th>-->
+<!--        <td>-->
+<!--          <select class="form-control" name="isVariable">-->
+<!--            <option value="false">Sản Phẩm Đơn</option>-->
+<!--            <option value="true">Sản Phẩm Biến Thể</option>-->
+<!--          </select>-->
+<!--        </td>-->
+<!--      </tr>-->
+      <tr id="variableProductFields" style="display: none;">
+        <th>Biến Thể</th>
         <td>
-          <select class="form-control" th:field="*{isVariable}">
-            <option value="false">Sản Phẩm Đơn</option>
-            <option value="true">Sản Phẩm Biến Thể</option>
-          </select>
+          <div id="variations">
+            <button type="button" class="btn btn-primary btn-sm mt-2" id="addVariation">Thêm Biến Thể</button>
+          </div>
         </td>
       </tr>
-      <tr id="simpleProductFields">
+
+
+      <tr>
         <th>Số Lượng Tồn Kho</th>
-        <td><input type="number" class="form-control" th:field="*{stockQuantity}"></td>
+        <td><input type="number" class="form-control" name="stockQuantity"></td>
       </tr>
-      <tr id="simpleProductFields2">
+      <tr>
         <th>Trạng Thái</th>
         <td>
-          <select class="form-control" th:field="*{status}">
+          <select class="form-control" name="status">
             <option value="published">Công Khai</option>
             <option value="draft">Bản Nháp</option>
             <option value="pending">Chờ Duyệt</option>
@@ -217,46 +229,37 @@
       </tr>
       </tbody>
     </table>
-    <div id="variableProductFields" style="display: none;">
-      <h4>Biến Thể</h4>
-      <div id="variations">
-        <div class="variation-item d-flex gap-2">
-          <input type="text" class="form-control" placeholder="Màu sắc">
-          <input type="text" class="form-control" placeholder="Kích thước">
-          <input type="number" class="form-control" placeholder="Giá">
-          <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
-        </div>
-      </div>
-      <button type="button" class="btn btn-primary btn-sm mt-2" id="addVariation">Thêm Biến Thể</button>
-    </div>
+
     <button type="submit" class="btn btn-success mt-3">Thêm Sản Phẩm</button>
   </form>
+
 </div>
 <script>
-    $(document).ready(function () {
-        $('select[name="isVariable"]').change(function () {
-            if ($(this).val() === "true") {
-                $('#variableProductFields').show();
-                $('#simpleProductFields, #simpleProductFields2').hide();
-            } else {
-                $('#variableProductFields').hide();
-                $('#simpleProductFields, #simpleProductFields2').show();
-            }
-        });
-        $('#addVariation').click(function () {
-            $('#variations').append(`
-                <div class="variation-item d-flex gap-2 mt-2">
-                    <input type="text" class="form-control" placeholder="Màu sắc">
-                    <input type="text" class="form-control" placeholder="Kích thước">
-                    <input type="number" class="form-control" placeholder="Giá">
-                    <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
-                </div>
-            `);
-        });
-        $(document).on('click', '.remove-variation', function () {
-            $(this).parent('.variation-item').remove();
-        });
+$(document).ready(function () {
+    $('select[name="isVariable"]').change(function () {
+        if ($(this).val() === "true") {
+            $('#variableProductFields').css('display', 'table-row'); // Hiển thị dòng biến thể
+        } else {
+            $('#variableProductFields').css('display', 'none'); // Ẩn dòng biến thể
+        }
     });
+
+    $('#addVariation').click(function () {
+        $('#variations').append(`
+            <div class="variation-item d-flex gap-2 mt-2">
+                <input type="text" class="form-control" name="variationColor[]" placeholder="Màu sắc">
+                <input type="text" class="form-control" name="variationSize[]" placeholder="Kích thước">
+                <input type="number" class="form-control" name="variationPrice[]" placeholder="Giá">
+                <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
+            </div>
+        `);
+    });
+
+    $(document).on('click', '.remove-variation', function () {
+        $(this).closest('.variation-item').remove();
+    });
+});
+
 </script>
 </body>
 </html>
