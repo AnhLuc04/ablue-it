@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface StoreService {
     void deleteListStoreByEntity(List<Store> store);
+
+    void deleteStoreById(Long id);
 }
