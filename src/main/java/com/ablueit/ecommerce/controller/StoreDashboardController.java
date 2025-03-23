@@ -144,7 +144,7 @@ public class StoreDashboardController {
 
         storeService.deleteStoreById(id);
 
-        return "redirect:/store/dashboard";
+        return "redirect:/seller/dashboard";
     }
 
     private void checkPermission(Store store) {

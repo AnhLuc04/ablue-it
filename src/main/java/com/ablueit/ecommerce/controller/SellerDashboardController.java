@@ -49,9 +49,12 @@ public class SellerDashboardController {
                 .orElseThrow(() -> new RuntimeException("Seller not found"));
 
         List<Store> websites = storeRepository.findStoresByUserId(seller.getId());
+
+        List<Store> websitesEnabled = websites.stream().filter(Store::getEnabled).toList();
+
         model.addAttribute("role", "Seller");
         model.addAttribute("sellers", sellers);
-        model.addAttribute("websites", websites);
+        model.addAttribute("websites", websitesEnabled);
 
         return "seller-dashboard/seller";
     }
