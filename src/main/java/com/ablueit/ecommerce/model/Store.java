@@ -32,6 +32,8 @@ public class Store extends AbstractEntity<Long> {
     @ManyToOne
     User createdBy;
 
+    Boolean enabled = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private User seller;
@@ -44,6 +46,6 @@ public class Store extends AbstractEntity<Long> {
 
 >>>>>>> dev-vandunxg
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Categories> categories;
+    private List<Category> categories;
 
 }

@@ -1,9 +1,12 @@
 package com.ablueit.ecommerce.controller;
 
+import com.ablueit.ecommerce.model.Category;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
+import com.ablueit.ecommerce.service.CategoryService;
+import com.ablueit.ecommerce.service.StoreService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -28,8 +32,10 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StoreDashboardController {
 
-    StoreRepository storeService;
+    StoreRepository storeRepository;
     UserRepository userRepository;
+    StoreService storeService;
+    CategoryService categoryService;
 
 
     @GetMapping("/{id}")
@@ -46,21 +52,13 @@ public class StoreDashboardController {
             return modelAndView;
         }
 
-        User user = userOptional.get();
+        Store store = userOptional.get().getStore();
 
-        // 🔥 Kiểm tra Store có thuộc về tài khoản này không?
-//        Optional<Store> storeOptional = storeService.findByIdAndUser(id, user);
-//        if (storeOptional.isEmpty()) {
-//            modelAndView.setViewName("error/403"); // Không có quyền truy cập
-//            return modelAndView;
-//        }
+        List<Category> categories = categoryService.getCategoriesByStore(store);
 
-//        Store store = storeOptional.get();
+        modelAndView.addObject("storeId", id);
+        modelAndView.addObject("categories", categories);
 
-        // 🔥 Lấy danh sách danh mục chỉ của Store mà User này sở hữu
-        //  List<Category> categories = categoryRepository.findByStoreIdAndUser(id, user);
-//        modelAndView.addObject("store", store);
-        //  modelAndView.addObject("categories", categories);
         return modelAndView;
     }
 
@@ -71,7 +69,7 @@ public class StoreDashboardController {
 
         ModelAndView modelAndView = new ModelAndView("store-dashboard/detail-store");
 
-        storeService.findById(id).ifPresentOrElse(
+        storeRepository.findById(id).ifPresentOrElse(
                 value -> modelAndView.addObject("store", value),
                 () -> modelAndView.setViewName("error/404")
         );
@@ -93,13 +91,17 @@ public class StoreDashboardController {
                 .orElseThrow(() -> new RuntimeException("Seller not found"));
 
         // Kiểm tra nếu cửa hàng đã tồn tại
-        if (storeService.existsByName(store.getName()) || storeService.existsByEmail(store.getEmail())) {
+        if (storeRepository.existsByName(store.getName()) || storeRepository.existsByEmail(store.getEmail())) {
             model.addAttribute("errorMessage", "Tên cửa hàng hoặc email đã tồn tại!");
             return "store-dashboard/create-store";
         }
         // store.setDateTime(LocalDateTime.now());
         store.setSeller(seller);
-        storeService.save(store);
+        storeRepository.save(store);
+
+        seller.setStore(store);
+        userRepository.save(seller);
+
         model.addAttribute("successMessage", "Cửa hàng đã được tạo thành công!");
         return "store-dashboard/create-store";
 
@@ -107,48 +109,36 @@ public class StoreDashboardController {
 
 
     // 4️⃣ Hiển thị form chỉnh sửa Store
-    @GetMapping("/edit/{id}")
+    @GetMapping("/update/{id}")
     public String showEditStoreForm(@PathVariable Long id, Model model) {
-        Store store = storeService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
+        log.info("GET /update/{}", id);
+
+        Store store = storeService.getStoryById(id);
+        log.info("store name={}", store.getName());
+
         model.addAttribute("store", store);
-        return "store-dashboard/store-form";
+
+        return "store-dashboard/update-store";
     }
 
     // 5️⃣ Cập nhật Store (Admin hoặc chủ sở hữu)
     @PostMapping("/update/{id}")
-    public String updateStore(@PathVariable Long id, @ModelAttribute Store updatedStore) {
-        Store existingStore = storeService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
-        checkPermission(existingStore);
+    public String updateStore(@PathVariable Long id, @ModelAttribute Store request, Model model) {
+        log.info("POST /update/{}", id);
 
-        existingStore.setName(updatedStore.getName());
-        existingStore.setAddress(updatedStore.getAddress());
-        storeService.save(existingStore);
-
-        return "redirect:/store/dashboard";
+        return storeService.updateStore(id, request, model);
     }
 
     // 6️⃣ Xóa Store
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteStore(@PathVariable Long id) {
-        storeService.deleteById(id);
-        return "redirect:/store/dashboard";
+        log.info("POST /delete/{}", id);
+
+        storeService.deleteStoreById(id);
+
+        return "redirect:/seller/dashboard";
     }
 
-    private void checkPermission(Store store) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Chuyển đổi danh sách roles thành chuỗi và kiểm tra quyền
-        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
-        boolean isOwner = store.getSeller().equals(user);
-
-        if (!isAdmin && !isOwner) {
-            throw new RuntimeException("Unauthorized to modify this store");
-        }
-    }
 
 }

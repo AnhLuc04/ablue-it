@@ -1,8 +1,11 @@
 package com.ablueit.ecommerce.service.impl;
 
+import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
+import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
 import com.ablueit.ecommerce.service.SellerService;
+import com.ablueit.ecommerce.service.StoreService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -22,6 +26,8 @@ import java.util.Objects;
 public class SellerServiceImpl implements SellerService {
 
     UserRepository userRepository;
+    StoreService storeService;
+    private final StoreRepository storeRepository;
 
     @Override
     public String getDetails(Model model, Principal principal) {
@@ -37,24 +43,24 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public ModelAndView updateProfile(ModelAndView modelAndView, User seller, Principal principal) {
+    public String updateProfile(User seller, Principal principal, Model model) {
         log.info("updateProfile={}", seller.getUsername());
 
         User oldSeller = getUserByUserName(principal.getName());
 
-
-
         if(Objects.nonNull(seller.getEmail()) && userRepository.existsByEmail(seller.getEmail())){
-            modelAndView.addObject("errorMessage", "Email existed");
-            return modelAndView;
+            model.addAttribute("errorMessage", "Email existed");
+            return "seller-dashboard/profile";
         }
 
-
+        oldSeller.setEmail(seller.getEmail());
 
         log.info("updated seller profile to database");
         userRepository.save(oldSeller);
 
-        return modelAndView;
+        model.addAttribute("successMessage", "Change email successfully");
+
+        return "seller-dashboard/profile";
     }
 
     @Override
@@ -65,8 +71,15 @@ public class SellerServiceImpl implements SellerService {
 
         staff.setEnabled(false);
 
-        userRepository.save(staff);
+        List<Store> listStoreOwnerBySeller = storeRepository.findStoresBySellersCreatedByAdmin(staff.getUsername());
 
+        if(!listStoreOwnerBySeller.isEmpty()){
+            log.info("delete all store owner by seller");
+            storeService.deleteListStoreByEntity(listStoreOwnerBySeller);
+        }
+
+        log.warn("change user staff to disable");
+        userRepository.save(staff);
     }
 
     User getUserByUserName(String username){

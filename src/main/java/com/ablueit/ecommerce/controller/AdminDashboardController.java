@@ -6,6 +6,7 @@ import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.RoleRepository;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
+import com.ablueit.ecommerce.service.SellerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,10 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -37,6 +35,7 @@ public class AdminDashboardController {
     RoleRepository roleRepository;
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+    SellerService sellerService;
 
     @GetMapping("/dashboard")
     public String adminDashboard(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -50,6 +49,8 @@ public class AdminDashboardController {
         // Lấy danh sách store do seller tạo
         List<Store> sellerStores = storeRepository.findStoresBySellersCreatedByAdmin(userDetails.getUsername());
 
+        // get sellers have enable status
+//        List<User> sellerEnableStatus = sellerUsers.stream().filter(User::getEnabled).toList();
 
         model.addAttribute("role", "Admin");
         model.addAttribute("username", userDetails.getUsername());
@@ -113,6 +114,15 @@ public class AdminDashboardController {
 
         modelAndView.addObject("successMessage", "Tạo tài khoản SELLER thành công!");
         return modelAndView;
+    }
+
+    @PostMapping("/delete-seller/{id}")
+    public String deleteSeller(@PathVariable Long id) {
+        log.info("POST /delete/{}", id);
+
+        sellerService.deleteStaff(id);
+
+        return "redirect:/admin/dashboard";
     }
 
 }

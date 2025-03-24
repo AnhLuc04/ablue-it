@@ -51,16 +51,16 @@
         </div>
         <div class="card-body">
           <div class="mb-3">
-            <span class="material-icons icon">business</span> <strong>Tên cửa hàng:</strong> <span th:text="${store.name}"></span>
+            <span class="material-icons icon">business</span> <strong>Tên cửa hàng:</strong> <span th:text="${store.getName()}"></span>
           </div>
           <div class="mb-3">
-            <span class="material-icons icon">email</span> <strong>Email:</strong> <span th:text="${store.email}"></span>
+            <span class="material-icons icon">email</span> <strong>Email:</strong> <span th:text="${store.getEmail()}"></span>
           </div>
           <div class="mb-3">
-            <span class="material-icons icon">phone</span> <strong>Số điện thoại:</strong> <span th:text="${store.phone}"></span>
+            <span class="material-icons icon">phone</span> <strong>Số điện thoại:</strong> <span th:text="${store.getPhone()}"></span>
           </div>
           <div class="mb-3">
-            <span class="material-icons icon">location_on</span> <strong>Địa chỉ:</strong> <span th:text="${store.address}"></span>
+            <span class="material-icons icon">location_on</span> <strong>Địa chỉ:</strong> <span th:text="${store.getAddress()}"></span>
           </div>
           <div class="mb-3">
             <span class="material-icons icon">calendar_today</span> <strong>Ngày tạo:</strong> <span th:text="${#temporals.format(store.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
@@ -72,11 +72,8 @@
             <a href="/seller/dashboard" class="btn btn-custom">
               <span class="material-icons">arrow_back</span> Quay lại
             </a>
-            <a th:href="@{'/store/edit/' + ${store.id}}" class="btn btn-warning">
+            <a th:href="@{'/store/dashboard/update/' + ${store.id}}" class="btn btn-warning">
               <span class="material-icons">edit</span> Chỉnh sửa
-            </a>
-            <a th:href="@{'/store/delete/' + ${store.id}}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa cửa hàng này?');">
-              <span class="material-icons">delete</span> Xóa
             </a>
           </div>
         </div>

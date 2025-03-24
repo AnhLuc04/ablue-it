@@ -10,7 +10,7 @@ public interface SellerService {
 
     String getDetails(Model model, Principal principal);
 
-    ModelAndView updateProfile(ModelAndView modelAndView, User seller, Principal principal);
+    String updateProfile(User seller, Principal principal, Model model);
 
     void deleteStaff(Long id);
 

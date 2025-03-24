@@ -2,18 +2,16 @@ package com.ablueit.ecommerce.service;
 
 
 import com.ablueit.ecommerce.model.Store;
-import com.ablueit.ecommerce.model.User;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 public interface StoreService {
-    List<Store> getStoresByUser(User user);
+    void deleteListStoreByEntity(List<Store> store);
 
-    String add (Store store, Model model);
+    void deleteStoreById(Long id);
 
-    ModelAndView getDetail(Long id, ModelAndView modelAndView);
+    Store getStoryById(Long id);
 
-    boolean existsByName(String name);
+    String updateStore(Long id, Store store, Model model);
 }

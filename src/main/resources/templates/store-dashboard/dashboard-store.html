@@ -50,9 +50,12 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center" th:each="category : ${categories}">
                             <span th:text="${category.name}"></span>
-                            <a th:href="@{'/category/delete/' + ${category.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
-                                <span class="material-icons">delete</span>
-                            </a>
+                            <form th:action="@{'/category/delete/' + ${category.id}}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </form>
+
                         </li>
                     </ul>
                 </div>
@@ -66,12 +69,18 @@
                     <span class="material-icons">add_circle</span> Thêm Danh Mục
                 </div>
                 <div class="card-body">
-                    <form action="/category/add" method="post">
+                    <form action="/category/" method="post">
                         <div class="mb-3">
                             <label for="categoryName" class="form-label">Tên danh mục:</label>
-                            <input type="text" class="form-control" id="categoryName" name="name" required>
+                            <input type="text" class="form-control" id="categoryName" th:value="${name}" name="name" required>
                         </div>
-                        <input type="hidden" name="storeId" th:value="${store.id}">
+                        <input type="hidden" name="storeId" th:value="${storeId}">
+
+                        <!-- Hiển thị thông báo thành lỗi -->
+                        <div th:if="${errorMessageCategory}" class="alert alert-danger" th:text="${errorMessageCategory}"></div>
+                        <!-- Hiển thị thông báo thành công -->
+                        <div th:if="${successMessageCategory}" class="alert alert-success" th:text="${successMessageCategory}"></div>
+
                         <div class="text-center">
                             <button type="submit" class="btn btn-custom">
                                 <span class="material-icons">save</span> Lưu
