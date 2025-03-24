@@ -1,14 +1,8 @@
 package com.ablueit.ecommerce.controller;
 
 import com.ablueit.ecommerce.exception.ResourceNotFoundException;
-import com.ablueit.ecommerce.model.Categories;
-import com.ablueit.ecommerce.model.Product;
-import com.ablueit.ecommerce.model.ProductVariation;
-import com.ablueit.ecommerce.model.Store;
-import com.ablueit.ecommerce.repository.CategoriesRepository;
-import com.ablueit.ecommerce.repository.ProductRepository;
-import com.ablueit.ecommerce.repository.ProductVariationRepository;
-import com.ablueit.ecommerce.repository.StoreRepository;
+import com.ablueit.ecommerce.model.*;
+import com.ablueit.ecommerce.repository.*;
 import com.ablueit.ecommerce.service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +32,9 @@ public class ProductDashboardController {
 
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private ProductVariationSampleRepository productVariationSampleRepository;
+
 
 
     @GetMapping("/add/{storeId}")
@@ -48,7 +45,10 @@ public class ProductDashboardController {
         // Lấy danh sách danh mục theo storeId
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new ResourceNotFoundException("store not found"));
 
+
+//        List<ProductVariationSample>productVariationSamples=productVariationSampleRepository.findByStore(store);
         List<Categories> categories = categoryRepository.findByStore(store);
+//        model.addAttribute("productVariationSamples", productVariationSamples);
         model.addAttribute("idStore", store.getId());
         model.addAttribute("product", product);
         model.addAttribute("categories", categories);
@@ -174,8 +174,8 @@ public class ProductDashboardController {
             for (int i = 0; i < variationColors.size(); i++) {
                 ProductVariation variation = new ProductVariation();
                 variation.setParentProduct(product);
-                variation.setColor(variationColors.get(i));
-                variation.setSize(variationSizes.get(i));
+//                variation.setColor(variationColors.get(i));
+//                variation.setSize(variationSizes.get(i));
                 variation.setPrice(variationPrices.get(i));
                 variation.setSalePrice(variationSalePrices.get(i));
 

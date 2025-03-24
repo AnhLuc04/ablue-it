@@ -3,6 +3,7 @@ package com.ablueit.ecommerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "product_variations")
@@ -17,16 +18,13 @@ public class ProductVariation {
     private Long id;
 
 
-    @Column(nullable = false)
-    private String size; // Size của sản phẩm
-
-    @Column(nullable = false)
-    private String color; // Màu sắc của sản phẩm
 
     @Column(nullable = false)
     private BigDecimal price; // Giá của biến thể
-
+    @Column(nullable = false)
     private BigDecimal salePrice; // Giá khuyến mãi của biến thể
+
+    private List<Attribute> attributes;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
