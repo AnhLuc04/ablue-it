@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "category")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Category extends AbstractEntity<Long> {
+public class Categories extends AbstractEntity<Long> {
 
     @Column(nullable = false)
     String name;
