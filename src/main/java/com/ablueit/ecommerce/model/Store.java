@@ -2,42 +2,47 @@ package com.ablueit.ecommerce.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "stores")
+@Builder
 @Getter
 @Setter
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "stores")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Store extends AbstractEntity<Long> {
 
-    @Column(unique = true, nullable = false, length = 255)
-    private String name;
+    @Column(unique = true, nullable = false)
+    String name;
 
-    @Column(unique = true, nullable = false, length = 255)
-    private String email;
-
-    @Column(nullable = false, length = 255)
-    private String phone;
+    @Column(unique = true, nullable = false)
+    String email;
 
     @Column(nullable = false)
-    private String address;
+    String phone;
+
+    @Column(nullable = false)
+    String address;
 
     @ManyToOne
     User createdBy;
 
-    // Chủ cửa hàng (Seller)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private User seller;
+<<<<<<< HEAD
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
+=======
+
+>>>>>>> dev-vandunxg
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Categories> categories;
 
