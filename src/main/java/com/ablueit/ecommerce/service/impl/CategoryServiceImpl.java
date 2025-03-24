@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
         Categories category = Categories.builder()
                 .name(request.name())
                 .store(store)
-                .createdBy(seller)
+//                .createdBy(seller)
                 .build();
 
         categoriesRepository.save(category);

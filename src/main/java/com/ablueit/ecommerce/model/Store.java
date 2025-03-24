@@ -43,7 +43,10 @@ public class Store extends AbstractEntity<Long> {
 
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev-vandunxg
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Categories> categories;
 

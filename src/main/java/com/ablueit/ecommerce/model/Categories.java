@@ -20,9 +20,9 @@ public class Categories extends AbstractEntity<Long> {
     @Column(nullable = false)
     String name;
 
-    @ManyToOne
-    @CreatedBy
-    User createdBy;
+//    @ManyToOne
+//    @CreatedBy
+//    User createdBy;
 
     // Danh mục thuộc về cửa hàng nào
     @ManyToOne

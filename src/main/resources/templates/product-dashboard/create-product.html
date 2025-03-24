@@ -1,148 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--  <title>Thêm Sản Phẩm</title>-->
-<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
-<!--  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div class="container mt-4">-->
-<!--  <h2 class="text-center">Thêm Sản Phẩm</h2>-->
-<!--  <form th:action="@{/admin/products/save}" th:object="${product}" method="post" enctype="multipart/form-data">-->
-<!--    &lt;!&ndash; Ảnh sản phẩm &ndash;&gt;-->
-<!--    <div class="mb-3">-->
-<!--      <label class="form-label">Ảnh Sản Phẩm</label>-->
-<!--      <input type="file" class="form-control" name="images" multiple>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; SKU và Tên Sản Phẩm &ndash;&gt;-->
-<!--    <div class="mb-3">-->
-<!--      <label class="form-label">Tên Sản Phẩm</label>-->
-<!--      <input type="text" class="form-control" th:field="*{name}" required>-->
-<!--    </div>-->
-
-<!--    <div class="mb-3">-->
-<!--      <label class="form-label">Mã SKU</label>-->
-<!--      <input type="text" class="form-control" th:field="*{sku}" required>-->
-<!--    </div>-->
-
-
-<!--    &lt;!&ndash; Mô tả sản phẩm &ndash;&gt;-->
-<!--    <div class="mb-3">-->
-<!--      <label class="form-label">Mô Tả</label>-->
-<!--      <textarea class="form-control" th:field="*{description}" rows="3"></textarea>-->
-<!--    </div>-->
-<!--    <div class="mb-3">-->
-<!--      <label class="form-label">Mô Tả Ngắn</label>-->
-<!--      <textarea class="form-control" th:field="*{shortDescription}" rows="3"></textarea>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; Giá và Giá Khuyến Mãi &ndash;&gt;-->
-<!--    <div class="row">-->
-<!--      <div class="col-md-6">-->
-<!--        <label class="form-label">Giá</label>-->
-<!--        <input type="number" class="form-control" th:field="*{price}" required>-->
-<!--      </div>-->
-<!--      <div class="col-md-6">-->
-<!--        <label class="form-label">Giá Khuyến Mãi</label>-->
-<!--        <input type="number" class="form-control" th:field="*{salePrice}">-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    &lt;!&ndash; Danh mục &ndash;&gt;-->
-<!--    <div class="mb-3">-->
-<!--      <label class="form-label">Danh Mục</label>-->
-<!--      <select class="form-control" th:field="*{category.id}">-->
-<!--        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>-->
-<!--      </select>-->
-<!--    </div>-->
-<!--    <div class="mb-3">-->
-<!--      <label class="form-label">Loại Sản Phẩm</label>-->
-<!--      <select class="form-control" th:field="*{isVariable}">-->
-<!--        <option value="false">Sản Phẩm Đơn</option>-->
-<!--        <option value="true">Sản Phẩm Biến Thể</option>-->
-<!--      </select>-->
-<!--    </div>-->
-
-<!--    &lt;!&ndash; Nếu sản phẩm là đơn giản &ndash;&gt;-->
-<!--    <div id="simpleProductFields">-->
-<!--      <div class="mb-3">-->
-<!--        <label class="form-label">Số Lượng Tồn Kho</label>-->
-<!--        <input type="number" class="form-control" th:field="*{stockQuantity}">-->
-<!--      </div>-->
-
-<!--      <div class="mb-3">-->
-<!--        <label class="form-label">Trạng Thái</label>-->
-<!--        <select class="form-control" th:field="*{status}">-->
-<!--          <option value="published">Công Khai</option>-->
-<!--          <option value="draft">Bản Nháp</option>-->
-<!--          <option value="pending">Chờ Duyệt</option>-->
-<!--        </select>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    &lt;!&ndash; Nếu sản phẩm có biến thể &ndash;&gt;-->
-<!--    <div id="variableProductFields" style="display: none;">-->
-<!--      <h4>Biến Thể</h4>-->
-<!--      <div id="variations">-->
-<!--        <div class="variation-item">-->
-<!--          <input type="text" class="form-control mb-2" placeholder="Màu sắc">-->
-<!--          <input type="text" class="form-control mb-2" placeholder="Kích thước">-->
-<!--          <input type="number" class="form-control mb-2" placeholder="Giá">-->
-<!--          <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <button type="button" class="btn btn-primary btn-sm" id="addVariation">Thêm Biến Thể</button>-->
-<!--    </div>-->
-
-<!--    <button type="submit" class="btn btn-success">Thêm Sản Phẩm</button>-->
-<!--  </form>-->
-<!--</div>-->
-
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        $('select[name="isVariable"]').change(function () {-->
-<!--            if ($(this).val() === "true") {-->
-<!--                $('#variableProductFields').show();-->
-<!--                $('#simpleProductFields').hide();-->
-<!--            } else {-->
-<!--                $('#variableProductFields').hide();-->
-<!--                $('#simpleProductFields').show();-->
-<!--            }-->
-<!--        });-->
-
-<!--        // Thêm biến thể mới-->
-<!--        $('#addVariation').click(function () {-->
-<!--            $('#variations').append(`-->
-<!--                <div class="variation-item">-->
-<!--                    <input type="text" class="form-control mb-2" placeholder="Màu sắc">-->
-<!--                    <input type="text" class="form-control mb-2" placeholder="Kích thước">-->
-<!--                    <input type="number" class="form-control mb-2" placeholder="Giá">-->
-<!--                    <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>-->
-<!--                </div>-->
-<!--            `);-->
-<!--        });-->
-
-<!--        // Xóa biến thể-->
-<!--        $(document).on('click', '.remove-variation', function () {-->
-<!--            $(this).parent('.variation-item').remove();-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -160,7 +15,7 @@
       <tbody>
       <tr>
         <th>Ảnh Sản Phẩm</th>
-       <td><input type="file" id="files" name="files" multiple required></td>
+        <td><input type="file" id="files" name="files" multiple required></td>
       </tr>
       <tr>
         <th>Tên Sản Phẩm</th>
@@ -180,29 +35,33 @@
       </tr>
       <tr>
         <th>Giá</th>
-        <td><input type="BigDecimal" class="form-control" name="price" required></td>
+        <td><input type="number" class="form-control" name="price" step="0.01" required></td>
       </tr>
       <tr>
         <th>Giá Khuyến Mãi</th>
-        <td><input type="BigDecimal" class="form-control" name="salePrice"></td>
-      </tr>
-      <tr>
-        <th>Danh Mục</th>
-        <td>
-          <select class="form-control" name="category">
-            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-          </select>
-        </td>
+        <td><input type="number" class="form-control" name="salePrice" step="0.01"></td>
       </tr>
 <!--      <tr>-->
-<!--        <th>Loại Sản Phẩm</th>-->
+<!--        <th>Danh Mục</th>-->
 <!--        <td>-->
-<!--          <select class="form-control" name="isVariable">-->
-<!--            <option value="false">Sản Phẩm Đơn</option>-->
-<!--            <option value="true">Sản Phẩm Biến Thể</option>-->
+<!--          <select class="form-control" name="category">-->
+<!--            <option th:each="categories : ${categories}" th:value="${categories.id}" th:text="${categories.name}"></option>-->
 <!--          </select>-->
 <!--        </td>-->
 <!--      </tr>-->
+
+      <!-- Chọn loại sản phẩm -->
+      <tr>
+        <th>Loại Sản Phẩm</th>
+        <td>
+          <select class="form-control" name="isVariable">
+            <option value="false">Sản Phẩm Đơn</option>
+            <option value="true">Sản Phẩm Biến Thể</option>
+          </select>
+        </td>
+      </tr>
+
+      <!-- Biến thể sản phẩm -->
       <tr id="variableProductFields" style="display: none;">
         <th>Biến Thể</th>
         <td>
@@ -211,7 +70,6 @@
           </div>
         </td>
       </tr>
-
 
       <tr>
         <th>Số Lượng Tồn Kho</th>
@@ -232,34 +90,38 @@
 
     <button type="submit" class="btn btn-success mt-3">Thêm Sản Phẩm</button>
   </form>
-
 </div>
+
+<!-- JavaScript -->
 <script>
 $(document).ready(function () {
+    // Khi chọn loại sản phẩm, hiển thị hoặc ẩn phần biến thể
     $('select[name="isVariable"]').change(function () {
         if ($(this).val() === "true") {
-            $('#variableProductFields').css('display', 'table-row'); // Hiển thị dòng biến thể
+            $('#variableProductFields').css('display', 'table-row');
         } else {
-            $('#variableProductFields').css('display', 'none'); // Ẩn dòng biến thể
+            $('#variableProductFields').css('display', 'none');
         }
     });
 
+    // Thêm biến thể khi bấm nút
     $('#addVariation').click(function () {
         $('#variations').append(`
             <div class="variation-item d-flex gap-2 mt-2">
                 <input type="text" class="form-control" name="variationColor[]" placeholder="Màu sắc">
                 <input type="text" class="form-control" name="variationSize[]" placeholder="Kích thước">
-                <input type="number" class="form-control" name="variationPrice[]" placeholder="Giá">
+                <input type="number" class="form-control" name="variationPrice[]" placeholder="Giá" step="0.01">
                 <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
             </div>
         `);
     });
 
+    // Xóa biến thể khi bấm nút "Xóa"
     $(document).on('click', '.remove-variation', function () {
         $(this).closest('.variation-item').remove();
     });
 });
-
 </script>
+
 </body>
 </html>
