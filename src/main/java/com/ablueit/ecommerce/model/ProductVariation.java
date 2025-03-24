@@ -37,4 +37,6 @@ public class ProductVariation {
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product parentProduct; // Sản phẩm chính chứa biến thể này
+
+
 }
