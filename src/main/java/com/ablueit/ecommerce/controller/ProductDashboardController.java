@@ -19,10 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> dev-vandunxg
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,14 +46,89 @@ public class ProductDashboardController {
         product.setVariations(new ArrayList<>());
 
         // Lấy danh sách danh mục theo storeId
-        Store store =storeRepository.findById(storeId).orElseThrow(() -> new ResourceNotFoundException("store not found"));
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new ResourceNotFoundException("store not found"));
 
         List<Categories> categories = categoryRepository.findByStore(store);
-        model.addAttribute("idStore",store.getId());
+        model.addAttribute("idStore", store.getId());
         model.addAttribute("product", product);
-        model.addAttribute("categories", categoryRepository);
+        model.addAttribute("categories", categories);
         return "product-dashboard/create-product";
     }
+
+
+
+
+
+
+
+
+
+//
+//    @PostMapping("/add")
+//    public String addProduct(
+//            @RequestParam("storeId") Long storeId,
+//            @RequestParam("files") List<MultipartFile> images,
+//            @RequestParam("name") String name,
+//            @RequestParam("sku") String sku,
+//            @RequestParam("description") String description,
+//            @RequestParam("shortDescription") String shortDescription,
+//            @RequestParam("price") BigDecimal price,
+//            @RequestParam(value = "salePrice", required = false) BigDecimal salePrice,
+//            @RequestParam("categories") Long categoryId,
+//            @RequestParam("isVariable") boolean isVariable,
+//            @RequestParam(value = "stockQuantity", required = false) Integer stockQuantity,
+//            @RequestParam("status") String status,
+//            @RequestParam(name = "variationColor", required = false) List<String> variationColors,
+//            @RequestParam(name = "variationSize", required = false) List<String> variationSizes,
+//            @RequestParam(name = "variationPrice", required = false) List<BigDecimal> variationPrices,
+//            @RequestParam(name = "variationSalePrice", required = false) List<BigDecimal> variationSalePrices
+//
+//    ) {
+//
+//        // Tạo sản phẩm chính
+//        Product product = new Product();
+//        product.setStore(storeRepository.findById(storeId).orElse(null));
+//        product.setName(name);
+//        product.setSku(sku);
+//        product.setDescription(description);
+//        product.setShortDescription(shortDescription);
+//        product.setPrice(price);
+//        product.setSalePrice(salePrice);
+//        product.setIsVariable(isVariable);
+//        product.setStockQuantity(stockQuantity);
+//        product.setStatus(status);
+//        Categories category = categoryRepository.findById(categoryId).orElse(null);
+//        product.setCategory(category);
+//        productService.save(product);
+//
+//        if (isVariable && variationColors != null && variationSizes != null && variationPrices != null && variationSalePrices!= null) {
+//            for (int i = 0; i < variationColors.size(); i++) {
+//                ProductVariation variation = new ProductVariation();
+//                variation.setParentProduct(product);
+//                variation.setColor(variationColors.get(i));
+//                variation.setSize(variationSizes.get(i));
+//                variation.setPrice(variationPrices.get(i));
+//                variation.setSalePrice(variationSalePrices.get(i));
+//                productVariationRepository.save(variation);
+//            }
+//        }
+//
+////        for (MultipartFile file : images) {
+////            if (isImageFile(file)) {
+////                String fileName = file.getOriginalFilename();
+////                int dotIndex = fileName.lastIndexOf('.');
+////                fileName = fileName.substring(0, dotIndex);
+////                String productSku = sku.replace(".", "_") + "-" + fileName;
+////                // Tải hình ảnh và lấy URL
+////                Map<String, String> uploadResponse = wooCommerceCreateProductService.uploadImage(file);
+////                String imageLink = uploadResponse.values().iterator().next();
+////
+////            }
+////        }
+//                return "redirect:/products/add?success";
+//    }
+
+
 
 
 
@@ -71,14 +142,15 @@ public class ProductDashboardController {
             @RequestParam("shortDescription") String shortDescription,
             @RequestParam("price") BigDecimal price,
             @RequestParam(value = "salePrice", required = false) BigDecimal salePrice,
-//            @RequestParam("category") Long categoryId,
+            @RequestParam("categories") Long categoryId,
             @RequestParam("isVariable") boolean isVariable,
             @RequestParam(value = "stockQuantity", required = false) Integer stockQuantity,
             @RequestParam("status") String status,
             @RequestParam(name = "variationColor", required = false) List<String> variationColors,
             @RequestParam(name = "variationSize", required = false) List<String> variationSizes,
-            @RequestParam(name = "variationPrice", required = false) List<BigDecimal> variationPrices) {
-
+            @RequestParam(name = "variationPrice", required = false) List<BigDecimal> variationPrices,
+            @RequestParam(name = "variationSalePrice", required = false) List<BigDecimal> variationSalePrices
+    ) {
         // Tạo sản phẩm chính
         Product product = new Product();
         product.setStore(storeRepository.findById(storeId).orElse(null));
@@ -91,51 +163,26 @@ public class ProductDashboardController {
         product.setIsVariable(isVariable);
         product.setStockQuantity(stockQuantity);
         product.setStatus(status);
+        Categories category = categoryRepository.findById(categoryId).orElse(null);
+        product.setCategory(category);
 
-        // Set danh mục
-//        Categories category = categoryRepository.findById(categoryId).orElse(null);
-//        product.setCategory(category);
+        // **Lưu sản phẩm trước khi thêm biến thể**
+        product = productService.save(product);
 
-        // Lưu sản phẩm vào database
+        // Nếu là sản phẩm biến thể thì thêm danh sách biến thể
+        if (isVariable && variationColors != null && variationSizes != null && variationPrices != null && variationSalePrices != null) {
+            for (int i = 0; i < variationColors.size(); i++) {
+                ProductVariation variation = new ProductVariation();
+                variation.setParentProduct(product);
+                variation.setColor(variationColors.get(i));
+                variation.setSize(variationSizes.get(i));
+                variation.setPrice(variationPrices.get(i));
+                variation.setSalePrice(variationSalePrices.get(i));
 
-        // Nếu là sản phẩm biến thể, thêm các biến thể
-//        if (isVariable && variationColors != null && variationSizes != null && variationPrices != null) {
-//            for (int i = 0; i < variationColors.size(); i++) {
-//                ProductVariation variation = new ProductVariation();
-//                variation.setParentProduct(product);
-//                variation.setColor(variationColors.get(i));
-//                variation.setSize(variationSizes.get(i));
-//                variation.setPrice(variationPrices.get(i));
-//                productVariationRepository.save(variation);
-//            }
-//        }
-
-//        // Lưu ảnh sản phẩm (nếu có)
-        or (MultipartFile file : images) {
-            if (isImageFile(file)) {
-                String fileName= file.getOriginalFilename();
-                int dotIndex= fileName.lastIndexOf('.');
-                fileName = fileName.substring(0, dotIndex);
-                String productSku= sku.replace(".", "_") + "-" + fileName;
-
-                if (wooCommerceCreateProductService.checkSkuExists(productSku, woocommerceId)) {
-                    continue;
-                }
-
-                // Tải hình ảnh và lấy URL
-                Map<String, String> uploadResponse = wooCommerceCreateProductService.uploadImage(file, woocommerceId);
-                String imageLink= uploadResponse.values().iterator().next();
-
-                // Xử lý danh mục và thẻ
-                List<Integer> categoryIds = new ArrayList<>();
-                for (String categoryName : categoryList) {
-                    Long categoryId= wooCommerceCreateProductService.createCategory(categoryName, woocommerceId);
-                    if (categoryId != null) {
-                        categoryIds.add(categoryId.intValue());
-                    }
-                }
-
-        productService.save(product);
+                // **Lưu biến thể**
+                productVariationRepository.save(variation);
+            }
+        }
 
         return "redirect:/products/add?success";
     }
@@ -143,59 +190,20 @@ public class ProductDashboardController {
 
 
 
-//    @PostMapping("/add")
-//    public String addProduct(
-//            @RequestParam("storeId") Long storeId,
-//            @RequestParam("files") List<MultipartFile> images,
-//            @RequestParam("name") String name,
-//            @RequestParam("sku") String sku,
-//            @RequestParam("description") String description,
-//            @RequestParam("shortDescription") String shortDescription,
-//            @RequestParam("price") BigDecimal price,
-//            @RequestParam(value = "salePrice", required = false) BigDecimal salePrice,
-//            @RequestParam("category") Long categoryId,
-//            @RequestParam("isVariable") boolean isVariable,
-//            @RequestParam(value = "stockQuantity", required = false) Integer stockQuantity,
-//            @RequestParam("status") String status,
-//            @RequestParam(name = "attributeNames", required = false, defaultValue = "") List<String> attributeNames,
-//            @RequestParam(name = "attributeValues", required = false, defaultValue = "") List<String> attributeValues) {
-//
-//        // Tạo đối tượng Product và set dữ liệu
-//        Product product = new Product();
-//        product.setStore(storeRepository.findById(storeId).orElse(null));
-//        product.setName(name);
-//        product.setSku(sku);
-//        product.setDescription(description);
-//        product.setShortDescription(shortDescription);
-//        product.setPrice(price);
-//        product.setSalePrice(salePrice);
-//        product.setIsVariable(isVariable);
-//        product.setStockQuantity(stockQuantity);
-//        product.setStatus(status);
-//
-//        // Set danh mục
-//        Categories category = categoryRepository.findById(categoryId).orElse(null);
-//        product.setCategory(category);
-//
-//        // Lưu sản phẩm vào database
-//        productService.addProduct(product);
-//
-//////        // Xử lý lưu ảnh (nếu có)
-////        if (images != null && images.length > 0) {
-////            for (MultipartFile image : images) {
-////                if (!image.isEmpty()) {
-////                    // Xử lý lưu ảnh vào server hoặc database
-////                    String imageUrl = imageStorageService.saveImage(image);
-////                    ImageProduct imageProduct = new ImageProduct();
-////                    imageProduct.setProduct(product);
-////                    imageProduct.setUrl(imageUrl);
-////                    imageProductRepository.save(imageProduct);
-////                }
-////            }
-////        }
-//
-//        return "redirect:/products/add?success";
-//    }
 
-
+    private boolean isImageFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        String fileName = file.getOriginalFilename();
+        return (contentType.equals("image/jpeg") ||
+                contentType.equals("image/png") ||
+                contentType.equals("image/gif") ||
+                contentType.equals("image/bmp") ||
+                contentType.equals("image/webp")) ||
+                (fileName != null && (fileName.endsWith(".jpg") ||
+                        fileName.endsWith(".jpeg") ||
+                        fileName.endsWith(".png") ||
+                        fileName.endsWith(".gif") ||
+                        fileName.endsWith(".bmp") ||
+                        fileName.endsWith(".webp")));
+    }
 }

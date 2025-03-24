@@ -16,8 +16,6 @@ public class ProductVariation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String sku; // SKU của biến thể
 
     @Column(nullable = false)
     private String size; // Size của sản phẩm
@@ -29,10 +27,6 @@ public class ProductVariation {
     private BigDecimal price; // Giá của biến thể
 
     private BigDecimal salePrice; // Giá khuyến mãi của biến thể
-
-    private Integer stockQuantity; // Số lượng tồn kho của biến thể
-
-    private Boolean isInStock; // Biến thể còn hàng hay không
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)

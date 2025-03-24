@@ -41,14 +41,14 @@
         <th>Giá Khuyến Mãi</th>
         <td><input type="number" class="form-control" name="salePrice" step="0.01"></td>
       </tr>
-<!--      <tr>-->
-<!--        <th>Danh Mục</th>-->
-<!--        <td>-->
-<!--          <select class="form-control" name="category">-->
-<!--            <option th:each="categories : ${categories}" th:value="${categories.id}" th:text="${categories.name}"></option>-->
-<!--          </select>-->
-<!--        </td>-->
-<!--      </tr>-->
+      <tr>
+        <th>Danh Mục</th>
+        <td>
+          <select class="form-control" name="categories">
+            <option th:each="categories : ${categories}" th:value="${categories.id}" th:text="${categories.name}"></option>
+          </select>
+        </td>
+      </tr>
 
       <!-- Chọn loại sản phẩm -->
       <tr>
@@ -110,7 +110,8 @@ $(document).ready(function () {
             <div class="variation-item d-flex gap-2 mt-2">
                 <input type="text" class="form-control" name="variationColor[]" placeholder="Màu sắc">
                 <input type="text" class="form-control" name="variationSize[]" placeholder="Kích thước">
-                <input type="number" class="form-control" name="variationPrice[]" placeholder="Giá" step="0.01">
+                <input type="BigDecimal" class="form-control" name="variationPrice[]" placeholder="Giá" step="0.01">
+                 <input type="BigDecimal" class="form-control" name="variationSalePrice[]" placeholder="Giá Sale" step="0.01">
                 <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
             </div>
         `);
