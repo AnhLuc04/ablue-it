@@ -1,7 +1,7 @@
 package com.ablueit.ecommerce.controller;
 
 import com.ablueit.ecommerce.exception.ResourceNotFoundException;
-import com.ablueit.ecommerce.model.Category;
+import com.ablueit.ecommerce.model.Categories;
 import com.ablueit.ecommerce.model.Product;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.repository.CategoriesRepository;
@@ -11,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-<<<<<<< HEAD
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-=======
 
->>>>>>> 30851e8899119d5c18e911db4c9ae0593360949e
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class ProductDashboardController {
         // Lấy danh sách danh mục theo storeId
         Store store =storeRepository.findById(storeId).orElseThrow(() -> new ResourceNotFoundException("store not found"));
 
-        List<Category> categories = categoryRepository.findByStore(store);
+        List<Categories> categories = categoryRepository.findByStore(store);
         model.addAttribute("idStore",store.getId());
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryRepository);

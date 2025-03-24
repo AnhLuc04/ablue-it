@@ -1,6 +1,6 @@
 package com.ablueit.ecommerce.controller;
 
-import com.ablueit.ecommerce.model.Category;
+import com.ablueit.ecommerce.model.Categories;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.StoreRepository;
@@ -54,7 +54,7 @@ public class StoreDashboardController {
 
         Store store = userOptional.get().getStore();
 
-        List<Category> categories = categoryService.getCategoriesByStore(store);
+        List<Categories> categories = categoryService.getCategoriesByStore(store);
 
         modelAndView.addObject("storeId", id);
         modelAndView.addObject("categories", categories);

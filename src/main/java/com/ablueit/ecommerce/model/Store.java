@@ -37,15 +37,14 @@ public class Store extends AbstractEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private User seller;
-<<<<<<< HEAD
+
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
-=======
 
->>>>>>> dev-vandunxg
+
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Category> categories;
+    private List<Categories> categories;
 
 }
