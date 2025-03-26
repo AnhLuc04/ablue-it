@@ -15,4 +15,6 @@ public interface CategoryService {
 
     String delete(Long id);
 
+    String edit(Long id, CategoryRequest request, RedirectAttributes redirectAttributes);
+
 }

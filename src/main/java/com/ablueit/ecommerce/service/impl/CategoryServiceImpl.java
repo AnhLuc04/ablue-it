@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     public String create(CategoryRequest request, RedirectAttributes redirectAttributes) {
         log.info("create={}", request.toString());
 
-        if(categoriesRepository.existsByName(request.name())){
+        if (categoriesRepository.existsByName(request.name())) {
             log.error("category name existed={}", request.name());
             redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name existed");
             return "redirect:/store/dashboard/" + request.storeId();
@@ -70,8 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
     public String delete(Long id) {
         log.info("delete={}", id);
 
-        Categories category = categoriesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        Categories category = getCategoriesById(id);
 
         // get owner store
         Store store = category.getStore();
@@ -84,7 +84,42 @@ public class CategoryServiceImpl implements CategoryService {
         return "redirect:/store/dashboard/" + store.getId();
     }
 
-    private User getUserFromAuthenticated(){
+    private Categories getCategoriesById(Long id) {
+        log.info("getCategoriesById={}", id);
+
+        return categoriesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+    }
+
+    @Override
+    public String edit(Long id, CategoryRequest request, RedirectAttributes redirectAttributes) {
+        log.info("edit={} {}", id, request.toString());
+
+        Categories category = getCategoriesById(id);
+        Store store = category.getStore();
+
+        if (Objects.isNull(request.name())) {
+            log.error("request.name() is null");
+            redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name is null");
+            return "redirect:/store/dashboard/" + store.getId();
+        }
+
+        if (categoriesRepository.existsByName(request.name())) {
+            log.error("category name existed={}", request.name());
+            redirectAttributes.addFlashAttribute("errorEditMessageCategory", "Category name existed");
+            return "redirect:/store/dashboard/" + store.getId();
+        }
+
+        category.setName(request.name());
+
+        log.info("saved category to database");
+        categoriesRepository.save(category);
+        redirectAttributes.addFlashAttribute("successEditMessageCategory", "Updated successfully");
+
+        return "redirect:/store/dashboard/" + store.getId();
+    }
+
+    private User getUserFromAuthenticated() {
         log.info("getUserFromAuthenticated");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

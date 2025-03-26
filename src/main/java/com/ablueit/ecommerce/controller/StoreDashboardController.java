@@ -23,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Optional;
 
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/store/dashboard")
@@ -36,7 +35,6 @@ public class StoreDashboardController {
     UserRepository userRepository;
     StoreService storeService;
     CategoryService categoryService;
-
 
     @GetMapping("/{id}")
     public ModelAndView showDetailDashboard(@PathVariable("id") Long id) {
@@ -62,21 +60,16 @@ public class StoreDashboardController {
         return modelAndView;
     }
 
-
     @GetMapping("/detail/{id}")
     public ModelAndView showDetail(@PathVariable("id") Long id) {
         log.info("GET /detail/{}", id);
 
         ModelAndView modelAndView = new ModelAndView("store-dashboard/detail-store");
 
-        storeRepository.findById(id).ifPresentOrElse(
-                value -> modelAndView.addObject("store", value),
-                () -> modelAndView.setViewName("error/404")
-        );
+        storeRepository.findById(id).ifPresentOrElse(value -> modelAndView.addObject("store", value), () -> modelAndView.setViewName("error/404"));
 
         return modelAndView;
     }
-
 
     @GetMapping("/create-store")
     public String showCreateStoreForm(Model model) {
@@ -87,8 +80,7 @@ public class StoreDashboardController {
     @PostMapping("/create-store")
     public String createStore(@ModelAttribute("store") Store store, Model model) {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        User seller = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Seller not found"));
+        User seller = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Seller not found"));
 
         // Kiểm tra nếu cửa hàng đã tồn tại
         if (storeRepository.existsByName(store.getName()) || storeRepository.existsByEmail(store.getEmail())) {
@@ -104,9 +96,7 @@ public class StoreDashboardController {
 
         model.addAttribute("successMessage", "Cửa hàng đã được tạo thành công!");
         return "store-dashboard/create-store";
-
     }
-
 
     // 4️⃣ Hiển thị form chỉnh sửa Store
     @GetMapping("/update/{id}")
@@ -138,7 +128,4 @@ public class StoreDashboardController {
 
         return "redirect:/seller/dashboard";
     }
-
-
-
 }

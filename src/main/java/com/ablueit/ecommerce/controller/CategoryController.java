@@ -37,4 +37,11 @@ public class CategoryController {
         return categoryService.delete(id);
     }
 
+    @PostMapping("/edit/{id}")
+    public String edit(@PathVariable Long id, @ModelAttribute CategoryRequest request, RedirectAttributes redirectAttributes) {
+        log.info("POST /category/edit/{}", id);
+
+        return categoryService.edit(id, request, redirectAttributes);
+    }
+
 }
