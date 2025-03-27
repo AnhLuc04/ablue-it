@@ -1,22 +1,24 @@
 package com.ablueit.ecommerce.service.impl;
 
 import com.ablueit.ecommerce.exception.ResourceNotFoundException;
+import com.ablueit.ecommerce.model.Categories;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
 import com.ablueit.ecommerce.service.StoreService;
+import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-
-import java.util.List;
-import java.util.Objects;
+import org.springframework.web.servlet.ModelAndView;
 
 @Service
 @RequiredArgsConstructor
@@ -108,6 +110,31 @@ public class StoreServiceImpl implements StoreService {
         return "store-dashboard/update-store";
     }
 
+  @Override
+  public ModelAndView showCategories(Long id, ModelAndView modelAndView) {
+    log.info("showCategories store={}", id);
+
+    User owner = getUserFromAuthenticated();
+
+    Store store = getStoryById(id);
+
+    List<Categories> categories = store.getCategories();
+
+    modelAndView.addObject("storeId", id);
+    modelAndView.addObject("categories", categories);
+
+    return modelAndView;
+  }
+
+  private User getUserFromAuthenticated() {
+    log.info("getUserFromAuthenticated");
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication.getName(); // Lấy username
+    return userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+  }
 
     private void checkPermission(Store store) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

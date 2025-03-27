@@ -9,6 +9,8 @@ import com.ablueit.ecommerce.repository.CategoriesRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
 import com.ablueit.ecommerce.service.CategoryService;
 import com.ablueit.ecommerce.service.StoreService;
+import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,9 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,16 +35,15 @@ public class CategoryServiceImpl implements CategoryService {
     public String create(CategoryRequest request, RedirectAttributes redirectAttributes) {
         log.info("create={}", request.toString());
 
+    // get user for audit
+    User seller = getUserFromAuthenticated();
+    Store store = storeService.getStoryById(request.storeId());
+
         if (categoriesRepository.existsByName(request.name())) {
             log.error("category name existed={}", request.name());
             redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name existed");
-            return "redirect:/store/dashboard/" + request.storeId();
+      return String.format("redirect:/store/dashboard/%s/category", store.getId());
         }
-
-        // get user for audit
-        User seller = getUserFromAuthenticated();
-
-        Store store = storeService.getStoryById(request.storeId());
 
         Categories category = Categories.builder()
                 .name(request.name())
@@ -57,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         redirectAttributes.addFlashAttribute("successMessageCategory", "Created successfully");
 
-        return "redirect:/store/dashboard/" + request.storeId();
+    return String.format("redirect:/store/dashboard/%s/category", store.getId());
     }
 
     @Override
@@ -79,9 +77,9 @@ public class CategoryServiceImpl implements CategoryService {
         log.warn("delete category ={}", id);
         categoriesRepository.delete(category);
 
-        // get owner store
+    // get owner store
 
-        return "redirect:/store/dashboard/" + store.getId();
+    return String.format("redirect:/store/dashboard/%s/category", store.getId());
     }
 
     private Categories getCategoriesById(Long id) {
@@ -101,13 +99,13 @@ public class CategoryServiceImpl implements CategoryService {
         if (Objects.isNull(request.name())) {
             log.error("request.name() is null");
             redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name is null");
-            return "redirect:/store/dashboard/" + store.getId();
+      return String.format("redirect:/store/dashboard/%s/category", store.getId());
         }
 
         if (categoriesRepository.existsByName(request.name())) {
             log.error("category name existed={}", request.name());
             redirectAttributes.addFlashAttribute("errorEditMessageCategory", "Category name existed");
-            return "redirect:/store/dashboard/" + store.getId();
+      return String.format("redirect:/store/dashboard/%s/category", store.getId());
         }
 
         category.setName(request.name());
@@ -116,7 +114,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoriesRepository.save(category);
         redirectAttributes.addFlashAttribute("successEditMessageCategory", "Updated successfully");
 
-        return "redirect:/store/dashboard/" + store.getId();
+    return String.format("redirect:/store/dashboard/%s/category", store.getId());
     }
 
     private User getUserFromAuthenticated() {

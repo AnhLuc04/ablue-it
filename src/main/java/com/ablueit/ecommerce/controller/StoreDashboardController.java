@@ -1,12 +1,12 @@
 package com.ablueit.ecommerce.controller;
 
-import com.ablueit.ecommerce.model.Categories;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
 import com.ablueit.ecommerce.service.CategoryService;
 import com.ablueit.ecommerce.service.StoreService;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,9 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,17 +42,9 @@ public class StoreDashboardController {
         String username = authentication.getName(); // Lấy username
         Optional<User> userOptional = userRepository.findByUsername(username);
 
-        if (userOptional.isEmpty()) {
-            modelAndView.setViewName("error/403"); // Không có quyền truy cập
-            return modelAndView;
-        }
-
         Store store = userOptional.get().getStore();
 
-        List<Categories> categories = categoryService.getCategoriesByStore(store);
-
-        modelAndView.addObject("storeId", id);
-        modelAndView.addObject("categories", categories);
+    modelAndView.addObject("store", store);
 
         return modelAndView;
     }
@@ -128,4 +117,13 @@ public class StoreDashboardController {
 
         return "redirect:/seller/dashboard";
     }
+
+  @GetMapping("/{id}/category")
+  public ModelAndView showCategories(@PathVariable("id") Long id) {
+    log.info("GET /{}/category/", id);
+
+    ModelAndView modelAndView = new ModelAndView("store-dashboard/categories");
+
+    return storeService.showCategories(id, modelAndView);
+  }
 }
