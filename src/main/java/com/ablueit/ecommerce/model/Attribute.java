@@ -60,6 +60,7 @@ public class Attribute {
 
     private String name;
 
+    private String slug;
     @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttributeTerm> terms;
 }

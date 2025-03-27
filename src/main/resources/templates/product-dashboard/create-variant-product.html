@@ -1,122 +1,122 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Thêm Sản Phẩm</title>
+  <meta charset="UTF-8">
+  <title>Thêm Sản Phẩm Biến Thể</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
-  <h2 class="text-center mb-4">Thêm Sản Phẩm</h2>
-  <form th:action="@{/products/dashboard/variant/add}" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="storeId" th:value="${idStore}">
 
-    <table class="table table-bordered">
-      <tbody>
+<div class="container">
+  <h2 class="text-center">Thêm Biến Thể Sản Phẩm</h2>
+
+  <form th:action="@{/products/dashboard/variant/add}" method="post" enctype="multipart/form-data">
+
+    <!-- Tên sản phẩm -->
+    <div class="mb-3">
+      <label class="form-label">Tên Sản Phẩm:</label>
+      <input type="text" class="form-control" name="name" th:value="${product?.name ?: ''}" required>
+    </div>
+
+    <!-- SKU -->
+    <div class="mb-3">
+      <label class="form-label">Mã SKU:</label>
+      <input type="text" class="form-control" name="sku" th:value="${product?.sku ?: ''}" required>
+    </div>
+
+    <!-- Giá -->
+    <div class="mb-3">
+      <label class="form-label">Giá:</label>
+      <input type="number" class="form-control" name="price" step="0.01" th:value="${product?.price ?: '0'}" required>
+    </div>
+
+    <!-- Giá Khuyến Mãi -->
+    <div class="mb-3">
+      <label class="form-label">Giá Niêm Yết:</label>
+      <input type="number" class="form-control" name="salePrice" step="0.01" th:value="${product?.salePrice ?: '0'}">
+    </div>
+
+    <!-- Trạng thái -->
+    <div class="mb-3">
+      <label class="form-label">Trạng Thái:</label>
+      <select class="form-select" name="status">
+        <option value="ACTIVE" th:selected="${product?.status == 'ACTIVE'}">Hoạt động</option>
+        <option value="INACTIVE" th:selected="${product?.status == 'INACTIVE'}">Không hoạt động</option>
+      </select>
+    </div>
+
+    <!-- Biến thể -->
+    <h4 class="mt-4">Biến Thể</h4>
+
+    <div id="variantContainer">
+      <div class="variant-row mb-3">
+        <label class="form-label">Loại Biến Thể:</label>
+        <input type="text" class="form-control" id="variantType" placeholder="Ví dụ: Màu sắc, Kích thước">
+
+        <label class="form-label mt-2">Giá Trị:</label>
+        <input type="text" class="form-control" id="variantValues" placeholder="Ví dụ: Red, Black, Blue" oninput="generateVariants()">
+      </div>
+    </div>
+
+    <!-- Danh sách biến thể -->
+    <table class="table mt-3">
+      <thead>
       <tr>
-        <th>Ảnh Sản Phẩm</th>
-        <td><input type="file" id="files" name="files" multiple required></td>
-      </tr>
-      <tr>
-        <th>Tên Sản Phẩm</th>
-        <td><input type="text" class="form-control" name="name" required></td>
-      </tr>
-      <tr>
-        <th>Mã SKU</th>
-        <td><input type="text" class="form-control" name="sku" required></td>
-      </tr>
-      <tr>
-        <th>Mô Tả</th>
-        <td><textarea class="form-control" name="description" rows="3"></textarea></td>
-      </tr>
-      <tr>
-        <th>Mô Tả Ngắn</th>
-        <td><textarea class="form-control" name="shortDescription" rows="3"></textarea></td>
-      </tr>
-      <tr>
+        <th>Loại</th>
+        <th>Giá Trị</th>
         <th>Giá</th>
-        <td><input type="number" class="form-control" name="price" step="0.01" required></td>
+        <th>Giá Niêm Yết</th>
+        <th>Số Lượng</th>
       </tr>
-      <tr>
-        <th>Giá Khuyến Mãi</th>
-        <td><input type="number" class="form-control" name="salePrice" step="0.01"></td>
-      </tr>
-      <tr>
-        <th>Danh Mục</th>
-        <td>
-          <select class="form-control" name="categories">
-            <option th:each="categories : ${categories}" th:value="${categories.id}" th:text="${categories.name}"></option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <th>Trạng Thái</th>
-        <td>
-          <select class="form-control" name="status">
-            <option value="published">Công Khai</option>
-            <option value="draft">Bản Nháp</option>
-            <option value="pending">Chờ Duyệt</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <th>Sản phẩm có biến thể?</th>
-        <td>
-          <input type="checkbox" id="isVariable" name="isVariable" onchange="toggleVariations()">
-        </td>
-      </tr>
-      <tr id="variationSection" style="display: none;">
-        <th>Biến thể</th>
-        <td>
-          <table class="table table-bordered">
-            <thead>
-            <tr>
-              <th>Màu sắc</th>
-              <th>Kích thước</th>
-              <th>Giá</th>
-              <th>Giá Khuyến Mãi</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody id="variationBody">
-            <tr>
-              <td><input type="text" class="form-control" name="variationColor[]" placeholder="Ví dụ: Đỏ, Xanh"></td>
-              <td><input type="text" class="form-control" name="variationSize[]" placeholder="Ví dụ: M, L, XL"></td>
-              <td><input type="number" class="form-control" name="variationPrice[]" step="0.01"></td>
-              <td><input type="number" class="form-control" name="variationSalePrice[]" step="0.01"></td>
-              <td><button type="button" class="btn btn-danger" onclick="removeVariation(this)">Xóa</button></td>
-            </tr>
-            </tbody>
-          </table>
-          <button type="button" class="btn btn-primary" onclick="addVariation()">Thêm Biến Thể</button>
-        </td>
-      </tr>
+      </thead>
+      <tbody id="variantList">
+      <!-- Dữ liệu biến thể sẽ được thêm vào đây -->
       </tbody>
     </table>
-    <button type="submit" class="btn btn-success">Thêm Sản Phẩm</button>
+
+    <button type="submit" class="btn btn-custom w-100">Lưu Sản Phẩm</button>
   </form>
 </div>
 
 <script>
-  function toggleVariations() {
-    const isVariable = document.getElementById('isVariable').checked;
-    document.getElementById('variationSection').style.display = isVariable ? '' : 'none';
-  }
+    function generateVariants() {
+        let type = document.getElementById("variantType").value.trim();
+        let values = document.getElementById("variantValues").value.trim().split(",");
 
-  function addVariation() {
-    let row = `<tr>
-      <td><input type="text" class="form-control" name="variationColor[]" placeholder="Ví dụ: Đỏ, Xanh"></td>
-      <td><input type="text" class="form-control" name="variationSize[]" placeholder="Ví dụ: M, L, XL"></td>
-      <td><input type="number" class="form-control" name="variationPrice[]" step="0.01"></td>
-      <td><input type="number" class="form-control" name="variationSalePrice[]" step="0.01"></td>
-      <td><button type="button" class="btn btn-danger" onclick="removeVariation(this)">Xóa</button></td>
-    </tr>`;
-    document.getElementById('variationBody').insertAdjacentHTML('beforeend', row);
-  }
+        let variantList = document.getElementById("variantList");
+        variantList.innerHTML = "";
 
-  function removeVariation(button) {
-    button.closest('tr').remove();
-  }
+        values.forEach(value => {
+            value = value.trim();
+            if (value) {
+                let row = `
+                    <tr>
+                        <td>${type}</td>
+                        <td>${value}</td>
+                        <td><input type="number" name="variants[${value}].price" step="0.01" required></td>
+                        <td><input type="number" name="variants[${value}].listPrice" step="0.01"></td>
+                        <td><input type="number" name="variants[${value}].quantity" min="0" required></td>
+                    </tr>
+                `;
+                variantList.innerHTML += row;
+            }
+        });
+    }
 </script>
+
 </body>
 </html>

@@ -38,6 +38,9 @@ package com.ablueit.ecommerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "attribute_terms")
 @Getter
@@ -56,4 +59,13 @@ public class AttributeTerm {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_id", nullable = false)
     private Attribute attribute;
+    @ManyToMany
+    @JoinTable(
+            name = "product_variation_attribute_terms",
+            joinColumns = @JoinColumn(name = "attribute_term_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_variation_id")
+    )
+    private List<ProductVariation> productVariations = new ArrayList<>();
+
+
 }
