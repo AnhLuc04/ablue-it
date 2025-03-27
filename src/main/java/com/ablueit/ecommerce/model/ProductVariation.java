@@ -44,6 +44,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -58,20 +59,21 @@ public class ProductVariation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String color;
-    private String size;
+//    private String color;
+//    private String size;
     private BigDecimal price;
     private BigDecimal salePrice;
-//    @ManyToMany
-//    @JoinTable(
-//            name = "variation_attributes",
-//            joinColumns = @JoinColumn(name = "variation_id"),
-//            inverseJoinColumns = @JoinColumn(name = "attribute_id")
-//    )
-//    private List<Attribute> attributes;
+    @ManyToMany
+    @JoinTable(
+            name = "product_variation_attribute_terms",
+            joinColumns = @JoinColumn(name = "product_variation_id"),
+            inverseJoinColumns = @JoinColumn(name = "attribute_term_id")
+    )
+    private List<AttributeTerm> attributeTerms = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     @JsonBackReference
     private Product parentProduct;
+
 }
