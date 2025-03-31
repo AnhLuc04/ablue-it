@@ -45,6 +45,12 @@ public class CategoryServiceImpl implements CategoryService {
       return String.format("redirect:/store/dashboard/%s/category", store.getId());
         }
 
+        if (categoriesRepository.existsByName(request.name())) {
+            log.error("category name existed={}", request.name());
+            redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name existed");
+      return String.format("redirect:/store/dashboard/%s/category", store.getId());
+        }
+
         Categories category = Categories.builder()
                 .name(request.name())
                 .store(store)
