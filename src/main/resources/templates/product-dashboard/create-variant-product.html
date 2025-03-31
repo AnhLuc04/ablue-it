@@ -1,120 +1,219 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Thêm Sản Phẩm Biến Thể</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm Sản Phẩm</title>
   <style>
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
             padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #f4f4f4;
         }
-        .btn-custom {
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
             background-color: #007bff;
             color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .delete-btn:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-  <h2 class="text-center">Thêm Biến Thể Sản Phẩm</h2>
+<h2>Thêm Sản Phẩm Mới</h2>
 
-  <form th:action="@{/products/dashboard/variant/add}" method="post" enctype="multipart/form-data">
+<form id="productForm">
+  <label for="name">Tên sản phẩm:</label>
+  <input type="text" id="name" name="name" required>
 
-    <!-- Tên sản phẩm -->
-    <div class="mb-3">
-      <label class="form-label">Tên Sản Phẩm:</label>
-      <input type="text" class="form-control" name="name" th:value="${product?.name ?: ''}" required>
-    </div>
+  <label for="sku">Mã SKU:</label>
+  <input type="text" id="sku" name="sku" required>
 
-    <!-- SKU -->
-    <div class="mb-3">
-      <label class="form-label">Mã SKU:</label>
-      <input type="text" class="form-control" name="sku" th:value="${product?.sku ?: ''}" required>
-    </div>
+  <label for="price">Giá:</label>
+  <input type="number" id="price" name="price" required>
 
-    <!-- Giá -->
-    <div class="mb-3">
-      <label class="form-label">Giá:</label>
-      <input type="number" class="form-control" name="price" step="0.01" th:value="${product?.price ?: '0'}" required>
-    </div>
+  <label for="salePrice">Giá Giảm:</label>
+  <input type="number" id="salePrice" name="salePrice">
 
-    <!-- Giá Khuyến Mãi -->
-    <div class="mb-3">
-      <label class="form-label">Giá Niêm Yết:</label>
-      <input type="number" class="form-control" name="salePrice" step="0.01" th:value="${product?.salePrice ?: '0'}">
-    </div>
+  <label for="status">Trạng thái:</label>
+  <select id="status" name="status">
+    <option value="ACTIVE">ACTIVE</option>
+    <option value="INACTIVE">INACTIVE</option>
+  </select>
 
-    <!-- Trạng thái -->
-    <div class="mb-3">
-      <label class="form-label">Trạng Thái:</label>
-      <select class="form-select" name="status">
-        <option value="ACTIVE" th:selected="${product?.status == 'ACTIVE'}">Hoạt động</option>
-        <option value="INACTIVE" th:selected="${product?.status == 'INACTIVE'}">Không hoạt động</option>
-      </select>
-    </div>
+  <h3>Biến Thể</h3>
 
-    <!-- Biến thể -->
-    <h4 class="mt-4">Biến Thể</h4>
+  <label for="variantType">Loại biến thể:</label>
+  <input type="text" id="variantType" placeholder="Nhập loại biến thể (Size, Màu sắc...)">
 
-    <div id="variantContainer">
-      <div class="variant-row mb-3">
-        <label class="form-label">Loại Biến Thể:</label>
-        <input type="text" class="form-control" id="variantType" placeholder="Ví dụ: Màu sắc, Kích thước">
+  <label for="variantValue">Giá trị biến thể:</label>
+  <input type="text" id="variantValue" placeholder="Nhập giá trị (M, L, Đỏ, Xanh...)">
 
-        <label class="form-label mt-2">Giá Trị:</label>
-        <input type="text" class="form-control" id="variantValues" placeholder="Ví dụ: Red, Black, Blue" oninput="generateVariants()">
-      </div>
-    </div>
+  <label for="variantPrice">Giá:</label>
+  <input type="number" id="variantPrice" placeholder="Giá">
 
-    <!-- Danh sách biến thể -->
-    <table class="table mt-3">
-      <thead>
-      <tr>
-        <th>Loại</th>
-        <th>Giá Trị</th>
-        <th>Giá</th>
-        <th>Giá Niêm Yết</th>
-        <th>Số Lượng</th>
-      </tr>
-      </thead>
-      <tbody id="variantList">
-      <!-- Dữ liệu biến thể sẽ được thêm vào đây -->
-      </tbody>
-    </table>
+  <label for="variantListPrice">Giá gốc:</label>
+  <input type="number" id="variantListPrice" placeholder="Giá gốc">
 
-    <button type="submit" class="btn btn-custom w-100">Lưu Sản Phẩm</button>
-  </form>
-</div>
+  <label for="variantQuantity">Số lượng:</label>
+  <input type="number" id="variantQuantity" placeholder="Số lượng">
+
+  <button type="button" onclick="addVariant()">Thêm Biến Thể</button>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Loại</th>
+      <th>Giá trị</th>
+      <th>Giá</th>
+      <th>Giá Gốc</th>
+      <th>Số lượng</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody id="variantList"></tbody>
+  </table>
+
+  <button type="button" onclick="submitForm()">Lưu Sản Phẩm</button>
+</form>
 
 <script>
-    function generateVariants() {
+    function addVariant() {
         let type = document.getElementById("variantType").value.trim();
-        let values = document.getElementById("variantValues").value.trim().split(",");
+        let value = document.getElementById("variantValue").value.trim();
+        let price = document.getElementById("variantPrice").value;
+        let listPrice = document.getElementById("variantListPrice").value;
+        let quantity = document.getElementById("variantQuantity").value;
 
-        let variantList = document.getElementById("variantList");
-        variantList.innerHTML = "";
+        if (!type || !value || !price || !listPrice || !quantity) {
+            alert("Vui lòng nhập đầy đủ thông tin biến thể!");
+            return;
+        }
 
-        values.forEach(value => {
-            value = value.trim();
-            if (value) {
-                let row = `
-                    <tr>
-                        <td>${type}</td>
-                        <td>${value}</td>
-                        <td><input type="number" name="variants[${value}].price" step="0.01" required></td>
-                        <td><input type="number" name="variants[${value}].listPrice" step="0.01"></td>
-                        <td><input type="number" name="variants[${value}].quantity" min="0" required></td>
-                    </tr>
-                `;
-                variantList.innerHTML += row;
-            }
+        let table = document.getElementById("variantList");
+        let row = table.insertRow();
+        row.innerHTML = `
+            <td>${type}</td>
+            <td>${value}</td>
+            <td><input type="number" value="${price}" /></td>
+            <td><input type="number" value="${listPrice}" /></td>
+            <td><input type="number" value="${quantity}" /></td>
+            <td><button type="button" class="delete-btn" onclick="removeVariant(this)">Xóa</button></td>
+        `;
+    }
+
+    function removeVariant(btn) {
+        let row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+
+    function submitForm() {
+        let name = document.getElementById("name").value;
+        let sku = document.getElementById("sku").value;
+        let price = document.getElementById("price").value;
+        let salePrice = document.getElementById("salePrice").value;
+        let status = document.getElementById("status").value;
+
+        let variantElements = document.querySelectorAll("#variantList tr");
+        let variants = [];
+
+        variantElements.forEach(row => {
+            let type = row.cells[0].innerText;
+            let value = row.cells[1].innerText;
+            let variantPrice = row.cells[2].querySelector("input").value;
+            let listPrice = row.cells[3].querySelector("input").value;
+            let quantity = row.cells[4].querySelector("input").value;
+
+            variants.push({
+                type: type,
+                value: value,
+                price: parseFloat(variantPrice),
+                listPrice: parseFloat(listPrice),
+                quantity: parseInt(quantity)
+            });
         });
+
+        let productData = {
+            name: name,
+            sku: sku,
+            price: parseFloat(price),
+            salePrice: parseFloat(salePrice),
+            status: status,
+            variants: variants
+        };
+
+        fetch("/products/dashboard/variant/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(productData)
+        })
+        .then(response => response.json())
+        .then(data => alert("Thêm sản phẩm thành công!"))
+        .catch(error => console.error("Lỗi:", error));
     }
 </script>
 

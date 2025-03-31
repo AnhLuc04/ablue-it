@@ -95,6 +95,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -122,9 +123,9 @@ public class Product {
     private String shortDescription;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private Double price;
 
-    private BigDecimal salePrice;
+    private Double salePrice;
 
     private Boolean isVariable; // TRUE nếu có biến thể
 
@@ -154,4 +155,8 @@ public class Product {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Variant> variants = new ArrayList<>();
+
 }

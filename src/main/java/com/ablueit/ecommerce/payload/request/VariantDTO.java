@@ -1,15 +1,9 @@
 package com.ablueit.ecommerce.payload.request;
-import lombok.Data;
-
-import java.math.BigDecimal;
-
-@Data
-public class VariantRequest {
-    private String type;  // Loại biến thể (Màu sắc, Kích thước)
-    private String value; // Giá trị biến thể (Red, Black, M, L)
-
-    private BigDecimal price;
-    private BigDecimal listPrice;
+public class VariantDTO {
+    private String type;
+    private String value;
+    private Double price;
+    private Double listPrice;
     private Integer quantity;
 
     public String getType() {
@@ -28,19 +22,19 @@ public class VariantRequest {
         this.value = value;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public BigDecimal getListPrice() {
+    public Double getListPrice() {
         return listPrice;
     }
 
-    public void setListPrice(BigDecimal listPrice) {
+    public void setListPrice(Double listPrice) {
         this.listPrice = listPrice;
     }
 
@@ -51,4 +45,5 @@ public class VariantRequest {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+// Getters và Setters
 }
