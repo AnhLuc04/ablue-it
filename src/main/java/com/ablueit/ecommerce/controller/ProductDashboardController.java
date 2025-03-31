@@ -3,11 +3,11 @@ package com.ablueit.ecommerce.controller;
 import com.ablueit.ecommerce.exception.ResourceNotFoundException;
 import com.ablueit.ecommerce.model.*;
 import com.ablueit.ecommerce.payload.request.ProductRequest;
+import com.ablueit.ecommerce.payload.request.ProductService;
 import com.ablueit.ecommerce.payload.request.VariantRequest;
 import com.ablueit.ecommerce.repository.*;
-import com.ablueit.ecommerce.service.impl.ProductServiceImpl;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +23,9 @@ import java.math.BigDecimal;
 public class ProductDashboardController {
 
     @Autowired
-    private ProductRepository productService;
-
+    private ProductRepository productRepository;
+    @Autowired
+    private VariantRepository variantRepository;
     @Autowired
     private ProductVariationRepository productVariationRepository;
 
@@ -37,7 +38,18 @@ public class ProductDashboardController {
     private AttributeRepository attributeRepository;
     @Autowired
     private AttributeTermRepository attributeTermRepository;
+    @Autowired
+    private ProductService productService;
 
+    public ProductDashboardController(ProductRepository productRepository, ProductVariationRepository productVariationRepository, CategoriesRepository categoryRepository, StoreRepository storeRepository, AttributeRepository attributeRepository, AttributeTermRepository attributeTermRepository, ProductService productService) {
+        this.productRepository = productRepository;
+        this.productVariationRepository = productVariationRepository;
+        this.categoryRepository = categoryRepository;
+        this.storeRepository = storeRepository;
+        this.attributeRepository = attributeRepository;
+        this.attributeTermRepository = attributeTermRepository;
+        this.productService = productService;
+    }
 
     @GetMapping("/single/add/{storeId}")
     public String showAddProductForm(@PathVariable("storeId") Long storeId, Model model) {
@@ -63,8 +75,8 @@ public class ProductDashboardController {
             @RequestParam("sku") String sku,
             @RequestParam("description") String description,
             @RequestParam("shortDescription") String shortDescription,
-            @RequestParam("price") BigDecimal price,
-            @RequestParam(value = "salePrice", required = false) BigDecimal salePrice,
+            @RequestParam("price") Double price,
+            @RequestParam(value = "salePrice", required = false) Double salePrice,
             @RequestParam("categories") Long categoryId,
             @RequestParam("status") String status
     ) {
@@ -89,7 +101,7 @@ public class ProductDashboardController {
         product.setStatus(status);
         product.setCategory(category);
         product.setIsVariable(false);
-        productService.save(product);
+        productRepository.save(product);
 
         return "redirect:/products/add?success";
     }
@@ -112,77 +124,34 @@ public class ProductDashboardController {
 
 
 
-
-    @Transactional
     @PostMapping("/variant/add")
-    public String addProduct(@ModelAttribute ProductRequest productRequest,
-                             @RequestParam(value = "files", required = false) MultipartFile[] files) {
-        try {
-            // Xử lý file upload (nếu có)
-            if (files != null) {
-                for (MultipartFile file : files) {
-                    if (!file.isEmpty()) {
-                        // TODO: Xử lý file, lưu vào server hoặc cloud
-                    }
-                }
+    public ResponseEntity<String> addProduct(@RequestBody ProductRequest request) {
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setSku(request.getSku());
+        product.setPrice(request.getPrice());
+        product.setSalePrice(request.getSalePrice());
+        product.setStatus(request.getStatus());
+        productRepository.save(product);
+
+        // Lưu variants vào database
+        if (request.getVariants() != null) {
+            for (VariantRequest variantData : request.getVariants()) {
+                Variant variant = new Variant();
+                variant.setProduct(product);
+                variant.setType(variantData.getType());
+                variant.setValue(variantData.getValue());
+                variantRepository.save(variant);
             }
-
-            // Tạo đối tượng Product
-            Product product = new Product();
-            product.setName(productRequest.getName());
-            product.setSku(productRequest.getSku());
-            product.setDescription(productRequest.getDescription());
-            product.setShortDescription(productRequest.getShortDescription());
-          //  product.setPrice(productRequest.getPrice());
-        //    product.setSalePrice(productRequest.getSalePrice());
-            product.setStatus(productRequest.getStatus());
-
-            // Lưu Product vào DB
-            product = productService.save(product);
-
-            // Kiểm tra danh sách biến thể có null không trước khi lặp
-            List<VariantRequest> variants = productRequest.getVariants();
-            if (variants != null && !variants.isEmpty()) {
-                for (VariantRequest variantRequest : variants) {
-                    AttributeTerm variant = new AttributeTerm();
-                    variant.setName(variantRequest.getName());
-                 //   variant.setProduct(product); // Liên kết với sản phẩm
-
-                    attributeTermRepository.save(variant);
-                }
-            }
-
-            return "redirect:/products/dashboard";
-
-        } catch (Exception e) {
-            e.printStackTrace(); // Debug lỗi trong console
-            return "redirect:/error";
         }
+
+        return ResponseEntity.ok("Thêm sản phẩm thành công!");
     }
 
 
 
 
 
-
-
-
-
-    // Hàm tạo tổ hợp tất cả các biến thể có thể có
-    private List<List<String>> generateCombinations(List<List<String>> lists, int index, List<String> current) {
-        List<List<String>> result = new ArrayList<>();
-        if (index == lists.size()) {
-            result.add(new ArrayList<>(current));
-            return result;
-        }
-
-        for (String value : lists.get(index)) {
-            current.add(value.trim());
-            result.addAll(generateCombinations(lists, index + 1, current));
-            current.remove(current.size() - 1);
-        }
-        return result;
-    }
 
 
 }
