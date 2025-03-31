@@ -36,10 +36,9 @@
 package com.ablueit.ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Table(name = "attribute_terms")
@@ -66,6 +65,5 @@ public class AttributeTerm {
             inverseJoinColumns = @JoinColumn(name = "product_variation_id")
     )
     private List<ProductVariation> productVariations = new ArrayList<>();
-
 
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Product Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 th:text="${product.name}"></h2>
+    <p><strong>SKU:</strong> <span th:text="${product.sku}"></span></p>
+
+    <!-- Price Display -->
+    <h3>Price: <span id="priceDisplay" th:text="${product.price}"></span> $</h3>
+
+    <!-- Attribute Selection -->
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label" for="sizeSelect">Size:</label>
+            <select class="form-select" id="sizeSelect">
+                <option value="">Select Size</option>
+                <option th:each="size : ${sizeTerms}"
+                        th:text="${size.name}"
+                        th:value="${size.id}">
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="colorSelect">Color:</label>
+            <select class="form-select" id="colorSelect">
+                <option value="">Select Color</option>
+                <option th:each="color : ${colorTerms}"
+                        th:text="${color.name}"
+                        th:value="${color.id}">
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <!-- JavaScript để xử lý chọn attribute -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let sizeSelect = document.getElementById("sizeSelect");
+            let colorSelect = document.getElementById("colorSelect");
+            let priceDisplay = document.getElementById("priceDisplay");
+
+            let variations = JSON.parse('[[${variations}]]'); // Lấy danh sách biến thể từ Thymeleaf
+
+            function updatePrice() {
+                let selectedSize = sizeSelect.value;
+                let selectedColor = colorSelect.value;
+
+                if (selectedSize && selectedColor) {
+                    let matchedVariation = variations.find(variation =>
+                        variation.attributeTerms.some(term => term.id == selectedSize) &&
+                        variation.attributeTerms.some(term => term.id == selectedColor)
+                    );
+
+                    if (matchedVariation) {
+                        priceDisplay.innerText = matchedVariation.price + " $";
+                    } else {
+                        priceDisplay.innerText = "N/A"; // Không tìm thấy biến thể phù hợp
+                    }
+                }
+            }
+
+            sizeSelect.addEventListener("change", updatePrice);
+            colorSelect.addEventListener("change", updatePrice);
+        });
+    </script>
+</div>
+</body>
+</html>

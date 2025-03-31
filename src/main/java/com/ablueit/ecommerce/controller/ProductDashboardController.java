@@ -3,53 +3,35 @@ package com.ablueit.ecommerce.controller;
 import com.ablueit.ecommerce.exception.ResourceNotFoundException;
 import com.ablueit.ecommerce.model.*;
 import com.ablueit.ecommerce.payload.request.ProductRequest;
-import com.ablueit.ecommerce.payload.request.ProductService;
 import com.ablueit.ecommerce.payload.request.VariantRequest;
 import com.ablueit.ecommerce.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ablueit.ecommerce.service.ProductService;
+import java.util.*;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
-
 @Controller
+@Slf4j(topic = "PRODUCT-DASHBOARD-CONTROLLER")
+@RequiredArgsConstructor
 @RequestMapping("/products/dashboard")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductDashboardController {
 
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private VariantRepository variantRepository;
-    @Autowired
-    private ProductVariationRepository productVariationRepository;
-
-    @Autowired
-    private CategoriesRepository categoryRepository;
-
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private AttributeRepository attributeRepository;
-    @Autowired
-    private AttributeTermRepository attributeTermRepository;
-    @Autowired
-    private ProductService productService;
-
-    public ProductDashboardController(ProductRepository productRepository, ProductVariationRepository productVariationRepository, CategoriesRepository categoryRepository, StoreRepository storeRepository, AttributeRepository attributeRepository, AttributeTermRepository attributeTermRepository, ProductService productService) {
-        this.productRepository = productRepository;
-        this.productVariationRepository = productVariationRepository;
-        this.categoryRepository = categoryRepository;
-        this.storeRepository = storeRepository;
-        this.attributeRepository = attributeRepository;
-        this.attributeTermRepository = attributeTermRepository;
-        this.productService = productService;
-    }
+  AttributeTermRepository attributeTermRepository;
+  VariantRepository variantRepository;
+  ProductRepository productRepository;
+  ProductVariationRepository productVariationRepository;
+  CategoriesRepository categoryRepository;
+  StoreRepository storeRepository;
+  AttributeRepository attributeRepository;
+  ProductService productService;
 
     @GetMapping("/single/add/{storeId}")
     public String showAddProductForm(@PathVariable("storeId") Long storeId, Model model) {
@@ -120,10 +102,6 @@ public class ProductDashboardController {
         return "product-dashboard/create-variant-product.html";
     }
 
-
-
-
-
     @PostMapping("/variant/add")
     public ResponseEntity<String> addProduct(@RequestBody ProductRequest request) {
         Product product = new Product();
@@ -148,10 +126,10 @@ public class ProductDashboardController {
         return ResponseEntity.ok("Thêm sản phẩm thành công!");
     }
 
+  @GetMapping("/{id}")
+  public String showSingleProduct(@PathVariable Long id, Model model) {
+    log.info("GET /products/{}", id);
 
-
-
-
-
-
+    return productService.showSingleProduct(id, model);
+  }
 }

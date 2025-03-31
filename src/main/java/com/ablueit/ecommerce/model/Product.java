@@ -91,17 +91,16 @@ package com.ablueit.ecommerce.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Table(name = "products")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
@@ -135,9 +134,9 @@ public class Product {
 
     private String status; // published, draft, pending
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Categories category;
+  @ManyToOne
+  @JoinColumn(name = "category_id")
+  private Categories category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
