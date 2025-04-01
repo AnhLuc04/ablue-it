@@ -17,42 +17,29 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "product")
+@Table(name = "variation")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Product extends AuditEntity<Long> {
+public class Variation extends AuditEntity<Long> {
 
     @Id
-    @Column(name = "product_id")
+    @Column(name = "variation_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-    @Column(name = "name", nullable = false)
-    String name;
-
-    @Column(name = "slug")
-    String slug;
-
-    @Column(name = "permalink")
-    String permalink;
-
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    ProductStatus status = ProductStatus.PUBLISHED;
 
     @Column(name = "description")
     String description;
 
-    @Column(name = "short_description")
-    String shortDescription;
+    @Column(name = "permalink")
+    String permalink;
 
     @Column(name = "sku")
     String sku;
 
     @Column(name = "price")
-    String price; // current product price
+    String price;
 
     @Column(name = "regular_price")
-    String regularPrice; // product regular price
+    String regularPrice;
 
     @Column(name = "sale_price")
     String salePrice;
@@ -65,6 +52,9 @@ public class Product extends AuditEntity<Long> {
 
     @Column(name = "is_on_sale")
     Boolean isOnSale;
+
+    @Column(name = "status")
+    ProductStatus status = ProductStatus.PUBLISHED;
 
     @Column(name = "total_sale")
     Integer totalSale;
@@ -81,26 +71,22 @@ public class Product extends AuditEntity<Long> {
     @Column(name = "weight")
     String weight;
 
-    @Column(name = "average_rating")
-    String averageRating;
-
-    @Column(name = "rating_count")
-    Integer ratingCount;
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "product_attribute",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "attribute_id")
-    )
-    List<Attribute> attributes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    List<Variation> variations = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    @JoinColumn(name = "store_id")
-    Store store;
+    @JoinColumn(name = "product_id")
+    Product product;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "variation_attribute",
+            joinColumns = @JoinColumn(name = "variation_id"),
+            inverseJoinColumns = @JoinColumn(name = "attribute_id"))
+    List<Attribute> attributes = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "variation_attribute_term",
+            joinColumns = @JoinColumn(name = "variation_id"),
+            inverseJoinColumns = @JoinColumn(name = "attribute_term_id"))
+    List<AttributeTerm> attributeTerms = new ArrayList<>();
 }

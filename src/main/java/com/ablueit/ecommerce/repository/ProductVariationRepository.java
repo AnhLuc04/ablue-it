@@ -1,9 +1,9 @@
 package com.ablueit.ecommerce.repository;
 
-import com.ablueit.ecommerce.model.ProductVariation;
+import com.ablueit.ecommerce.model.Variation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductVariationRepository extends JpaRepository<ProductVariation,Long> {
+public interface ProductVariationRepository extends JpaRepository<Variation, Long> {
 }

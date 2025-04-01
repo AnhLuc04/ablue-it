@@ -1,7 +1,10 @@
 package com.ablueit.ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "product_images")
@@ -23,5 +26,5 @@ public class ProductImage {
 
     @ManyToOne
     @JoinColumn(name = "variation_id")
-    private ProductVariation variation; // Liên kết đến biến thể (nếu có)
+    private Variation variation; // Liên kết đến biến thể (nếu có)
 }

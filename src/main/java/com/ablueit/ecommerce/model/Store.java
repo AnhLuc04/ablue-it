@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -38,8 +37,8 @@ public class Store extends AbstractEntity<Long> {
     @JoinColumn(name = "seller_id")
     private User seller;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products = new ArrayList<>();
+//    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Product> products = new ArrayList<>();
 
     // Danh sách danh mục sản phẩm thuộc cửa hàng này
 

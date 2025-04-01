@@ -5,8 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedBy;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Entity
@@ -29,7 +27,7 @@ public class Categories extends AbstractEntity<Long> {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    // Một danh mục có nhiều sản phẩm
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    List<Product> products;
+//    // Một danh mục có nhiều sản phẩm
+//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+//    List<Product> products;
 }
