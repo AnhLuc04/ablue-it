@@ -104,3 +104,4 @@ public class Product extends AuditEntity<Long> {
     @JoinColumn(name = "store_id")
     Store store;
 }
+
