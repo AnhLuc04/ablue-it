@@ -41,6 +41,7 @@ public class ProductDashboardController {
     @Autowired
     private ProductService productService;
 
+
     public ProductDashboardController(ProductRepository productRepository, ProductVariationRepository productVariationRepository, CategoriesRepository categoryRepository, StoreRepository storeRepository, AttributeRepository attributeRepository, AttributeTermRepository attributeTermRepository, ProductService productService) {
         this.productRepository = productRepository;
         this.productVariationRepository = productVariationRepository;
@@ -125,27 +126,10 @@ public class ProductDashboardController {
 
 
     @PostMapping("/variant/add")
-    public ResponseEntity<String> addProduct(@RequestBody ProductRequest request) {
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setSku(request.getSku());
-        product.setPrice(request.getPrice());
-        product.setSalePrice(request.getSalePrice());
-        product.setStatus(request.getStatus());
-        productRepository.save(product);
-
-        // Lưu variants vào database
-        if (request.getVariants() != null) {
-            for (VariantRequest variantData : request.getVariants()) {
-                Variant variant = new Variant();
-                variant.setProduct(product);
-                variant.setType(variantData.getType());
-                variant.setValue(variantData.getValue());
-                variantRepository.save(variant);
-            }
-        }
-
-        return ResponseEntity.ok("Thêm sản phẩm thành công!");
+    public ResponseEntity<String> addProduct(@RequestBody ProductRequest productRequest) {
+        Product savedProduct = productService.saveProduct(productRequest);
+        return ResponseEntity.ok("Sản phẩm " + savedProduct.getName() + " đã được thêm thành công với "
+                + savedProduct.getVariants().size() + " biến thể!");
     }
 
 
