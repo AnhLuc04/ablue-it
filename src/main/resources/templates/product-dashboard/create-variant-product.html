@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thêm Sản Phẩm</title>
   <style>
-<<<<<<< HEAD
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -80,264 +79,59 @@
             background-color: darkred;
         }
     </style>
-=======
-      body {
-          font-family: Arial, sans-serif;
-          margin: 20px;
-          padding: 20px;
-          background-color: #f4f4f4;
-      }
-
-      h2 {
-          text-align: center;
-          color: #333;
-      }
-
-      form {
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          max-width: 800px;
-          margin: auto;
-      }
-
-      label {
-          font-weight: bold;
-          display: block;
-          margin-top: 10px;
-      }
-
-      input, select, textarea {
-          width: 100%;
-          padding: 8px;
-          margin-top: 5px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-      }
-
-      button {
-          background-color: #007bff;
-          color: white;
-          border: none;
-          padding: 10px;
-          cursor: pointer;
-          width: 100%;
-          margin-top: 15px;
-          font-size: 16px;
-          border-radius: 4px;
-      }
-
-      button:hover {
-          background-color: #0056b3;
-      }
-
-      table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-          background: white;
-          border-radius: 8px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
-      th, td {
-          border: 1px solid #ddd;
-          padding: 8px;
-          text-align: center;
-      }
-
-      th {
-          background-color: #007bff;
-          color: white;
-      }
-
-      .delete-btn {
-          background-color: red;
-          color: white;
-          padding: 5px 10px;
-          border: none;
-          cursor: pointer;
-          border-radius: 4px;
-      }
-
-      .delete-btn:hover {
-          background-color: darkred;
-      }
-
-      .attribute-container {
-          display: flex;
-          flex-direction: column;
-          margin-top: 10px;
-      }
-
-      .attribute-container select, .attribute-container input {
-          width: 48%;
-      }
-
-      .section {
-          margin-top: 20px;
-          padding: 15px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-      }
-
-      .section h3 {
-          margin-top: 0;
-      }
-  </style>
->>>>>>> dev-vandunxg
 </head>
 <body>
 
 <h2>Thêm Sản Phẩm Mới</h2>
 
 <form id="productForm">
-    <!-- Thông tin chung -->
-    <div class="section">
-        <h3>Thông tin chung</h3>
-        <label for="name">Tên sản phẩm:</label>
-        <input id="name" name="name" required type="text">
+  <label for="name">Tên sản phẩm:</label>
+  <input type="text" id="name" name="name" required>
 
-        <input id="storeId" name="storeId" th:value="${storeId}" type="hidden">
+  <label for="sku">Mã SKU:</label>
+  <input type="text" id="sku" name="sku" required>
 
-        <label for="description">Mô tả:</label>
-        <textarea id="description" name="description" rows="4"></textarea>
+  <label for="price">Giá:</label>
+  <input type="number" id="price" name="price" required>
 
-        <label for="shortDescription">Mô tả ngắn:</label>
-        <textarea id="shortDescription" name="shortDescription" rows="2"></textarea>
+  <label for="salePrice">Giá Giảm:</label>
+  <input type="number" id="salePrice" name="salePrice">
 
-        <label for="permalink">Permalink:</label>
-        <input id="permalink" name="permalink" type="text">
-    </div>
+  <label for="status">Trạng thái:</label>
+  <select id="status" name="status">
+    <option value="ACTIVE">ACTIVE</option>
+    <option value="INACTIVE">INACTIVE</option>
+  </select>
 
-    <!-- Giá cả -->
-    <div class="section">
-        <h3>Giá cả</h3>
-        <label for="price">Giá hiện tại:</label>
-        <input id="price" name="price" required type="text">
+  <h3>Biến Thể</h3>
 
-<<<<<<< HEAD
   <label for="variantType">Loại biến thể:</label>
   <input type="text" id="variantType" placeholder="Nhập loại biến thể (Size, Màu sắc,...)" />
 
   <label for="variantValue">Giá trị biến thể:</label>
   <input type="text" id="variantValue" placeholder="Nhập các giá trị (S, M, L, Red, Black,...)" />
 
-=======
-        <label for="regularPrice">Giá gốc:</label>
-        <input id="regularPrice" name="regularPrice" type="text">
 
-        <label for="salePrice">Giá giảm:</label>
-        <input id="salePrice" name="salePrice" type="text">
+  <button type="button" onclick="addVariant()">Thêm Biến Thể</button>
 
-        <label for="dateStartSale">Ngày bắt đầu giảm giá:</label>
-        <input id="dateStartSale" name="dateStartSale" type="datetime-local">
-
-        <label for="dateEndSale">Ngày kết thúc giảm giá:</label>
-        <input id="dateEndSale" name="dateEndSale" type="datetime-local">
-
-        <label for="isOnSale">Đang giảm giá:</label>
-        <select id="isOnSale" name="isOnSale">
-            <option value="false">Không</option>
-            <option value="true">Có</option>
-        </select>
-    </div>
->>>>>>> dev-vandunxg
-
-    <!-- Kho hàng -->
-    <div class="section">
-        <h3>Kho hàng</h3>
-        <label for="sku">Mã SKU:</label>
-        <input id="sku" name="sku" required type="text">
-
-        <label for="stockQuantity">Số lượng trong kho:</label>
-        <input id="stockQuantity" name="stockQuantity" type="number">
-
-        <label for="stockStatus">Trạng thái kho:</label>
-        <select id="stockStatus" name="stockStatus">
-            <option value="IN_STOCK">Còn hàng</option>
-            <option value="OUT_OF_STOCK">Hết hàng</option>
-            <option value="ON_BACKORDER">Đặt trước</option>
-        </select>
-
-        <label for="backOrderAllowed">Cho phép đặt trước:</label>
-        <select id="backOrderAllowed" name="backOrderAllowed">
-            <option value="false">Không</option>
-            <option value="true">Có</option>
-        </select>
-    </div>
-
-    <!-- Trạng thái -->
-    <div class="section">
-        <h3>Trạng thái</h3>
-        <label for="status">Trạng thái sản phẩm:</label>
-        <select id="status" name="status">
-            <option value="PUBLISHED">Đã xuất bản</option>
-            <option value="DRAFT">Bản nháp</option>
-            <option value="PENDING">Đang chờ duyệt</option>
-        </select>
-    </div>
-
-    <!-- Biến thể (Tùy chọn) -->
-    <div class="section">
-        <h3>Biến thể (Tùy chọn)</h3>
-
-        <label for="variantDescription">Mô tả biến thể:</label>
-        <input id="variantDescription" placeholder="Mô tả" type="text">
-
-        <label for="variantPrice">Giá:</label>
-        <input id="variantPrice" placeholder="Giá" type="text">
-
-        <label for="variantRegularPrice">Giá gốc:</label>
-        <input id="variantRegularPrice" placeholder="Giá gốc" type="text">
-
-        <label for="variantSalePrice">Giá giảm:</label>
-        <input id="variantSalePrice" placeholder="Giá giảm" type="text">
-
-        <label for="variantStockQuantity">Số lượng:</label>
-        <input id="variantStockQuantity" placeholder="Số lượng" type="number">
-
-        <h4>Thuộc tính biến thể</h4>
-        <div class="attribute-container" id="attributeContainer">
-            <div class="attribute-inputs" th:each="attribute : ${attributes}">
-                <label th:for="|attribute-${attribute.id}|">Loại: </label>
-                <select class="attribute-type" th:id="|attribute-${attribute.id}|">
-                    <option value="">Chọn loại biến thể</option>
-                    <option th:text="${attribute.name}" th:value="${attribute.id}"></option>
-                </select>
-
-                <label>Giá trị: </label>
-                <select class="attribute-value" th:id="|term-${attribute.id}|">
-                    <option value="">Chọn giá trị</option>
-                    <option th:each="term : ${attribute.terms}" th:text="${term.name}" th:value="${term.id}"></option>
-                </select>
-            </div>
-        </div>
-
-        <button onclick="addVariant()" type="button">Thêm Biến Thể</button>
-
-        <table>
-            <thead>
-            <tr>
-                <th>Loại</th>
-                <th>Giá trị</th>
-                <th>Giá</th>
-                <th>Giá gốc</th>
-                <th>Giá giảm</th>
-                <th>Số lượng</th>
-                <th>Hành động</th>
-            </tr>
-            </thead>
-            <tbody id="variantList"></tbody>
-        </table>
-    </div>
+  <table>
+    <thead>
+    <tr>
+      <th>Loại</th>
+      <th>Giá trị</th>
+      <th>Giá</th>
+      <th>Giá Gốc</th>
+      <th>Số lượng</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody id="variantList"></tbody>
+  </table>
 
   <button type="button" onclick="submitForm()">Lưu Sản Phẩm</button>
 </form>
 
 <script>
-<<<<<<< HEAD
     let variantTypes = {}; // Đối tượng lưu trữ các loại biến thể và giá trị tương ứng
     let variants = []; // Mảng lưu trữ tất cả các biến thể đã tạo ra
 
@@ -365,50 +159,6 @@
 
         // Tạo các tổ hợp biến thể từ các loại và giá trị
         updateVariantTable();
-=======
-    function addVariant() {
-        const description = document.getElementById('variantDescription').value;
-        const price = document.getElementById('variantPrice').value;
-        const regularPrice = document.getElementById('variantRegularPrice').value;
-        const salePrice = document.getElementById('variantSalePrice').value;
-        const stockQuantity = document.getElementById('variantStockQuantity').value;
-
-        const attributes = [];
-        const attributeInputs = document.querySelectorAll('.attribute-inputs');
-        attributeInputs.forEach(input => {
-            const typeSelect = input.querySelector('.attribute-type');
-            const valueSelect = input.querySelector('.attribute-value');
-            const type = typeSelect.value;
-            const value = valueSelect.value;
-            if (type && value) {
-                attributes.push({
-                    type: typeSelect.options[typeSelect.selectedIndex].text,
-                    value: valueSelect.options[valueSelect.selectedIndex].text,
-                    typeId: type,
-                    valueId: value
-                });
-            }
-        });
-
-        if (!price || !regularPrice || !stockQuantity || attributes.length === 0) {
-            alert("Vui lòng nhập đầy đủ thông tin biến thể nếu muốn thêm!");
-            return;
-        }
-
-        const table = document.getElementById('variantList');
-        const row = table.insertRow();
-        row.innerHTML = `
-      <td>${attributes.map(attr => attr.type).join(', ')}</td>
-      <td>${attributes.map(attr => attr.value).join(', ')}</td>
-      <td><input type="text" value="${price}" /></td>
-      <td><input type="text" value="${regularPrice}" /></td>
-      <td><input type="text" value="${salePrice || ''}" /></td>
-      <td><input type="number" value="${stockQuantity}" /></td>
-      <td><button type="button" class="delete-btn" onclick="removeVariant(this)">Xóa</button></td>
-    `;
-        row.dataset.attributes = JSON.stringify(attributes);
-        row.dataset.description = description;
->>>>>>> dev-vandunxg
     }
 
     function updateVariantTable() {
@@ -466,40 +216,20 @@
 
     // Hàm xóa biến thể khỏi bảng
     function removeVariant(btn) {
-<<<<<<< HEAD
         let row = btn.parentNode.parentNode;
         let index = row.rowIndex - 1;  // Đảm bảo lấy đúng chỉ số của dòng trong mảng variants
         variants.splice(index, 1);  // Xóa tổ hợp từ mảng variants
         updateVariantTable();  // Cập nhật lại bảng
-=======
-        const row = btn.parentNode.parentNode;
-        row.parentNode.removeChild(row);
->>>>>>> dev-vandunxg
     }
 
     // Hàm lưu sản phẩm và các biến thể
     function submitForm() {
-        const productData = {
-            name: document.getElementById("name").value,
-            storeId: parseInt(document.getElementById("storeId").value), // Thêm storeId
-            description: document.getElementById("description").value,
-            shortDescription: document.getElementById("shortDescription").value,
-            permalink: document.getElementById("permalink").value,
-            price: document.getElementById("price").value,
-            regularPrice: document.getElementById("regularPrice").value,
-            salePrice: document.getElementById("salePrice").value || null,
-            dateStartSale: document.getElementById("dateStartSale").value || null,
-            dateEndSale: document.getElementById("dateEndSale").value || null,
-            isOnSale: document.getElementById("isOnSale").value === "true",
-            sku: document.getElementById("sku").value,
-            stockQuantity: parseInt(document.getElementById("stockQuantity").value) || null,
-            stockStatus: document.getElementById("stockStatus").value,
-            backOrderAllowed: document.getElementById("backOrderAllowed").value === "true",
-            status: document.getElementById("status").value,
-            variations: []
-        };
+        let name = document.getElementById("name").value;
+        let sku = document.getElementById("sku").value;
+        let price = document.getElementById("price").value;
+        let salePrice = document.getElementById("salePrice").value;
+        let status = document.getElementById("status").value;
 
-<<<<<<< HEAD
         // Lấy giá trị từ các ô input trong bảng
         let rows = document.querySelectorAll('#variantList tr');
         rows.forEach(row => {
@@ -515,39 +245,31 @@
                 listPrice: listPrice,
                 quantity: quantity
             };
-=======
-        if (!productData.name || !productData.sku || !productData.price || !productData.storeId) {
-            alert("Vui lòng nhập đầy đủ thông tin bắt buộc của sản phẩm (bao gồm ID Cửa hàng)!");
-            return;
-        }
-
-        const variantElements = document.querySelectorAll("#variantList tr");
-        variantElements.forEach(row => {
-            const attributes = JSON.parse(row.dataset.attributes);
-            productData.variations.push({
-                description: row.dataset.description,
-                price: row.cells[2].querySelector("input").value,
-                regularPrice: row.cells[3].querySelector("input").value,
-                salePrice: row.cells[4].querySelector("input").value || null,
-                stockQuantity: parseInt(row.cells[5].querySelector("input").value),
-                attributes: attributes.map(attr => ({attributeId: attr.typeId, attributeTermId: attr.valueId}))
-            });
->>>>>>> dev-vandunxg
         });
 
-        fetch("/products/dashboard/variations/add", {
+        let productData = {
+            name: name,
+            sku: sku,
+            price: parseFloat(price),
+            salePrice: parseFloat(salePrice),
+            status: status,
+            variants: variants
+        };
+
+        fetch("/products/dashboard/variant/add", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(productData)
         })
-            .then(response => response.json())
-            .then(data => alert("Thêm sản phẩm thành công!"))
-            .catch(error => console.error("Lỗi:", error));
+        .then(response => response.json())
+        .then(data => alert("Thêm sản phẩm thành công!"))
+        .catch(error => console.error("Lỗi:", error));
     }
 </script>
 
 </body>
-<<<<<<< HEAD
 </html>
 
 
@@ -691,6 +413,3 @@
 </script>
 </body>
 </html>
-=======
-</html>
->>>>>>> dev-vandunxg
