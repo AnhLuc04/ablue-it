@@ -1,15 +1,14 @@
 package com.ablueit.ecommerce.model;
 
+import com.ablueit.ecommerce.enums.ImageType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "product_images")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductImage {
@@ -19,6 +18,8 @@ public class ProductImage {
     private Long id;
 
     private String imageUrl; // URL ảnh sản phẩm
+
+    private ImageType imageType;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

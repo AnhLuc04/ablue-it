@@ -49,13 +49,13 @@ public class Product extends AuditEntity<Long> {
     String sku;
 
     @Column(name = "price")
-    String price; // current product price
+    Double price; // current product price
 
     @Column(name = "regular_price")
-    String regularPrice; // product regular price
+    Double regularPrice; // product regular price
 
     @Column(name = "sale_price")
-    String salePrice;
+    Double salePrice;
 
     @Column(name = "date_start_sale")
     LocalDateTime dateStartSale;
@@ -86,6 +86,14 @@ public class Product extends AuditEntity<Long> {
 
     @Column(name = "rating_count")
     Integer ratingCount;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    List<ProductImage> productImages;
+
+    @OneToMany(mappedBy = "product")
+    @ToString.Exclude
+    private List<Categories> categories;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude

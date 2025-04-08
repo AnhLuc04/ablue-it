@@ -27,7 +27,7 @@ public class Categories extends AbstractEntity<Long> {
     @JoinColumn(name = "store_id")
     private Store store;
 
-//    // Một danh mục có nhiều sản phẩm
-//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-//    List<Product> products;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

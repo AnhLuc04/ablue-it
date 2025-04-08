@@ -1,9 +1,8 @@
 package com.ablueit.ecommerce.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.ToString;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public record ProductRequest(
@@ -12,8 +11,8 @@ public record ProductRequest(
         @JsonProperty("productShortDescription") String shortDescription,
 //        @JsonProperty("productDescription") String permalink,
 //        @JsonProperty("productDescription") String price,
-        @JsonProperty("regularPrice") String regularPrice,
-        @JsonProperty("salePrice") String salePrice,
+        @JsonProperty("regularPrice") Double regularPrice,
+        @JsonProperty("salePrice") Double salePrice,
         @JsonProperty("category") String category,
         @JsonProperty("storeId") Long storeId,
 //        LocalDateTime dateEndSale,
@@ -24,8 +23,8 @@ public record ProductRequest(
         @JsonProperty("stockStatus") String stockStatus,
 //        @JsonProperty("status") String status,
         @JsonProperty("variationsData") List<VariationRequest> variationsData,
-        @JsonProperty("primaryImage") String primaryImage,
-        @JsonProperty("sizeGuideImage") String sizeGuideImage,
-        @JsonProperty("galleryImages") String[] galleryImages
+        @ToString.Exclude @JsonProperty("primaryImage") String primaryImage,
+        @ToString.Exclude @JsonProperty("sizeGuideImage") String sizeGuideImage,
+        @ToString.Exclude @JsonProperty("galleryImages") String[] galleryImages
 ) {
 }
