@@ -1,0 +1,21 @@
+<!-- cart/view.html -->
+<h2>Giỏ hàng</h2>
+<table>
+  <tr>
+    <th>Ảnh</th><th>Sản phẩm</th><th>Giá</th><th>Số lượng</th><th>Tổng</th><th>Xoá</th>
+  </tr>
+  <tr th:each="item : ${cart.items}">
+    <td><img th:src="${item.product.imageUrl}" width="50"/></td>
+    <td th:text="${item.product.name}"></td>
+    <td th:text="${item.product.price}"></td>
+    <td th:text="${item.quantity}"></td>
+    <td th:text="${item.quantity * item.product.price}"></td>
+    <td>
+      <form method="post" th:action="@{/cart/remove}">
+        <input type="hidden" name="itemId" th:value="${item.id}" />
+        <button type="submit">Xoá</button>
+      </form>
+    </td>
+  </tr>
+</table>
+<h3>Tổng: <span th:text="${cart.total}"></span></h3>
