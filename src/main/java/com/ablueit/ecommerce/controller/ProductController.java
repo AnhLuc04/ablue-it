@@ -24,40 +24,36 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @Slf4j(topic = "PRODUCT-CONTROLLER")
-@RequestMapping("/products/dashboard")
+@RequestMapping("/products/")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductController {
 
     StoreRepository storeRepository;
     CategoriesRepository categoriesRepository;
-    AttributeRepository attributeRepository;
     ProductService productService;
 
-    @GetMapping("/variant/add/{storeId}")
-    public String showAddProductFormVariant(@PathVariable("storeId") Long storeId, Model model) {
-
-        Product product = new Product();
-
-        List<Attribute> attributes = attributeRepository.findAll();
+    @GetMapping("/create-variation-product/{id}")
+    public String showCreateVariationProduct(Model model, @PathVariable(value = "id") Long storeId) {
+        log.info("GET /create-variation-product/{}", storeId);
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ResourceNotFoundException("store not found"));
 
-        List<Categories> categories = categoriesRepository.findByStore(store);
+        List<String> categories = categoriesRepository.findByStore(store).stream().map(Categories::getName).toList();
 
         model.addAttribute("storeId", store.getId());
-        model.addAttribute("product", product);
+
         model.addAttribute("categories", categories);
-        model.addAttribute("attributes", attributes);
-        return "product-dashboard/create-variant-product.html";
+
+        return "product-dashboard/create-variation-product";
     }
 
-    @PostMapping("/variations/add")
-    ResponseEntity<String> addVariationProduct(@RequestBody ProductRequest request) {
-        log.info("addVariationProduct={}", request.toString());
+    @PostMapping("/create-variation-product/")
+    public ResponseEntity<?> createVariationProduct(@RequestBody ProductRequest request) {
+        log.info("POST /create-variation-product={}", request.toString());
 
-        return ResponseEntity.ok(productService.addVariationProduct(request));
+
+        return ResponseEntity.ok().body(productService.addVariationProduct(request));
     }
-
 
 }

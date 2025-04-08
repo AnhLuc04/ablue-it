@@ -1,21 +1,19 @@
 package com.ablueit.ecommerce.payload.request;
 
+import java.io.Serializable;
 import java.util.List;
 
 public record VariationRequest(
-        String description,
-        String price,
-        String regularPrice,
-        String salePrice,
-        String stockQuantity,
-        List<AttributeRequest> attributes
-
-) {
+        List<AttributeRequest> attributes,
+        Double price,
+        Integer stock
+) implements Serializable  {
 
     public record AttributeRequest(
-            Long attributeId,
-            Long attributeTermId
+            String name,
+            String term
     ) {
+
     }
 
 }

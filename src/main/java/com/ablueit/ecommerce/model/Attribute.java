@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,18 +22,9 @@ public class Attribute extends AuditEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AttributeTerm> terms = new ArrayList<>();
+
     @Column(name = "name")
     String name;
-
-    @Column(name = "slug")
-    String slug;
-
-    @Column(name = "type")
-    String type;
-
-    @Column(name = "has_archives")
-    Boolean hasArchives = false;
-
-    @OneToMany(mappedBy = "attribute", fetch = FetchType.LAZY)
-    List<AttributeTerm> terms;
 }

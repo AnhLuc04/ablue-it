@@ -87,15 +87,7 @@ public class Product extends AuditEntity<Long> {
     @Column(name = "rating_count")
     Integer ratingCount;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "product_attribute",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "attribute_id")
-    )
-    List<Attribute> attributes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     List<Variation> variations = new ArrayList<>();
 

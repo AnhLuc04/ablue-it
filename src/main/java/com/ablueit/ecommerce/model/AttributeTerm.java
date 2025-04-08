@@ -22,9 +22,6 @@ public class AttributeTerm extends AuditEntity<Long> {
     @Column(name = "name")
     String name;
 
-    @Column(name = "slug")
-    String slug;
-
     @Column(name = "description")
     String description;
 
@@ -34,5 +31,4 @@ public class AttributeTerm extends AuditEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_id")
     Attribute attribute;
-
 }

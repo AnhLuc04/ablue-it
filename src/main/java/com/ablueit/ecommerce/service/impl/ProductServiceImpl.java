@@ -6,10 +6,7 @@ import com.ablueit.ecommerce.exception.ResourceNotFoundException;
 import com.ablueit.ecommerce.model.*;
 import com.ablueit.ecommerce.payload.request.ProductRequest;
 import com.ablueit.ecommerce.payload.request.VariationRequest;
-import com.ablueit.ecommerce.repository.AttributeRepository;
-import com.ablueit.ecommerce.repository.AttributeTermRepository;
-import com.ablueit.ecommerce.repository.ProductRepository;
-import com.ablueit.ecommerce.repository.StoreRepository;
+import com.ablueit.ecommerce.repository.*;
 import com.ablueit.ecommerce.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
     AttributeTermRepository attributeTermRepository;
     ProductRepository productRepository;
     StoreRepository storeRepository;
+    VariationRepository variationRepository;
 
     @Override
     public String addVariationProduct(ProductRequest request) {
@@ -45,46 +43,69 @@ public class ProductServiceImpl implements ProductService {
                 .shortDescription(request.shortDescription())
                 .description(request.description())
                 .sku(request.sku())
-                .price(request.price())
+                .price(request.regularPrice())
                 .store(store)
-                .status(ProductStatus.valueOf(request.status()))
-                .stockQuantity(Integer.parseInt(request.stickQuantity()))
+                .status(ProductStatus.PUBLISHED)
+                .stockQuantity(request.stockQuantity())
                 .stockStatus(StockStatus.valueOf(request.stockStatus()))
                 .regularPrice(request.regularPrice())
                 .build();
 
 
-        List<VariationRequest> variationRequests = request.variations();
+        List<VariationRequest> variationFromRequest = request.variationsData();
 
-        List<Variation> variations = new ArrayList<>();
+        List<Variation> variations = variationFromRequest.stream().map(variationRequest -> {
+            Variation variation = Variation.builder()
+                    .stockQuantity(variationRequest.stock())
+                    .price(variationRequest.price())
+                    .build();
 
-        Set<Attribute> attributesForProduct = new HashSet<>();
+            List<VariationRequest.AttributeRequest> attributeRequests = variationRequest.attributes();
 
-        variationRequests.forEach(x -> {
-            List<Long> attributeIdList = x.attributes().stream()
-                    .map(VariationRequest.AttributeRequest::attributeId).toList();
-            List<Long> attributeTermIdList = x.attributes().stream()
-                    .map(VariationRequest.AttributeRequest::attributeTermId).toList();
+            List<VariationAttribute> variationAttributes = attributeRequests.stream().map(attributeRequest -> {
+                Attribute attribute = getAttributeByNameOrElseCreateNew(attributeRequest.name());
 
-            List<Attribute> attributes = getAllAttributeByListId(attributeIdList);
-            List<AttributeTerm> attributeTerms = getAllAttributeTermByListId(attributeTermIdList);
+                attributeRepository.save(attribute);
 
-            variations.add(Variation.builder()
-                    .attributes(attributes)
-                    .attributeTerms(attributeTerms)
-                    .product(product)
-                    .build());
+                AttributeTerm attributeTerm = getAttributeTermByNameOrElseCreateNew(attributeRequest.term(), attribute);
 
-            attributesForProduct.addAll(attributes);
-        });
+                attributeTermRepository.save(attributeTerm);
+
+                return VariationAttribute.builder()
+                        .variation(variation)
+                        .attributeTerm(attributeTerm)
+                        .build();
+            }).toList();
+
+            variation.setAttributes(variationAttributes);
+            variation.setProduct(product);
+
+            return variation;
+        }).toList();
 
         product.setVariations(variations);
-        product.setAttributes(attributesForProduct.stream().toList());
         productRepository.save(product);
 
         log.info("for debug");
 
         return "ok";
+    }
+
+    AttributeTerm getAttributeTermByNameOrElseCreateNew(String name, Attribute attribute) {
+        log.info("getAttributeByName={}", name);
+
+        return attributeTermRepository.findByNameAndAttribute(name, attribute).orElseGet(() -> AttributeTerm.builder()
+                .name(name)
+                .attribute(attribute)
+                .build());
+    }
+
+    Attribute getAttributeByNameOrElseCreateNew(String name) {
+        log.info("getAttributeByName={}", name);
+
+        return attributeRepository.findByName(name).orElseGet(() -> Attribute.builder()
+                .name(name)
+                .build());
     }
 
     List<Attribute> getAllAttributeByListId(List<Long> id) {

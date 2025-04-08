@@ -36,13 +36,13 @@ public class Variation extends AuditEntity<Long> {
     String sku;
 
     @Column(name = "price")
-    String price;
+    Double price;
 
     @Column(name = "regular_price")
-    String regularPrice;
+    Double regularPrice;
 
     @Column(name = "sale_price")
-    String salePrice;
+    Double salePrice;
 
     @Column(name = "date_start_sale")
     LocalDateTime dateStartSale;
@@ -69,24 +69,13 @@ public class Variation extends AuditEntity<Long> {
     Boolean backOrderAllowed;
 
     @Column(name = "weight")
-    String weight;
+    Double weight;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     @JoinColumn(name = "product_id")
     Product product;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "variation_attribute",
-            joinColumns = @JoinColumn(name = "variation_id"),
-            inverseJoinColumns = @JoinColumn(name = "attribute_id"))
-    List<Attribute> attributes = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "variation_attribute_term",
-            joinColumns = @JoinColumn(name = "variation_id"),
-            inverseJoinColumns = @JoinColumn(name = "attribute_term_id"))
-    List<AttributeTerm> attributeTerms = new ArrayList<>();
+    @OneToMany(mappedBy = "variation", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<VariationAttribute> attributes = new ArrayList<>();
 }
