@@ -1,161 +1,112 @@
-//package com.ablueit.ecommerce.model;
-//
-//import jakarta.persistence.*;
-//import lombok.AllArgsConstructor;
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.Setter;
-//
-//import java.math.BigDecimal;
-//import java.time.LocalDateTime;
-//import java.util.List;
-//
-//@Entity
-//@Table(name = "products")
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
-//public class Product {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//
-//    @Column(nullable = false, unique = true)
-//    private String sku; // Mã SKU sản phẩm chính
-//
-//    @Column(nullable = false)
-//    private String name; // Tên sản phẩm
-//
-//    @Column(columnDefinition = "TEXT")
-//    private String description; // Mô tả sản phẩm
-//
-//    @Column(columnDefinition = "TEXT")
-//    private String shortDescription; // Mô tả sản phẩm
-//
-//    @Column(nullable = false)
-//    private BigDecimal price; // Giá sản phẩm
-//
-//    private BigDecimal salePrice; // Giá khuyến mãi
-//
-//    private Boolean isVariable; // TRUE nếu sản phẩm có biến thể (size, màu sắc)
-//
-//    private Integer stockQuantity; // Số lượng tồn kho tổng (chỉ áp dụng cho sản phẩm đơn)
-//
-//    private Boolean isInStock; // Còn hàng hay không
-//
-//    private String status; // Trạng thái sản phẩm: "published", "draft", "pending"
-//
-// //   private String taxClass; // Loại thuế
-//
-//    @ManyToOne
-//    @JoinColumn(name = "category_id", nullable = false)
-//    private Categories category; // Sản phẩm thuộc danh mục nào
-//
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ProductImage> images; // Danh sách ảnh sản phẩm
-//
-////    @ManyToMany
-////    @JoinTable(
-////            name = "product_tags",
-////            joinColumns = @JoinColumn(name = "product_id"),
-////            inverseJoinColumns = @JoinColumn(name = "tag_id")
-////    )
-////    private List<Tag> tags; // Thẻ sản phẩm (tags giống WooCommerce)
-//
-////    @ManyToOne
-////    @JoinColumn(name = "brand_id")
-////    private Brand brand; // Nhãn hiệu sản phẩm (tương tự WooCommerce)
-//
-//    @ManyToOne
-//    @JoinColumn(name = "store_id", nullable = false)
-//    private Store store;
-//    @OneToMany(mappedBy = "parentProduct", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ProductVariation> variations; // Danh sách các biến thể (size, màu)
-//
-//    @Column(nullable = false, updatable = false)
-//    private LocalDateTime createdAt = LocalDateTime.now(); // Ngày tạo
-//
-//    private LocalDateTime updatedAt; // Ngày cập nhật
-//}
-
-
-
-
-
-
-
-
 package com.ablueit.ecommerce.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ablueit.ecommerce.enums.ProductStatus;
+import com.ablueit.ecommerce.enums.StockStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "products")
 @Getter
 @Setter
+@ToString
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+@Table(name = "product")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Product extends AuditEntity<Long> {
 
     @Id
+    @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @Column(nullable = false, unique = true)
-    private String sku;
+    @Column(name = "name", nullable = false)
+    String name;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "slug")
+    String slug;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(name = "permalink")
+    String permalink;
 
-    @Column(columnDefinition = "TEXT")
-    private String shortDescription;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    ProductStatus status = ProductStatus.PUBLISHED;
 
-    @Column(nullable = false)
-    private Double price;
+    @Column(name = "description")
+    String description;
 
-    private Double salePrice;
+    @Column(name = "short_description")
+    String shortDescription;
 
-    private Boolean isVariable; // TRUE nếu có biến thể
+    @Column(name = "sku")
+    String sku;
 
-//    private Integer stockQuantity;
+    @Column(name = "price")
+    Double price; // current product price
 
-    private Boolean isInStock;
+    @Column(name = "regular_price")
+    Double regularPrice; // product regular price
 
-    private String status; // published, draft, pending
+    @Column(name = "sale_price")
+    Double salePrice;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Categories category;
+    @Column(name = "date_start_sale")
+    LocalDateTime dateStartSale;
+
+    @Column(name = "date_end_sale")
+    LocalDateTime dateEndSale;
+
+    @Column(name = "is_on_sale")
+    Boolean isOnSale;
+
+    @Column(name = "total_sale")
+    Integer totalSale;
+
+    @Column(name = "stock_quantity")
+    Integer stockQuantity;
+
+    @Column(name = "stock_status")
+    StockStatus stockStatus = StockStatus.IN_STOCK;
+
+    @Column(name = "back_order_allowed")
+    Boolean backOrderAllowed;
+
+    @Column(name = "weight")
+    String weight;
+
+    @Column(name = "average_rating")
+    String averageRating;
+
+    @Column(name = "rating_count")
+    Integer ratingCount;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<ProductImage> images;
+    @ToString.Exclude
+    List<ProductImage> productImages;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    private Store store;
+    @OneToMany(mappedBy = "product")
+    @ToString.Exclude
+    private List<Categories> categories;
 
-    @OneToMany(mappedBy = "parentProduct", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<ProductVariation> variations;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    private LocalDateTime updatedAt;
-
+<<<<<<< HEAD
      @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariant> variants = new ArrayList<>();
+=======
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    List<Variation> variations = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JoinColumn(name = "store_id")
+    Store store;
+>>>>>>> dev-vandunxg
 }
+

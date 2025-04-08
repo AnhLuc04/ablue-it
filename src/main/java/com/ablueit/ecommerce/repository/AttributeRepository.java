@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface AttributeRepository extends JpaRepository<Attribute,Long> {
     // Tìm thuộc tính theo tên
     Optional<Attribute> findByName(String name);
+
+    Boolean existsByName(String name);
 }

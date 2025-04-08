@@ -14,4 +14,6 @@ public interface CategoriesRepository extends JpaRepository<Categories, Long> {
     List<Categories> findByStore(Store store);
 
     Optional<Categories> findById(Long id);
+
+    Optional<Categories> findByName(String name);
 }

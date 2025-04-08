@@ -1,5 +1,6 @@
 package com.ablueit.ecommerce.model;
 
+import com.ablueit.ecommerce.enums.ImageType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,6 +8,7 @@ import lombok.*;
 @Table(name = "product_images")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductImage {
@@ -17,11 +19,13 @@ public class ProductImage {
 
     private String imageUrl; // URL ảnh sản phẩm
 
+    private ImageType imageType;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product; // Liên kết đến sản phẩm chính (nếu có)
 
     @ManyToOne
     @JoinColumn(name = "variation_id")
-    private ProductVariation variation; // Liên kết đến biến thể (nếu có)
+    private Variation variation; // Liên kết đến biến thể (nếu có)
 }
