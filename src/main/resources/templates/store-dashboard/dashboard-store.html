@@ -1,63 +1,276 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Cửa Hàng</title>
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <title>Store Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            background-color: #EF4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
         }
 
-        .navbar {
-            background-color: #1976d2;
+        .dropdown:hover .dropdown-menu {
+            display: block;
         }
 
-        .navbar-brand, .nav-link {
-            color: white !important;
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
-        .container {
-            text-align: center;
-            margin-top: 50px;
+        .nav-item-with-submenu {
+            position: relative;
+        }
+
+        .submenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 200px;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 10;
+            display: none;
+        }
+
+        .nav-item-with-submenu:hover .submenu {
+            display: block;
+        }
+
+        .submenu-item {
+            padding: 0.5rem 1rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            display: block;
+            transition: all 0.2s;
+        }
+
+        .submenu-item:hover {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .mobile-submenu {
+            display: none;
+            padding-left: 1rem;
+        }
+
+        .mobile-submenu-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .mobile-submenu-toggle:after {
+            content: '+';
+            font-size: 1rem;
+        }
+
+        .mobile-submenu-toggle.active:after {
+            content: '-';
         }
     </style>
 </head>
-<body>
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Dashboard</a>
-        <button class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<body class="bg-gray-100">
+<!-- Header -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Left section - Logo and navigation -->
+            <div class="flex items-center space-x-8">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a class="flex items-center" href="#">
+                        <i class="fas fa-store text-indigo-600 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">StoreDash</span>
+                    </a>
+                </div>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{'/store/dashboard/' + ${store.id}}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{'/store/dashboard/' + ${store.id} + '/category'}">Category</a>
-                </li>
-                <li class="nav-item"><a class="nav-link" href="#">Order</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{'/variations/' + ${store.id}}">Variation</a></li>
-            </ul>
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a class="text-indigo-600 border-b-2 border-indigo-600 px-1 py-2 text-sm font-medium" href="#">Dashboard</a>
 
-            <!-- Nút Back to Seller bên phải -->
-            <a class="btn btn-outline-light" th:href="@{/seller/dashboard}">Back to Seller</a>
+                    <!-- Products with submenu -->
+                    <div class="nav-item-with-submenu">
+                        <a class="text-gray-500 hover:text-gray-700 px-1 py-2 text-sm font-medium flex items-center"
+                           href="#">
+                            Products
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </a>
+                        <div class="submenu">
+                            <a class="submenu-item" href="#">All Products</a>
+                            <a class="submenu-item" href="#">Categories</a>
+                            <a class="submenu-item" href="#">Inventory</a>
+                            <a class="submenu-item" th:href="@{'/products/create-variation-product/' + ${store.id}}">Add
+                                New</a>
+                        </div>
+                    </div>
+
+                    <a class="text-gray-500 hover:text-gray-700 px-1 py-2 text-sm font-medium" href="#">Orders</a>
+                    <a class="text-gray-500 hover:text-gray-700 px-1 py-2 text-sm font-medium" href="#">Customers</a>
+                    <a class="text-gray-500 hover:text-gray-700 px-1 py-2 text-sm font-medium" href="#">Analytics</a>
+                </nav>
+            </div>
+
+            <!-- Right section - Search and user menu -->
+            <div class="flex items-center space-x-4">
+                <!-- Search -->
+                <div class="relative hidden md:block">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input class="search-input block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                           placeholder="Search..."
+                           type="text">
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button aria-controls="mobile-menu"
+                            aria-expanded="false"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" onclick="toggleMobileMenu()" type="button">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Notifications -->
+                <div class="relative">
+                    <button class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative"
+                            type="button">
+                        <span class="sr-only">View notifications</span>
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+
+                <!-- User dropdown -->
+                <div class="relative dropdown">
+                    <button aria-expanded="false" aria-haspopup="true" class="flex items-center space-x-2 focus:outline-none"
+                            id="user-menu-button" type="button">
+                        <img alt=""
+                             class="h-8 w-8 rounded-full"
+                             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                        <span class="hidden md:inline text-sm font-medium text-gray-700">John Doe</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500 hidden md:inline"></i>
+                    </button>
+
+                    <!-- Dropdown menu -->
+                    <div aria-labelledby="user-menu-button"
+                         aria-orientation="vertical" class="dropdown-menu hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu">
+                        <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="#" role="menuitem">Your
+                            Profile</a>
+                        <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="#" role="menuitem">Settings</a>
+                        <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="#" role="menuitem">Sign
+                            out</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</nav>
+
+    <!-- Mobile menu -->
+    <div class="md:hidden hidden" id="mobile-menu">
+        <div class="pt-2 pb-3 space-y-1">
+            <a class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+               href="#">Dashboard</a>
+
+            <!-- Products with mobile submenu -->
+            <div class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+                <button class="mobile-submenu-toggle w-full text-left" onclick="toggleMobileSubmenu(this)">
+                    Products
+                </button>
+                <div class="mobile-submenu">
+                    <a class="block py-2 pl-4 text-gray-600 hover:text-gray-800" href="#">All Products</a>
+                    <a class="block py-2 pl-4 text-gray-600 hover:text-gray-800" href="#">Categories</a>
+                    <a class="block py-2 pl-4 text-gray-600 hover:text-gray-800" href="#">Inventory</a>
+                    <a class="block py-2 pl-4 text-gray-600 hover:text-gray-800" href="#">Add New</a>
+                </div>
+            </div>
+
+            <a class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+               href="#">Orders</a>
+            <a class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+               href="#">Customers</a>
+            <a class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+               href="#">Analytics</a>
+        </div>
+        <div class="pt-4 pb-3 border-t border-gray-200">
+            <div class="flex items-center px-4">
+                <div class="flex-shrink-0">
+                    <img alt=""
+                         class="h-10 w-10 rounded-full"
+                         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                </div>
+                <div class="ml-3">
+                    <div class="text-base font-medium text-gray-800">John Doe</div>
+                    <div class="text-sm font-medium text-gray-500">john@example.com</div>
+                </div>
+            </div>
+            <div class="mt-3 space-y-1">
+                <a class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                   href="#">Your
+                    Profile</a>
+                <a class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                   href="#">Settings</a>
+                <a class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                   href="#">Sign
+                    out</a>
+            </div>
+        </div>
+    </div>
+</header>
 
 
-<div class="container">
-    <h1>Welcome [[${store.name}]]</h1>
-</div>
+<script>
+    // Toggle mobile menu
+    function toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    // Toggle mobile submenu
+    function toggleMobileSubmenu(button) {
+        button.classList.toggle('active');
+        const submenu = button.nextElementSibling;
+        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (event) {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(event.target)) {
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu) menu.classList.add('hidden');
+            }
+        });
+    });
+
+    // Toggle dropdown menu
+    const userButton = document.getElementById('user-menu-button');
+    if (userButton) {
+        userButton.addEventListener('click', function () {
+            const menu = this.closest('.dropdown').querySelector('.dropdown-menu');
+            menu.classList.toggle('hidden');
+        });
+    }
+</script>
 </body>
 </html>
