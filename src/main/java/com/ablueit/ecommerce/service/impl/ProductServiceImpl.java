@@ -7,6 +7,9 @@ import com.ablueit.ecommerce.exception.ResourceNotFoundException;
 import com.ablueit.ecommerce.model.*;
 import com.ablueit.ecommerce.payload.request.ProductRequest;
 import com.ablueit.ecommerce.payload.request.VariationRequest;
+import com.ablueit.ecommerce.payload.response.AttributeResponse;
+import com.ablueit.ecommerce.payload.response.ProductResponse;
+import com.ablueit.ecommerce.payload.response.VariationResponse;
 import com.ablueit.ecommerce.repository.*;
 import com.ablueit.ecommerce.service.ProductService;
 import lombok.AccessLevel;
@@ -112,7 +115,50 @@ public class ProductServiceImpl implements ProductService {
         return "ok";
     }
 
-    public ProductImage uploadImage(String base64Image, Product product, ImageType type) throws IOException {
+    @Override
+    public ProductResponse getProduct(Long id) {
+        log.info("getProduct={}", id);
+
+        Product product = getProductById(id);
+
+        List<VariationResponse> variationResponses = product.getVariations().stream().map(x -> {
+            List<AttributeResponse> attributeResponses = x.getAttributes().stream()
+                    .map(variationAttribute -> {
+                        return AttributeResponse.builder()
+                                .name(variationAttribute.getAttributeTerm().getAttribute().getName())
+                                .term(variationAttribute.getAttributeTerm().getName())
+                                .build();
+                    }).toList();
+            return VariationResponse.builder()
+                    .attributes(attributeResponses)
+                    .price(x.getPrice())
+                    .stock(Long.valueOf(x.getStockQuantity()))
+                    .build();
+        }).toList();
+
+        return ProductResponse.builder()
+                .productName(product.getName())
+                .productDescription(product.getDescription())
+                .productShortDescription(product.getShortDescription())
+                .regularPrice(product.getRegularPrice())
+                .salePrice(product.getSalePrice())
+//                .category(category)
+                .sku(product.getSku())
+                .variationsData(variationResponses)
+                .stockQuantity(product.getStockQuantity().longValue())
+                .stockStatus(product.getStockStatus().name())
+//                .backorders(product.getBackOrderAllowed() ? "yes" : "no")
+                .build();
+    }
+
+    private Product getProductById(Long id) {
+        log.info("getProductById={}", id);
+
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("product not found"));
+    }
+
+    private ProductImage uploadImage(String base64Image, Product product, ImageType type) throws IOException {
         try {
             if (base64Image.contains(",")) {
                 base64Image = base64Image.split(",")[1];

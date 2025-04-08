@@ -139,9 +139,11 @@
     const selectedVariations = {};
     let productData = null;
 
+    const productId = [[${productId}]];
+
     async function fetchProductData() {
         try {
-            const res = await fetch('/products/get-product/1');
+            const res = await fetch(`/products/get-product/${productId}`);
             if (!res.ok) throw new Error('Failed to fetch');
             productData = await res.json();
             renderProduct(productData);

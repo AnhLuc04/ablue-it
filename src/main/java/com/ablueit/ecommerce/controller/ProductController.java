@@ -2,12 +2,9 @@ package com.ablueit.ecommerce.controller;
 
 import com.ablueit.ecommerce.exception.ResourceNotFoundException;
 import com.ablueit.ecommerce.model.Categories;
-import com.ablueit.ecommerce.model.Product;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.payload.request.ProductRequest;
-import com.ablueit.ecommerce.payload.response.AttributeResponse;
 import com.ablueit.ecommerce.payload.response.ProductResponse;
-import com.ablueit.ecommerce.payload.response.VariationResponse;
 import com.ablueit.ecommerce.repository.CategoriesRepository;
 import com.ablueit.ecommerce.repository.ProductRepository;
 import com.ablueit.ecommerce.repository.StoreRepository;
@@ -58,44 +55,18 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.addVariationProduct(request));
     }
 
-    @GetMapping("/show-product")
-    public String showProduct() throws IOException {
+    @GetMapping("/show-product/{id}")
+    public String showProduct(Model model, @PathVariable Long id) throws IOException {
+        log.info("GET /show-product/{}", id);
+
+        model.addAttribute("productId", id);
         return "product-dashboard/show-product";
     }
 
     @GetMapping(value = "/get-product/{id}", produces = "application/json")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable String id) {
-//        log.info("POST /create-variation-product={}", request.toString());
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
+        log.info("POST /get-product/{}", id);
 
-        Product product = productRepository.findById(1L).orElseThrow();
-
-        List<VariationResponse> variationResponses = product.getVariations().stream().map(x -> {
-            List<AttributeResponse> attributeResponses = x.getAttributes().stream().map(variationAttribute -> {
-                return AttributeResponse.builder()
-                        .name(variationAttribute.getAttributeTerm().getAttribute().getName())
-                        .term(variationAttribute.getAttributeTerm().getName())
-                        .build();
-            }).toList();
-            return VariationResponse.builder()
-                    .attributes(attributeResponses)
-                    .price(x.getPrice())
-                    .stock(Long.valueOf(x.getStockQuantity()))
-                    .build();
-        }).toList();
-
-
-        return ResponseEntity.ok().body(ProductResponse.builder()
-                .productName(product.getName())
-                .productDescription(product.getDescription())
-                .productShortDescription(product.getShortDescription())
-                .regularPrice(product.getRegularPrice())
-                .salePrice(product.getSalePrice())
-                .category("abc")
-                .sku(product.getSku())
-                .variationsData(variationResponses)
-                .stockQuantity(12L)
-                .stockStatus("ok")
-                .backorders("no")
-                .build());
+        return ResponseEntity.ok().body(productService.getProduct(id));
     }
 }
