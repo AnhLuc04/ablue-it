@@ -1,21 +1,257 @@
-<!-- cart/view.html -->
-<h2>Giỏ hàng</h2>
-<table>
-  <tr>
-    <th>Ảnh</th><th>Sản phẩm</th><th>Giá</th><th>Số lượng</th><th>Tổng</th><th>Xoá</th>
-  </tr>
-  <tr th:each="item : ${cart.items}">
-    <td><img th:src="${item.product.imageUrl}" width="50"/></td>
-    <td th:text="${item.product.name}"></td>
-    <td th:text="${item.product.price}"></td>
-    <td th:text="${item.quantity}"></td>
-    <td th:text="${item.quantity * item.product.price}"></td>
-    <td>
+<!--&lt;!&ndash; cart/view.html &ndash;&gt;-->
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <title>Giỏ hàng</title>-->
+<!--  <style>-->
+<!--        .cart-container {-->
+<!--            width: 80%;-->
+<!--            margin: auto;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+<!--        .cart-header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            padding: 10px 0;-->
+<!--            border-bottom: 2px solid #f0f0f0;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        .cart-item {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            padding: 15px 0;-->
+<!--            border-bottom: 1px solid #e0e0e0;-->
+<!--        }-->
+<!--        .cart-item img {-->
+<!--            width: 80px;-->
+<!--            height: auto;-->
+<!--            margin-right: 15px;-->
+<!--        }-->
+<!--        .cart-column {-->
+<!--            flex: 1;-->
+<!--            padding: 0 10px;-->
+<!--        }-->
+<!--        .cart-actions {-->
+<!--            margin-top: 20px;-->
+<!--            text-align: right;-->
+<!--        }-->
+<!--        .btn {-->
+<!--            padding: 8px 16px;-->
+<!--            border: none;-->
+<!--            background-color: #ee4d2d;-->
+<!--            color: white;-->
+<!--            cursor: pointer;-->
+<!--            margin-left: 10px;-->
+<!--        }-->
+<!--        .btn:hover {-->
+<!--            background-color: #d94424;-->
+<!--        }-->
+<!--        .total-section {-->
+<!--            text-align: right;-->
+<!--            font-size: 18px;-->
+<!--            font-weight: bold;-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        input[type=checkbox] {-->
+<!--            transform: scale(1.2);-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="cart-container">-->
+<!--  <h2>🛒 Giỏ hàng của bạn</h2>-->
+
+<!--  <div class="cart-header">-->
+<!--    <div style="width: 30px;"><input type="checkbox" /></div>-->
+<!--    <div class="cart-column">Sản phẩm</div>-->
+<!--    <div class="cart-column">Giá</div>-->
+<!--    <div class="cart-column">Số lượng</div>-->
+<!--    <div class="cart-column">Tổng</div>-->
+<!--    <div class="cart-column">Xoá</div>-->
+<!--  </div>-->
+
+<!--  <div th:each="item : ${cart.items}" class="cart-item">-->
+<!--    <div style="width: 30px;"><input type="checkbox" name="selected" /></div>-->
+<!--    <div class="cart-column" style="display: flex; align-items: center;">-->
+<!--      <img th:src="${item.product.imageUrl}" alt="Ảnh sản phẩm" />-->
+<!--      <span th:text="${item.product.name}"></span>-->
+<!--    </div>-->
+<!--    <div class="cart-column" th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></div>-->
+<!--    <div class="cart-column" th:text="${item.quantity}"></div>-->
+<!--    <div class="cart-column" th:text="${#numbers.formatDecimal(item.quantity * item.product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></div>-->
+<!--    <div class="cart-column">-->
+<!--      <form method="post" th:action="@{/cart/remove}">-->
+<!--        <input type="hidden" name="itemId" th:value="${item.id}" />-->
+<!--        <button class="btn" type="submit">Xoá</button>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div class="total-section">-->
+<!--    Tổng tiền: <span th:text="${#numbers.formatDecimal(cart.total, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>-->
+<!--  </div>-->
+
+<!--  <div class="cart-actions">-->
+<!--    <button class="btn">Chọn tất cả</button>-->
+<!--    <button class="btn">Cập nhật</button>-->
+<!--    <button class="btn">Thanh toán</button>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Giỏ hàng</title>
+  <style>
+    .cart-container {
+      width: 80%;
+      margin: auto;
+      font-family: Arial, sans-serif;
+    }
+    .cart-header {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 2px solid #f0f0f0;
+      font-weight: bold;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .cart-item img {
+      width: 80px;
+      height: auto;
+      margin-right: 15px;
+    }
+    .cart-column {
+      flex: 1;
+      padding: 0 10px;
+    }
+    .cart-actions {
+      margin-top: 20px;
+      text-align: right;
+    }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      background-color: #ee4d2d;
+      color: white;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .btn:hover {
+      background-color: #d94424;
+    }
+    .total-section {
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    input[type=checkbox] {
+      transform: scale(1.2);
+    }
+    .discount-form {
+      margin-top: 30px;
+      text-align: right;
+    }
+    .discount-form input[type=text] {
+      padding: 6px 10px;
+      width: 200px;
+    }
+    .message {
+      color: green;
+      margin-top: 10px;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="cart-container">
+  <h2>🛒 Giỏ hàng của bạn</h2>
+
+  <!-- Header -->
+  <div class="cart-header">
+    <div style="width: 30px;"><input type="checkbox" /></div>
+    <div class="cart-column">Sản phẩm</div>
+    <div class="cart-column">Giá</div>
+    <div class="cart-column">Số lượng</div>
+    <div class="cart-column">Tổng</div>
+    <div class="cart-column">Xoá</div>
+  </div>
+
+  <!-- Items -->
+  <div th:each="item : ${cart.items}" class="cart-item">
+    <div style="width: 30px;"><input type="checkbox" name="selected" /></div>
+    <div class="cart-column" style="display: flex; align-items: center;">
+      <img th:src="${item.product.imageUrl}" alt="Ảnh sản phẩm" />
+      <span th:text="${item.product.name}"></span>
+    </div>
+    <div class="cart-column" th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></div>
+    <div class="cart-column" th:text="${item.quantity}"></div>
+    <div class="cart-column" th:text="${#numbers.formatDecimal(item.quantity * item.product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></div>
+    <div class="cart-column">
       <form method="post" th:action="@{/cart/remove}">
         <input type="hidden" name="itemId" th:value="${item.id}" />
-        <button type="submit">Xoá</button>
+        <button class="btn" type="submit">Xoá</button>
       </form>
-    </td>
-  </tr>
-</table>
-<h3>Tổng: <span th:text="${cart.total}"></span></h3>
+    </div>
+  </div>
+
+  <!-- Discount Code -->
+  <div class="discount-form">
+    <form method="post" th:action="@{/cart/apply-discount}">
+      <input type="text" name="code" placeholder="Nhập mã giảm giá" required />
+      <button type="submit" class="btn">Áp dụng</button>
+    </form>
+
+    <div th:if="${discountApplied}" class="message">
+      ✅ Mã giảm giá đã áp dụng:
+      <span th:text="${isPercentage ? 'Giảm ' + discountAmount + '%' : 'Giảm ' + #numbers.formatDecimal(discountAmount, 0, 'COMMA', 0, 'POINT') + ' ₫'}"></span><br/>
+      <strong>Tổng sau giảm: </strong>
+      <span th:text="${#numbers.formatDecimal(discountedTotal, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+    </div>
+
+    <div th:if="${discountError}" class="error">
+      ❌ <span th:text="${discountError}"></span>
+    </div>
+  </div>
+
+  <!-- Tổng tiền -->
+  <div class="total-section">
+    Tổng tiền: <span th:text="${#numbers.formatDecimal(cart.total, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+  </div>
+
+  <!-- Actions -->
+  <div class="cart-actions">
+    <button class="btn">Chọn tất cả</button>
+    <button class="btn">Cập nhật</button>
+    <button class="btn">Thanh toán</button>
+  </div>
+</div>
+</body>
+</html>

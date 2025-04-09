@@ -92,13 +92,12 @@ public class Product extends AuditEntity<Long> {
     List<ProductImage> productImages;
 
     @OneToMany(mappedBy = "product")
-    @ToString.Exclude
     private List<Categories> categories;
 
-<<<<<<< HEAD
+
      @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariant> variants = new ArrayList<>();
-=======
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     List<Variation> variations = new ArrayList<>();
@@ -107,6 +106,6 @@ public class Product extends AuditEntity<Long> {
     @ToString.Exclude
     @JoinColumn(name = "store_id")
     Store store;
->>>>>>> dev-vandunxg
+
 }
 

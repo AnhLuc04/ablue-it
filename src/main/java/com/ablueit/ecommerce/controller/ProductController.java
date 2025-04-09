@@ -50,23 +50,17 @@ public class ProductController {
 
     @PostMapping("/create-variation-product/")
     public ResponseEntity<?> createVariationProduct(@RequestBody ProductRequest request) throws IOException {
-//        log.info("POST /create-variation-product={}", request.toString());
-
         return ResponseEntity.ok().body(productService.addVariationProduct(request));
     }
 
     @GetMapping("/show-product/{id}")
     public String showProduct(Model model, @PathVariable Long id) throws IOException {
         log.info("GET /show-product/{}", id);
-
         model.addAttribute("productId", id);
         return "product-dashboard/show-product";
     }
-
     @GetMapping(value = "/get-product/{id}", produces = "application/json")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
-        log.info("POST /get-product/{}", id);
-
         return ResponseEntity.ok().body(productService.getProduct(id));
     }
 }

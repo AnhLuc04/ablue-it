@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -26,12 +27,23 @@ public class CartController {
     private UserRepository userService;
 
     @GetMapping
-    public String showCart(Model model, Principal principal) {
-        Optional<User> user = userService.findByUsername(principal.getName());
-        Cart cart = cartService.getCartForUser(user.get());
-       // model.addAttribute("cart", cart);
-        return "cart/view";
+    public ModelAndView showCart(Principal principal) {
+        ModelAndView modelAndView = new ModelAndView();
+
+        Optional<User> userOptional = userService.findByUsername(principal.getName());
+        if (userOptional.isEmpty()) {
+            modelAndView.setViewName("redirect:/login?error=userNotFound");
+            return modelAndView;
+        }
+
+        Cart cart = cartService.getCartForUser(userOptional.get());
+
+        modelAndView.setViewName("cart/view"); // đường dẫn tới view Thymeleaf
+        modelAndView.addObject("cart", cart);  // giống với model.addAttribute()
+
+        return modelAndView;
     }
+
 
     @PostMapping("/add")
     public String addToCart(@RequestParam Long productId, @RequestParam int quantity, Principal principal) {
