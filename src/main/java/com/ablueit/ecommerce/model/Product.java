@@ -39,7 +39,7 @@ public class Product extends AuditEntity<Long> {
     @Enumerated(EnumType.STRING)
     ProductStatus status = ProductStatus.PUBLISHED;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     String description;
 
     @Column(name = "short_description")

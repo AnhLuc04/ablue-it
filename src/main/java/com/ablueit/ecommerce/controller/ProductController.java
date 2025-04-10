@@ -61,6 +61,7 @@ public class ProductController {
     }
     @GetMapping(value = "/get-product/{id}", produces = "application/json")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
+       log.info("GET /get-product/{}", id);
         return ResponseEntity.ok().body(productService.getProduct(id));
     }
 }
