@@ -31,8 +31,13 @@ public class Order {
     private String status; // PENDING, SHIPPED, COMPLETED
 
     private BigDecimal totalAmount;
+    @OneToOne(cascade = CascadeType.ALL)
+    private BillingAddress billingAddress;
 
-    // Một đơn hàng có nhiều sản phẩm
+    @OneToOne(cascade = CascadeType.ALL)
+    private ShippingAddress shippingAddress;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
+
 }
