@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     ProductImageRepository productImageRepository;
 
     String FOLDER_UPLOAD = "/home/vandunxg/Documents/resource_image";
-    String WEB_URL = "http://localhost:8081/uploads/";
+    String WEB_URL = "https://aware-only-stork.ngrok-free.app/uploads/";
 
     @Override
     public String addVariationProduct(ProductRequest request) throws IOException {
@@ -98,12 +99,12 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductImage> productImages = new ArrayList<>();
 
-//        productImages.add(uploadImage(request.primaryImage(),product, ImageType.PRIMARY));
-//        productImages.add(uploadImage(request.sizeGuideImage(), product, ImageType.SIZE_GUIDE));
-//
-//        for (String x : request.galleryImages()) {
-//            productImages.add(uploadImage(x, product, ImageType.DEFAULT));
-//        }
+        productImages.add(saveBase64Image(request.primaryImage(),product, ImageType.PRIMARY));
+        productImages.add(saveBase64Image(request.sizeGuideImage(), product, ImageType.SIZE_GUIDE));
+
+        for (String x : request.galleryImages()) {
+            productImages.add(saveBase64Image(x, product, ImageType.DEFAULT));
+        }
 
         product.setCategories(List.of(categories));
         product.setProductImages(productImages);
@@ -136,63 +137,62 @@ public class ProductServiceImpl implements ProductService {
                     .build();
         }).toList();
 
+        ProductImage primaryImage = productImageRepository.findByProductAndImageType(product, ImageType.PRIMARY);
+        ProductImage sizeGuide = productImageRepository.findByProductAndImageType(product, ImageType.SIZE_GUIDE);
+        List<ProductImage> galleryImages = productImageRepository.findAllByProductAndImageType(product, ImageType.DEFAULT);
+
         return ProductResponse.builder()
                 .productName(product.getName())
                 .productDescription(product.getDescription())
                 .productShortDescription(product.getShortDescription())
                 .regularPrice(product.getRegularPrice())
                 .salePrice(product.getSalePrice())
-//                .category(category)
+                .primaryImage(primaryImage.getImageUrl())
+                .sizeGuideImage(sizeGuide.getImageUrl())
+                .galleryImages(galleryImages.stream().map(ProductImage::getImageUrl).toList())
+//                .category()
                 .sku(product.getSku())
                 .variationsData(variationResponses)
-                .stockQuantity(product.getStockQuantity().longValue())
+//                .stockQuantity(product.getStockQuantity().longValue())
                 .stockStatus(product.getStockStatus().name())
 //                .backorders(product.getBackOrderAllowed() ? "yes" : "no")
                 .build();
     }
 
-    private Product getProductById(Long id) {
+    Product getProductById(Long id) {
         log.info("getProductById={}", id);
 
         return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("product not found"));
     }
 
-    private ProductImage uploadImage(String base64Image, Product product, ImageType type) throws IOException {
-        try {
-            if (base64Image.contains(",")) {
-                base64Image = base64Image.split(",")[1];
-            }
-
-            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-
-
-            File resourceDirectory = new File(FOLDER_UPLOAD);
-            if (!resourceDirectory.exists() && !resourceDirectory.mkdirs()) {
-                throw new IOException("cant create folder");
-            }
-
-            String fileName = UUID.randomUUID() + ".jpg";
-            File file = new File(resourceDirectory, fileName);
-
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                log.info("write file");
-                fos.write(imageBytes);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-
-            log.info("debug");
-
-            return ProductImage.builder()
-                    .imageUrl("/uploads/" + fileName)
-                    .product(product)
-                    .imageType(type)
-                    .build();
-
-        } catch (IllegalArgumentException | IOException e) {
-            throw new IOException("❌ Lỗi khi upload ảnh: " + e.getMessage());
+    ProductImage saveBase64Image(String base64Image, Product product, ImageType type) throws IOException {
+        if (base64Image == null || base64Image.isEmpty()) {
+            return null;
         }
+
+        String base64Data = base64Image.split(",")[1];
+        byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+
+        String filename = UUID.randomUUID() + ".jpg";
+        File uploadPath = new File(FOLDER_UPLOAD);
+        if (!uploadPath.exists()) {
+            boolean dirsCreated = uploadPath.mkdirs();
+            if (!dirsCreated) {
+                throw new IOException("Không thể tạo thư mục lưu trữ: " + FOLDER_UPLOAD);
+            }
+        }
+
+        File file = new File(uploadPath, filename);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(imageBytes);
+        }
+
+        return ProductImage.builder()
+                .imageUrl(WEB_URL + filename)
+                .product(product)
+                .imageType(type)
+                .build();
     }
 
     Categories getCategoryByName(String name) {

@@ -25,5 +25,7 @@ public class ProductResponse {
     String stockStatus;
     String backorders;
     List<VariationResponse> variationsData;
-
+    String primaryImage;
+    String sizeGuideImage;
+    List<String> galleryImages;
 }
