@@ -1,35 +1,28 @@
-package com.ablueit.ecommerce.controller;
-
-import com.ablueit.ecommerce.model.CartItem;
-import com.ablueit.ecommerce.model.Order;
-import com.ablueit.ecommerce.payload.request.CartItemRequest;
-import com.ablueit.ecommerce.payload.request.CheckoutForm;
-import com.ablueit.ecommerce.payload.request.CheckoutItemView;
-import com.ablueit.ecommerce.repository.DiscountCodeRepository;
-import com.ablueit.ecommerce.repository.UserRepository;
-import com.ablueit.ecommerce.service.CartService;
+//package com.ablueit.ecommerce.controller;
+//
+//import com.ablueit.ecommerce.model.CartItem;
+//import com.ablueit.ecommerce.model.Order;
+//import com.ablueit.ecommerce.payload.request.CheckoutForm;
+//import com.ablueit.ecommerce.service.CartService;
 //import com.ablueit.ecommerce.service.PayPalService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import com.paypal.api.payments.Links;
-import com.paypal.api.payments.Payment;
-import com.paypal.base.rest.PayPalRESTException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.math.BigDecimal;
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-@Controller
-@RequestMapping("/checkout")
-public class CheckoutController {
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//
+//import com.paypal.api.payments.Links;
+//import com.paypal.api.payments.Payment;
+//import com.paypal.base.rest.PayPalRESTException;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import java.math.BigDecimal;
+//import java.security.Principal;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//@Controller
+//public class CheckoutController {
 //
 //    @Autowired
 //    private CartService cartService;
@@ -88,40 +81,4 @@ public class CheckoutController {
 //        Map<String, Object> result = payPalService.captureOrder(orderId);
 //        return ResponseEntity.ok(result);
 //    }
-
-
-
-
-
-
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private DiscountCodeRepository discountCodeRepository;
-
-
-    @PostMapping
-    public ResponseEntity<?> handleCheckout(@RequestBody List<CartItemRequest> items, HttpSession session) {
-        session.setAttribute("checkoutItems", items);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping
-    public ModelAndView showCheckoutPage(HttpSession session) {
-        List<CartItemRequest> checkoutItems = (List<CartItemRequest>) session.getAttribute("checkoutItems");
-
-        if (checkoutItems == null || checkoutItems.isEmpty()) {
-            return new ModelAndView("redirect:/cart");
-        }
-
-        List<CheckoutItemView> viewItems = cartService.buildCheckoutItems(checkoutItems);
-
-        ModelAndView mav = new ModelAndView("checkout/form");
-        mav.addObject("items", viewItems);
-        return mav;
-    }
-}
+//}

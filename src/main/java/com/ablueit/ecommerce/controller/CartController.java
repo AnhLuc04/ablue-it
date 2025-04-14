@@ -1,20 +1,16 @@
 package com.ablueit.ecommerce.controller;
 
+import ch.qos.logback.core.model.Model;
 import com.ablueit.ecommerce.model.Cart;
-import com.ablueit.ecommerce.model.DiscountCode;
+import com.ablueit.ecommerce.model.CartItem;
 import com.ablueit.ecommerce.model.User;
-import com.ablueit.ecommerce.payload.request.CartItemRequest;
-import com.ablueit.ecommerce.payload.request.CheckoutItemView;
-import com.ablueit.ecommerce.repository.DiscountCodeRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
 import com.ablueit.ecommerce.service.CartService;
-import jakarta.servlet.http.HttpSession;
+
+import com.ablueit.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +20,77 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+//@Controller
+//@RequestMapping("/cart")
+//public class CartController {
+//    @Autowired
+//    private CartService cartService;
+//    @Autowired
+//    private UserRepository userService;
+//
+//    @GetMapping
+//    public ModelAndView showCart(Principal principal) {
+//        ModelAndView modelAndView = new ModelAndView();
+//
+//        Optional<User> userOptional = userService.findByUsername(principal.getName());
+//        if (userOptional.isEmpty()) {
+//            modelAndView.setViewName("redirect:/login?error=userNotFound");
+//            return modelAndView;
+//        }
+//
+//        Cart cart = cartService.getCartForUser(userOptional.get());
+//
+//        modelAndView.setViewName("cart/view"); // đường dẫn tới view Thymeleaf
+//        modelAndView.addObject("cart", cart);  // giống với model.addAttribute()
+//
+//        return modelAndView;
+//    }
+//
+//
+//    @PostMapping("/add")
+//    public String addToCart(@RequestParam Long productId, @RequestParam int quantity, Principal principal) {
+//        Optional<User> user = userService.findByUsername(principal.getName());
+//        cartService.addToCart(user.get(), productId, quantity);
+//        return "redirect:/cart";
+//    }
+//
+//    @PostMapping("/remove")
+//    public String removeItem(@RequestParam Long itemId, Principal principal) {
+//        Optional<User> user = userService.findByUsername(principal.getName());
+//        cartService.removeItem(user.get(), itemId);
+//        return "redirect:/cart";
+//    }
+//
+//
+//
+//    @PostMapping("/cart/update-ajax")
+//    @ResponseBody
+//    public ResponseEntity<Map<String, Object>> updateCartAjax(
+//            @RequestParam Long itemId,
+//            @RequestParam String action,
+//            Principal principal) {
+//
+//        // xử lý tăng/giảm số lượng, cập nhật giỏ hàng
+//        Optional<User> user=userService.findByUsername(principal.getName());
+//        int newQuantity = cartService.updateItemQuantity(principal.getName(), itemId, action);
+//        BigDecimal totalPrice = cartService.calculateTotal(principal.getName());
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("quantity", newQuantity);
+//        response.put("totalPrice", totalPrice);
+//
+//        return ResponseEntity.ok(response);
+//    }
+//
+//}
+
+
+
+
+
+
+
 
 @Controller
 @RequestMapping("/cart")
@@ -35,8 +102,6 @@ public class CartController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private DiscountCodeRepository discountCodeRepository;
 
     @GetMapping
     public ModelAndView showCart(Principal principal) {
@@ -50,19 +115,20 @@ public class CartController {
 
         Cart cart = cartService.getCartForUser(userOptional.get());
 
-        modelAndView.setViewName("cart/view");
-        modelAndView.addObject("cart", cart);
+        modelAndView.setViewName("cart/view"); // đường dẫn tới view Thymeleaf
+        modelAndView.addObject("cart", cart);  // giống với model.addAttribute()
         modelAndView.addObject("totalPrice", cart.getTotal());
 
         return modelAndView;
     }
 
     @PostMapping("/add")
-    public String addToCart(@RequestParam Long variantId, @RequestParam int quantity, Principal principal) {
+    public String addToCart(@RequestParam Long productId, @RequestParam int quantity, Principal principal) {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
-        cartService.addToCart(user, variantId, quantity); // sửa thành variantId
+        cartService.addToCart(user, productId, quantity);
         return "redirect:/cart";
     }
+
 
     @PostMapping("/update-ajax")
     @ResponseBody
@@ -86,6 +152,9 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
+
+
+
     @PostMapping("/remove-unchecked")
     @ResponseBody
     public ResponseEntity<?> removeUnchecked(@RequestBody List<Long> uncheckedIds, Principal principal) {
@@ -93,93 +162,4 @@ public class CartController {
         cartService.removeUnchecked(user, uncheckedIds);
         return ResponseEntity.ok().build();
     }
-
-
-
-    @GetMapping("/discounts")
-    @ResponseBody
-    public List<DiscountCode> getAllActiveDiscountsForUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return discountCodeRepository.findByActiveTrueAndUserUsername(username);
-    }
-
-    // Nếu cần thêm xử lý mã giảm giá sau này
 }
-
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//import lombok.RequiredArgsConstructor;
-//@Controller
-//@RequestMapping("/cart")
-//@RequiredArgsConstructor
-//public class CartController {
-//
-//    private final CartService cartService;
-//    private final UserRepository userRepository;
-//
-//    // Thêm sản phẩm (variation) vào giỏ
-//    @PostMapping("/add")
-//    public String addToCart(@RequestParam Long variationId,
-//                            @RequestParam(defaultValue = "1") int quantity,
-//                            Principal principal) {
-//
-//        User user = userRepository.findByUsername(principal.getName())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        cartService.addToCart(user, variationId, quantity);
-//        return "redirect:/cart"; // Sau khi thêm, chuyển đến trang hiển thị giỏ hàng
-//    }
-//
-//    // Hiển thị giỏ hàng
-//    @GetMapping
-//    public String showCart(Model model, Principal principal) {
-//        User user = userRepository.findByUsername(principal.getName())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        Cart cart = cartService.getCartForUser(user);
-//        model.addAttribute("cart", cart);
-//        model.addAttribute("total", cartService.calculateTotal(cart));
-//
-//        return "cart/view"; // Trả về view Thymeleaf: resources/templates/cart/view.html
-//    }
-//
-////    // Cập nhật số lượng sản phẩm trong giỏ
-////    @PostMapping("/update")
-////    public String updateQuantity(@RequestParam Long itemId,
-////                                 @RequestParam int quantity,
-////                                 Principal principal) {
-////
-////        User user = userRepository.findByUsername(principal.getName())
-////                .orElseThrow(() -> new RuntimeException("User not found"));
-////
-////        cartService.updateQuantity(user, itemId, quantity);
-////        return "redirect:/cart";
-////    }
-//
-////    // Xóa sản phẩm khỏi giỏ
-////    @PostMapping("/remove")
-////    public String removeItem(@RequestParam Long itemId,
-////                             Principal principal) {
-////        User user = userRepository.findByUsername(principal.getName())
-////                .orElseThrow(() -> new RuntimeException("User not found"));
-////
-////        cartService.removeItem(user, itemId);
-////        return "redirect:/cart";
-////    }
-//}

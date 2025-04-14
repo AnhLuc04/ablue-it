@@ -1,4 +1,154 @@
 
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Giỏ hàng</title>-->
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--</head>-->
+<!--<body class="container py-5">-->
+
+<!--<h2 class="mb-4">🛒 Giỏ hàng của bạn</h2>-->
+
+<!--<form id="cart-form">-->
+<!--  <table class="table table-bordered text-center align-middle">-->
+<!--    <thead class="table-dark">-->
+<!--    <tr>-->
+<!--      <th><input type="checkbox" id="select-all" /></th>-->
+<!--      <th>Sản phẩm</th>-->
+<!--      <th>Giá</th>-->
+<!--      <th>Số lượng</th>-->
+<!--      <th>Thành tiền</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="item : ${cart.items}">-->
+<!--      <td>-->
+<!--        <input type="checkbox" class="item-checkbox" th:attr="data-id=${item.id}" />-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        <strong th:text="${item.product.name}">Tên sản phẩm</strong><br/>-->
+<!--        <small th:if="${item.product.salePrice lt item.product.regularPrice}" class="text-danger">-->
+<!--          🔥 Giảm còn-->
+<!--          <span th:text="${item.product.salePrice}">0</span>-->
+<!--          (<del th:text="${item.product.regularPrice}">0</del>)-->
+<!--        </small>-->
+<!--      </td>-->
+<!--      <td th:text="${item.product.salePrice}">0</td>-->
+<!--      <td>-->
+<!--        <div class="d-flex justify-content-center align-items-center gap-2">-->
+<!--          <button type="button" class="btn btn-outline-secondary btn-sm update-qty"-->
+<!--                  th:attr="data-id=${item.id},data-action='decrease'">-</button>-->
+<!--          <span th:attr="id='qty-' + ${item.id}" th:text="${item.quantity}">1</span>-->
+<!--          <button type="button" class="btn btn-outline-secondary btn-sm update-qty"-->
+<!--                  th:attr="data-id=${item.id},data-action='increase'">+</button>-->
+<!--        </div>-->
+<!--      </td>-->
+<!--      <td>-->
+<!--<span th:id="'subtotal-' + ${item.id}"-->
+<!--      th:text="${(item.product.salePrice != null ? item.product.salePrice : 0) * item.quantity}">0</span>-->
+
+<!--      </td>-->
+
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--  </table>-->
+<!--</form>-->
+
+<!--<div class="text-end mt-3">-->
+<!--  <h4>-->
+<!--    Tổng tiền: <span id="total-price">0</span>-->
+<!--  </h4>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--function calculateTotal() {-->
+<!--  let total = 0;-->
+<!--  $(".item-checkbox").each(function () {-->
+<!--    const itemId = $(this).data("id");-->
+<!--    const subtotalText = $("#subtotal-" + itemId).text().replace(" đ", "").replace(",", "");-->
+<!--    const subtotal = parseFloat(subtotalText);-->
+<!--    if (!isNaN(subtotal)) {-->
+<!--      total += subtotal;-->
+<!--    }-->
+<!--  });-->
+<!--  $("#total-price").text(total.toLocaleString() + " đ");-->
+<!--}-->
+
+<!--  $(document).ready(function () {-->
+<!--    // Tăng / Giảm số lượng-->
+<!--    $(".update-qty").click(function () {-->
+<!--      const itemId = $(this).data("id");-->
+<!--      const action = $(this).data("action");-->
+
+<!--      $.ajax({-->
+<!--        url: "/cart/update-ajax",-->
+<!--        method: "POST",-->
+<!--        data: {-->
+<!--          itemId: itemId,-->
+<!--          action: action-->
+<!--        },-->
+<!--     success: function (response) {-->
+<!--  if (response.quantity !== undefined) {-->
+<!--    $("#qty-" + itemId).text(response.quantity);-->
+
+<!--    // Đảm bảo subtotal là số rồi mới hiển thị-->
+<!--    if (response.subtotal !== undefined && !isNaN(response.subtotal)) {-->
+<!--      $("#subtotal-" + itemId).text(Number(response.subtotal).toLocaleString() + " đ");-->
+<!--    } else {-->
+<!--      console.warn("Subtotal không hợp lệ:", response.subtotal);-->
+<!--    }-->
+
+<!--    calculateTotal(); // cập nhật lại tổng-->
+<!--  }-->
+<!--}-->
+
+<!--      });-->
+<!--    });-->
+
+<!--    // Tính tổng khi chọn checkbox-->
+<!--    $(".item-checkbox, #select-all").on("change", function () {-->
+<!--      if ($(this).is("#select-all")) {-->
+<!--        $(".item-checkbox").prop("checked", this.checked);-->
+<!--      }-->
+<!--      calculateTotal();-->
+<!--    });-->
+
+<!--    // Tính lại tổng khi vào trang-->
+<!--    calculateTotal();-->
+<!--  });-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -28,170 +178,99 @@
         <input type="checkbox" class="item-checkbox" th:attr="data-id=${item.id}" />
       </td>
       <td>
-        <strong th:text="${item.variation.product.name}">Tên sản phẩm</strong><br/>
-        <small th:if="${item.variation != null}">
-          Biến thể:
-          <span th:each="attr, attrStat : ${item.variation.attributes}">
-        <span th:text="${attr.attributeTerm.name}">Tên</span>
-        <span th:if="${!attrStat.last}"> / </span>
-    </span>
-        </small><br/>
-
-        <small th:if="${item.variation.salePrice lt item.variation.regularPrice}" class="text-danger">
-          🔥 Giảm còn <span th:text="${item.variation.salePrice}">0</span>
-          (<del th:text="${item.variation.regularPrice}">0</del>)
+        <strong th:text="${item.product.name}">Tên sản phẩm</strong><br/>
+        <small th:if="${item.product.salePrice lt item.product.regularPrice}" class="text-danger">
+          🔥 Giảm còn
+          <span th:text="${item.product.salePrice}">0</span>
+          (<del th:text="${item.product.regularPrice}">0</del>)
         </small>
       </td>
-      <td>$<span th:id="'price-' + ${item.id}" th:text="${item.variation.salePrice}">0</span></td>
+      <td th:text="${item.product.salePrice}">0</td>
       <td>
         <div class="d-flex justify-content-center align-items-center gap-2">
           <button type="button" class="btn btn-outline-secondary btn-sm update-qty"
                   th:attr="data-id=${item.id},data-action='decrease'">-</button>
-          <span th:id="'qty-' + ${item.id}" th:text="${item.quantity}">1</span>
+          <span th:attr="id='qty-' + ${item.id}" th:text="${item.quantity}">1</span>
           <button type="button" class="btn btn-outline-secondary btn-sm update-qty"
                   th:attr="data-id=${item.id},data-action='increase'">+</button>
         </div>
       </td>
       <td>
-        $<span th:id="'subtotal-' + ${item.id}"
-               th:text="${(item.variation.salePrice != null ? item.variation.salePrice : 0) * item.quantity}">0</span>
+  <span th:id="'subtotal-' + ${item.id}"
+        th:attr="data-price=${item.product.salePrice}"
+        th:text="${item.product.salePrice * item.quantity}">0</span> $
       </td>
+
     </tr>
     </tbody>
   </table>
 </form>
 
 <div class="text-end mt-3">
-  <h4>Tổng tiền: <span id="total-price">$0.00</span></h4>
-</div>
-
-<h5 id="discount-info" class="text-success mt-2"></h5>
-<select id="discount-select" class="form-select mt-3">
-  <option value="">-- Chọn mã giảm giá --</option>
-</select>
-<button id="apply-discount" class="btn btn-success mt-2">Áp dụng mã</button>
-<div class="text-end mt-4">
-  <button type="button" id="checkout-btn" class="btn btn-primary btn-lg">🛍️ Mua hàng</button>
+  <h4>
+    Tổng tiền: <span id="total-price">0 $</span>
+  </h4>
 </div>
 
 <script>
-
-  // Khi nhấn "Mua hàng"
-  $("#checkout-btn").click(function () {
-    const selectedItems = [];
-
-    $(".item-checkbox:checked").each(function () {
-      const itemId = $(this).data("id");
-      const qty = parseInt($("#qty-" + itemId).text()) || 1;
-      selectedItems.push({ itemId, quantity: qty });
-    });
-
-    if (selectedItems.length === 0) {
-      alert("Vui lòng chọn ít nhất 1 sản phẩm để mua.");
-      return;
+function calculateTotal() {
+  let total = 0;
+  $(".item-checkbox:checked").each(function () {
+    const itemId = $(this).data("id");
+    const subtotalText = $("#subtotal-" + itemId).text().replace(/[^\d]/g, ""); // loại bỏ mọi ký tự không phải số
+    const subtotal = parseFloat(subtotalText);
+    if (!isNaN(subtotal)) {
+      total += subtotal;
     }
-
-    // Gửi selectedItems qua POST và chuyển sang trang thanh toán
-    $.ajax({
-      url: "/checkout",
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(selectedItems),
-      success: function () {
-        window.location.href = "/checkout";
-      },
-      error: function () {
-        alert("Lỗi khi xử lý thanh toán.");
-      }
-    });
   });
+$("#total-price").text("$" + total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
+}
 
-
-  let selectedDiscount = null;
-
-  function formatCurrency(amount) {
-    return '$' + Number(amount).toFixed(2);
-  }
-
-  function calculateTotal() {
-    let total = 0;
-
-    $(".item-checkbox:checked").each(function () {
-      const itemId = $(this).data("id");
-      const qty = parseInt($("#qty-" + itemId).text()) || 1;
-      const price = parseFloat($("#price-" + itemId).text()) || 0;
-      total += price * qty;
-    });
-
-    // Áp dụng mã giảm giá nếu có
-    if (selectedDiscount) {
-      if (selectedDiscount.percentage) {
-        total = total - (total * selectedDiscount.discountAmount / 100);
-      } else {
-        total = total - selectedDiscount.discountAmount;
-      }
-      if (total < 0) total = 0;
-    }
-
-    $("#total-price").text(formatCurrency(total));
-  }
 
   $(document).ready(function () {
-    // ✅ Mặc định chọn tất cả item
-    $(".item-checkbox").prop("checked", true);
-    $("#select-all").prop("checked", true);
-
-    // Load mã giảm giá từ server
-    $.get("/cart/discounts", function (data) {
-      data.forEach(function (discount) {
-        const label = discount.percentage
-          ? discount.code + " - " + discount.discountAmount + "%"
-          : discount.code + " - " + formatCurrency(discount.discountAmount);
-        $("#discount-select").append(`<option value='${JSON.stringify(discount)}'>${label}</option>`);
-      });
-    });
-
-    // Áp dụng mã giảm giá
-    $("#apply-discount").click(function () {
-      const selectedOption = $("#discount-select").val();
-      selectedDiscount = selectedOption ? JSON.parse(selectedOption) : null;
-      calculateTotal();
-    });
-
-    // Tăng/giảm số lượng
-    $(document).on("click", ".update-qty", function () {
+    $(".update-qty").click(function () {
       const itemId = $(this).data("id");
       const action = $(this).data("action");
-      const $qty = $("#qty-" + itemId);
-      let qty = parseInt($qty.text());
 
-      if (action === "increase") qty++;
-      else if (action === "decrease" && qty > 1) qty--;
+      const $qtyEl = $("#qty-" + itemId);
+      let currentQty = parseInt($qtyEl.text());
 
-      $qty.text(qty);
+      // Cập nhật số lượng frontend ngay
+      if (action === "increase") {
+        currentQty += 1;
+      } else if (action === "decrease" && currentQty > 1) {
+        currentQty -= 1;
+      }
 
-      const price = parseFloat($("#price-" + itemId).text()) || 0;
-      const newSubtotal = price * qty;
-      $("#subtotal-" + itemId).text(newSubtotal.toFixed(2));
+      $qtyEl.text(currentQty);
 
-      $.post("/cart/update-ajax", { itemId, action });
+      // Tính lại thành tiền
+      const price = parseFloat($("#subtotal-" + itemId).data("price"));
+      const newSubtotal = price * currentQty;
+      $("#subtotal-" + itemId).text(newSubtotal.toLocaleString());
 
+      // Gửi cập nhật lên backend
+      $.ajax({
+        url: "/cart/update-ajax",
+        method: "POST",
+        data: {
+          itemId: itemId,
+          action: action
+        }
+      });
+
+      // Cập nhật tổng tiền
       calculateTotal();
     });
 
-    // Chọn tất cả
-    $("#select-all").on("change", function () {
-      $(".item-checkbox").prop("checked", this.checked);
+    $(".item-checkbox, #select-all").on("change", function () {
+      if ($(this).is("#select-all")) {
+        $(".item-checkbox").prop("checked", this.checked);
+      }
       calculateTotal();
     });
 
-    // Chọn từng dòng
-    $(".item-checkbox").on("change", function () {
-      calculateTotal();
-    });
-
-    // ✅ Tính tổng lần đầu
     calculateTotal();
   });
 </script>
