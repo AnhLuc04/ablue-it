@@ -17,9 +17,10 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imageUrl; // URL ảnh sản phẩm
+    private String url;
 
-    private ImageType imageType;
+    @Enumerated(EnumType.STRING)
+    private ImageType imageType; // PRIMARY, SIZE_GUIDE, DEFAULT
 
     @ManyToOne
     @JoinColumn(name = "product_id")

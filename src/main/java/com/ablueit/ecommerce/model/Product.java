@@ -95,7 +95,7 @@ public class Product extends AuditEntity<Long> {
     private List<Categories> categories;
 
 
-     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariant> variants = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -107,5 +107,7 @@ public class Product extends AuditEntity<Long> {
     @JoinColumn(name = "store_id")
     Store store;
 
+    public Product(Long id) {
+        this.id = id;
+    }
 }
-

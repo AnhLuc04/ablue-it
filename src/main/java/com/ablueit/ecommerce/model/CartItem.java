@@ -26,6 +26,16 @@ public class CartItem {
 
     @ManyToOne
     private Cart cart;
+    @Transient // Không lưu trong database, chỉ dùng tạm thời để hiển thị
+    private Double subtotal;
 
+    // Getter và Setter cho subtotal
+    public Double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(Double subtotal) {
+        this.subtotal = subtotal;
+    }
     // getters, setters
 }

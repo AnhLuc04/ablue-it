@@ -1,2 +1,2 @@
-package com.ablueit.ecommerce.controller;public class PayPalConfig {
-}
+//package com.ablueit.ecommerce.controller;public class PayPalConfig {
+//}

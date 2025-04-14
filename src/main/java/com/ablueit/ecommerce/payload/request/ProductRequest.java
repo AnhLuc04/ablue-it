@@ -1,52 +1,26 @@
 package com.ablueit.ecommerce.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
-public class ProductRequest {
-    private String name;
-    private String sku;
-    private String status;
-    private double basePrice;
-    private List<ProductVariantRequest> variants;
+public record ProductRequest(
+        @JsonProperty("productName") String name,
+        @JsonProperty("productDescription") String description,
+        @JsonProperty("productShortDescription") String shortDescription,
+        @JsonProperty("regularPrice") Double regularPrice,
+        @JsonProperty("salePrice") Double salePrice,
+        @JsonProperty("category") String category,
+        @JsonProperty("storeId") Long storeId,
+        @JsonProperty("sku") String sku,
+        @JsonProperty("stockQuantity") Integer stockQuantity,
+        @JsonProperty("stockStatus") String stockStatus,
+        @JsonProperty("variationsData") List<VariationRequest> variationsData,
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public double getBasePrice() {
-        return basePrice;
-    }
-
-    public void setBasePrice(double basePrice) {
-        this.basePrice = basePrice;
-    }
-
-    public List<ProductVariantRequest> getVariants() {
-        return variants;
-    }
-
-    public void setVariants(List<ProductVariantRequest> variants) {
-        this.variants = variants;
-    }
-// Getters & Setters
-}
+        // 🔁 CHUYỂN TỪ String → MultipartFile
+        @ToString.Exclude @JsonProperty("primaryImage") MultipartFile primaryImage,
+        @ToString.Exclude @JsonProperty("sizeGuideImage") MultipartFile sizeGuideImage,
+        @ToString.Exclude @JsonProperty("galleryImages") List<MultipartFile> galleryImages
+) {}

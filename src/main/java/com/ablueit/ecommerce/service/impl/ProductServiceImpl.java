@@ -1,5 +1,5 @@
 package com.ablueit.ecommerce.service.impl;
-
+import net.coobird.thumbnailator.Thumbnails;
 import com.ablueit.ecommerce.enums.ImageType;
 import com.ablueit.ecommerce.enums.ProductStatus;
 import com.ablueit.ecommerce.enums.StockStatus;
@@ -17,11 +17,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -41,16 +45,12 @@ public class ProductServiceImpl implements ProductService {
     VariationRepository variationRepository;
     ProductImageRepository productImageRepository;
 
-    String FOLDER_UPLOAD = "/home/vandunxg/Documents/resource_image";
-    String WEB_URL = "https://aware-only-stork.ngrok-free.app/uploads/";
+
 
     @Override
     public String addVariationProduct(ProductRequest request) throws IOException {
-//        log.info("addVariationProduct={}", request.toString());
-
         Store store = getStoreById(request.storeId());
 
-        // create new product
         Product product = Product.builder()
                 .name(request.name())
                 .shortDescription(request.shortDescription())
@@ -76,11 +76,9 @@ public class ProductServiceImpl implements ProductService {
 
             List<VariationAttribute> variationAttributes = attributeRequests.stream().map(attributeRequest -> {
                 Attribute attribute = getAttributeByNameOrElseCreateNew(attributeRequest.name());
-
                 attributeRepository.save(attribute);
 
                 AttributeTerm attributeTerm = getAttributeTermByNameOrElseCreateNew(attributeRequest.term(), attribute);
-
                 attributeTermRepository.save(attributeTerm);
 
                 return VariationAttribute.builder()
@@ -91,30 +89,85 @@ public class ProductServiceImpl implements ProductService {
 
             variation.setAttributes(variationAttributes);
             variation.setProduct(product);
-
             return variation;
         }).toList();
 
         Categories categories = getCategoryByName(request.category());
 
-        List<ProductImage> productImages = new ArrayList<>();
+        // ✅ Xử lý ảnh mới bằng MultipartFile
+        List<MultipartFile> allImages = new ArrayList<>();
+        allImages.add(request.primaryImage());
+        allImages.add(request.sizeGuideImage());
+        allImages.addAll(request.galleryImages());
 
-        productImages.add(saveBase64Image(request.primaryImage(),product, ImageType.PRIMARY));
-        productImages.add(saveBase64Image(request.sizeGuideImage(), product, ImageType.SIZE_GUIDE));
-
-        for (String x : request.galleryImages()) {
-            productImages.add(saveBase64Image(x, product, ImageType.DEFAULT));
+        List<ImageType> imageTypes = new ArrayList<>();
+        imageTypes.add(ImageType.PRIMARY);
+        imageTypes.add(ImageType.SIZE_GUIDE);
+        for (int i = 0; i < request.galleryImages().size(); i++) {
+            imageTypes.add(ImageType.DEFAULT);
         }
 
+        List<ProductImage> productImages = saveImageFiles(request.sku(), allImages, imageTypes, product);
+
+        // ✅ Liên kết và lưu
         product.setCategories(List.of(categories));
         product.setProductImages(productImages);
         product.setVariations(variations);
         productRepository.save(product);
 
         log.info("for debug");
-
         return "ok";
     }
+    public List<ProductImage> saveImageFiles(String sku, List<MultipartFile> files, List<ImageType> types, Product product) throws IOException {
+        List<ProductImage> productImages = new ArrayList<>();
+        Path uploadDir = Paths.get("src/main/resources/static/images/");
+
+        if (!Files.exists(uploadDir)) {
+            Files.createDirectories(uploadDir);
+        }
+
+        for (int i = 0; i < files.size(); i++) {
+            MultipartFile file = files.get(i);
+            ImageType type = types.get(i);
+
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || originalFilename.isEmpty()) continue;
+
+            String baseFilename = sku + "_" + type.name().toLowerCase();
+            String fileExtension = ".png";
+            String uniqueFilename = baseFilename + fileExtension;
+
+            File destinationFile = new File(uploadDir.toFile(), uniqueFilename);
+            int counter = 0;
+
+            while (destinationFile.exists()) {
+                counter++;
+                if (counter == 1) {
+                    uniqueFilename = baseFilename + "+" + fileExtension;
+                } else {
+                    uniqueFilename = baseFilename + "+" + counter + fileExtension;
+                }
+                destinationFile = new File(uploadDir.toFile(), uniqueFilename);
+            }
+
+            Thumbnails.of(file.getInputStream())
+                    .outputFormat("png")
+                    .toFile(destinationFile);
+
+            String imageUrl = "src/main/resources/static/images/" + uniqueFilename;
+
+            ProductImage productImage = ProductImage.builder()
+                    .url(imageUrl)
+                    .imageType(type)
+                    .product(product)
+                    .build();
+
+            productImages.add(productImage);
+        }
+
+        return productImages;
+    }
+
 
     @Override
     public ProductResponse getProduct(Long id) {
@@ -147,10 +200,10 @@ public class ProductServiceImpl implements ProductService {
                 .productShortDescription(product.getShortDescription())
                 .regularPrice(product.getRegularPrice())
                 .salePrice(product.getSalePrice())
-                .primaryImage(primaryImage.getImageUrl())
-                .sizeGuideImage(sizeGuide.getImageUrl())
-                .galleryImages(galleryImages.stream().map(ProductImage::getImageUrl).toList())
-//                .category()
+                .primaryImage(primaryImage.getUrl())
+                .sizeGuideImage(sizeGuide.getUrl())
+                .galleryImages(galleryImages.stream().map(ProductImage::getUrl).toList())
+//                .category(product.getCategories().)
                 .sku(product.getSku())
                 .variationsData(variationResponses)
 //                .stockQuantity(product.getStockQuantity().longValue())
@@ -166,34 +219,6 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("product not found"));
     }
 
-    ProductImage saveBase64Image(String base64Image, Product product, ImageType type) throws IOException {
-        if (base64Image == null || base64Image.isEmpty()) {
-            return null;
-        }
-
-        String base64Data = base64Image.split(",")[1];
-        byte[] imageBytes = Base64.getDecoder().decode(base64Data);
-
-        String filename = UUID.randomUUID() + ".jpg";
-        File uploadPath = new File(FOLDER_UPLOAD);
-        if (!uploadPath.exists()) {
-            boolean dirsCreated = uploadPath.mkdirs();
-            if (!dirsCreated) {
-                throw new IOException("Không thể tạo thư mục lưu trữ: " + FOLDER_UPLOAD);
-            }
-        }
-
-        File file = new File(uploadPath, filename);
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(imageBytes);
-        }
-
-        return ProductImage.builder()
-                .imageUrl(WEB_URL + filename)
-                .product(product)
-                .imageType(type)
-                .build();
-    }
 
     Categories getCategoryByName(String name) {
         log.info("getCategoryByName={}", name);
