@@ -31,7 +31,7 @@ public class OrderService {
         List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
             OrderItem item = new OrderItem();
             item.setOrder(order);
-            item.setProduct(cartItem.getProduct());
+           // item.setProduct(cartItem.getVariant().getAttributes());
             item.setQuantity(cartItem.getQuantity());
         //    item.setPrice(cartItem.getProduct().getPrice());
             return item;

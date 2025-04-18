@@ -16,4 +16,9 @@ public record VariationRequest(
 
     }
 
+    public record AddToCartRequest(
+            Long variantId,
+            int quantity
+    ) {}
+
 }

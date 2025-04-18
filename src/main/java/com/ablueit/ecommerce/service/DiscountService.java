@@ -13,10 +13,10 @@ public class DiscountService {
 
     @Autowired
     private DiscountCodeRepository discountRepo;
-
-    public Optional<DiscountCode> validateCode(String code) {
-        return discountRepo.findByCodeAndActiveTrue(code.trim().toUpperCase());
-    }
+//
+//    public Optional<DiscountCode> validateCode(String code) {
+//        return discountRepo.findByCodeAndActiveTrue(code.trim().toUpperCase());
+//    }
 
     public double applyDiscount(Cart cart, DiscountCode discountCode) {
         double total = cart.getTotal();

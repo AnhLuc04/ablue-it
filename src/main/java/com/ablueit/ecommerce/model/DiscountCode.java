@@ -1,13 +1,7 @@
 package com.ablueit.ecommerce.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -15,15 +9,21 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiscountCode {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String code;
 
-    private double discountAmount; // ví dụ: 50,000 hoặc 10 (nếu là %)
+    private double discountAmount; // số tiền giảm hoặc phần trăm giảm
 
-    private boolean percentage; // true = giảm %, false = giảm tiền
+    private boolean percentage; // true = %, false = tiền mặt
 
     private boolean active;
+
+    // 🧑‍💻 Mối quan hệ với người dùng
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

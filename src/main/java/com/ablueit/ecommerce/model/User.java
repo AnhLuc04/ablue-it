@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,8 @@ public class User extends AbstractEntity<Long> implements UserDetails {
                 .map(role -> (GrantedAuthority) role::getName)
                 .collect(Collectors.toSet());
     }
+    @OneToMany(mappedBy = "user")
+    private List<DiscountCode> discountCodes;
 
     @Override
     public boolean isAccountNonExpired() {
