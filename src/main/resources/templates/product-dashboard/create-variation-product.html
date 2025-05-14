@@ -714,16 +714,39 @@
         submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
     }
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function (event) {
-        const dropdowns = document.querySelectorAll('.dropdown');
-        dropdowns.forEach(dropdown => {
-            if (!dropdown.contains(event.target)) {
-                const menu = dropdown.querySelector('.dropdown-menu');
-                if (menu) menu.classList.add('hidden');
-            }
+document.addEventListener("DOMContentLoaded", () => {
+    const productForm = document.getElementById("productForm");
+    productForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        // Gọi cập nhật variation trước
+        updateVariationsData();
+
+        const formData = new FormData(this); // Dùng lại form gốc
+
+        // Lấy lại giá trị variations từ trường hidden
+        const variationsDataString = document.getElementById("variations-data").value;
+        formData.set("variationsData", variationsDataString); // Ghi đè đúng dữ liệu JSON
+
+        // Gửi request
+        fetch("/products", {
+            method: "POST",
+            body: formData, // Không đặt Content-Type
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("HTTP error " + response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Success:", data);
+            alert("Product created successfully!");
+        })
+        .catch(error => {
+            console.error("Error sending product:", error);
+            alert("Error sending product!");
         });
     });
+});
 
     // Toggle dropdown menu
     const userButton = document.getElementById('user-menu-button');
@@ -1146,35 +1169,49 @@
                     }
                 }
             }
+// Cập nhật và thêm variationsData dưới dạng object thay vì chuỗi
+updateVariationsData();
+const variationsDataString = document.getElementById("variations-data").value;
+const variationsData = JSON.parse(variationsDataString);
 
-            // Cập nhật và thêm variationsData dưới dạng object thay vì chuỗi
-            updateVariationsData();
-            const variationsDataString = document.getElementById("variations-data").value;
-            product.variationsData = JSON.parse(variationsDataString); // Chuyển chuỗi thành object
+// Lấy dữ liệu từ các input
+const mainImageFile = document.getElementById("main-image-input").files[0];
+const sizeGuideImageFile = document.getElementById("size-guide-input").files[0];
+const galleryImageFiles = document.getElementById("gallery-input").files;
 
-            // Xử lý các file ảnh
-            const mainImageFile = document.getElementById("main-image-input").files[0];
-            const sizeGuideImageFile = document.getElementById("size-guide-input").files[0];
-            const galleryImageFiles = document.getElementById("gallery-input").files;
+// Tạo FormData để gửi multipart/form-data
+const formData = new FormData();
+formData.append("name", product.name);
+formData.append("description", product.description);
+formData.append("shortDescription", product.shortDescription);
+formData.append("regularPrice", product.regularPrice);
+formData.append("salePrice", product.salePrice);
+formData.append("category", product.category);
+formData.append("storeId", product.storeId);
+formData.append("sku", product.sku);
+formData.append("stockQuantity", product.stockQuantity);
+formData.append("stockStatus", product.stockStatus);
+formData.append("variationsData", JSON.stringify(product.variationsData));
 
-            try {
-                if (mainImageFile) {
-                    product.primaryImage = await fileToBase64(mainImageFile);
-                }
-                if (sizeGuideImageFile) {
-                    product.sizeGuideImage = await fileToBase64(sizeGuideImageFile);
-                }
-                if (galleryImageFiles.length > 0) {
-                    product.galleryImages = await Promise.all(
-                        Array.from(galleryImageFiles).map(file => fileToBase64(file))
-                    );
-                }
+if (mainImageFile) formData.append("primaryImage", mainImageFile);
+if (sizeGuideImageFile) formData.append("sizeGuideImage", sizeGuideImageFile);
+for (let file of galleryImages) {
+  formData.append("galleryImages", file);
+}
 
-                sendProduct(product);
-            } catch (error) {
-                console.error("Error processing files:", error);
-            }
-        });
+// GỬI request
+fetch("/products", {
+  method: "POST",
+  body: formData, // KHÔNG đặt Content-Type!
+});
+
+.then(data => {
+    console.log("Success:", data);
+})
+.catch(error => {
+    console.error("Error sending product:", error);
+});
+
 
         function sendProduct(productData) {
             fetch("/products/create-variation-product/", {

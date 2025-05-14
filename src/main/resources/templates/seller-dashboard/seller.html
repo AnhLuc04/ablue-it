@@ -101,17 +101,14 @@
             <li class="list-group-item d-flex justify-content-between align-items-center" th:each="website : ${websites}">
               <span th:text="${website.name}"></span>
               <div class="d-flex align-items-center gap-2">
-                <!-- Nút Chi tiết -->
-                <a th:href="@{/store/dashboard/detail/{id}(id=${website.id})}" class="btn btn-sm btn-primary">Chi tiết</a>
-
-                <!-- Nút Xóa -->
                 <form th:action="@{/store/dashboard/delete/{id}(id=${website.id})}" method="post"
                       onsubmit="return confirm('Are you sure you want to delete this website?');">
                   <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 </form>
+                <a th:href="@{/store/dashboard/detail/{id}(id=${website.id})}" class="btn btn-sm btn-primary">Chi tiết</a>
+                <a th:href="@{/category/{id}(id=${website.id})}" class="btn btn-sm btn-success">category</a>
+                <a th:href="@{/products/create-variation-product/{id}(id=${website.id})}" class="btn btn-sm btn-success">product</a>
 
-                <!-- Nút Dashboard -->
-                <a th:href="@{/store/dashboard/{id}(id=${website.id})}" class="btn btn-sm btn-success">Dashboard</a>
               </div>
             </li>
           </ul>

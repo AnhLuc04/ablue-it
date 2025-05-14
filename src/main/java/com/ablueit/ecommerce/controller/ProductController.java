@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @PostMapping("/create-variation-product/")
-    public ResponseEntity<?> createVariationProduct(@RequestBody ProductRequest request) throws IOException {
+    public ResponseEntity<?> createVariationProduct(@ModelAttribute  ProductRequest request) throws IOException {
         return ResponseEntity.ok().body(productService.addVariationProduct(request));
     }
 
