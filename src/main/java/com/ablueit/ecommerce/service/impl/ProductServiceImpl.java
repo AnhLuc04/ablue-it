@@ -1,4 +1,5 @@
 package com.ablueit.ecommerce.service.impl;
+import com.ablueit.ecommerce.payload.response.ProductPreviewResponse;
 import net.coobird.thumbnailator.Thumbnails;
 import com.ablueit.ecommerce.enums.ImageType;
 import com.ablueit.ecommerce.enums.ProductStatus;
@@ -92,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
             return variation;
         }).toList();
 
-        Categories categories = getCategoryByName(request.category());
+//        Categories categories = getCategoryByName(request.category());
 
         // ✅ Xử lý ảnh mới bằng MultipartFile
         List<MultipartFile> allImages = new ArrayList<>();
@@ -110,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductImage> productImages = saveImageFiles(request.sku(), allImages, imageTypes, product);
 
         // ✅ Liên kết và lưu
-        product.setCategories(List.of(categories));
+//        product.setCategories(List.of(categories));
         product.setProductImages(productImages);
         product.setVariations(variations);
         productRepository.save(product);
@@ -210,6 +211,41 @@ public class ProductServiceImpl implements ProductService {
                 .stockStatus(product.getStockStatus().name())
 //                .backorders(product.getBackOrderAllowed() ? "yes" : "no")
                 .build();
+    }
+
+    @Override
+    public List<ProductPreviewResponse> getAllProductByCategory(Long id) {
+
+        Categories categories = categoriesRepository.findById(id).orElseThrow();
+
+        List<Long> productsId = productRepository.findAllByCategories(categories.getId());
+
+        List<Product> products = productRepository.findAllById(productsId);
+
+        return products.stream().map(x -> ProductPreviewResponse.builder()
+                .id(x.getId())
+                .name(x.getName())
+                .images("https://picsum.photos/300/200?random=1")
+                .price(x.getPrice())
+                .rating(0.0)
+                .reviews(0L)
+                .build()).toList();
+    }
+
+    @Override
+    public List<ProductPreviewResponse> getAllProductByStore(Long id) {
+        Store store = storeRepository.findById(id).orElseThrow();
+
+        List<Product> products = productRepository.findAllByStore(store);
+
+        return products.stream().map(x -> ProductPreviewResponse.builder()
+                .id(x.getId())
+                .name(x.getName())
+                .images("https://picsum.photos/300/200?random=1")
+                .price(x.getPrice())
+                .rating(0.0)
+                .reviews(0L)
+                .build()).toList();
     }
 
     Product getProductById(Long id) {

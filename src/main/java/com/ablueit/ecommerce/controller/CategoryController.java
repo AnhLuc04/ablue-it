@@ -4,6 +4,7 @@ import com.ablueit.ecommerce.model.Categories;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.model.User;
 import com.ablueit.ecommerce.payload.request.CategoryRequest;
+import com.ablueit.ecommerce.payload.response.CategoryResponse;
 import com.ablueit.ecommerce.repository.CategoriesRepository;
 import com.ablueit.ecommerce.repository.StoreRepository;
 import com.ablueit.ecommerce.repository.UserRepository;
@@ -75,7 +76,10 @@ public class CategoryController {
         return ResponseEntity.ok(savedCategory);
     }
 
-
+    @GetMapping("/{id}/list-category/")
+    ResponseEntity<List<CategoryResponse>> getAllCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getAllCategoryByStoreId(id));
+    }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Long id){

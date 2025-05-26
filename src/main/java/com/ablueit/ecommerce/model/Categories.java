@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedBy;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -27,7 +29,6 @@ public class Categories extends AbstractEntity<Long> {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @ManyToMany(mappedBy = "categories")
+    private List<Product> products;
 }

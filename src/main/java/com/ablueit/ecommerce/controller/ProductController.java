@@ -4,6 +4,7 @@ import com.ablueit.ecommerce.exception.ResourceNotFoundException;
 import com.ablueit.ecommerce.model.Categories;
 import com.ablueit.ecommerce.model.Store;
 import com.ablueit.ecommerce.payload.request.ProductRequest;
+import com.ablueit.ecommerce.payload.response.ProductPreviewResponse;
 import com.ablueit.ecommerce.payload.response.ProductResponse;
 import com.ablueit.ecommerce.repository.CategoriesRepository;
 import com.ablueit.ecommerce.repository.ProductRepository;
@@ -64,4 +65,15 @@ public class ProductController {
        log.info("GET /get-product/{}", id);
         return ResponseEntity.ok().body(productService.getProduct(id));
     }
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<List<ProductPreviewResponse>> getProductByCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getAllProductByCategory(id));
+    }
+
+    @GetMapping("/store/{id}")
+    public ResponseEntity<List<ProductPreviewResponse>> getAllProductByStore(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getAllProductByStore(id));
+    }
+
 }

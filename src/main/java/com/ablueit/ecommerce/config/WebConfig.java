@@ -1,6 +1,9 @@
 package com.ablueit.ecommerce.config;
 
+import lombok.NonNull;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,6 +17,19 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:src/main/resources/static/images/");
     }
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry.addMapping("/**") // Cho phép tất cả endpoint
+                        .allowedOrigins("http://localhost:5500") // frontend domain
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // các method được phép
+                        .allowedHeaders("*")
+                        .allowCredentials(true); // cho phép gửi cookie nếu cần
+            }
+        };
+    }
 
 
 }

@@ -91,7 +91,11 @@ public class Product extends AuditEntity<Long> {
     @ToString.Exclude
     List<ProductImage> productImages;
 
-    @OneToMany(mappedBy = "product")
+    @ManyToMany
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Categories> categories;
 
 

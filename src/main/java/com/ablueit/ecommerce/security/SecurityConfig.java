@@ -26,6 +26,11 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    private String[] WHITE_LIST = {
+            "/products/**",
+            "/category/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -34,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
