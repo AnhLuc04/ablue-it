@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**") // Cho phép tất cả endpoint
-                        .allowedOrigins("http://localhost:5500") // frontend domain
+                        .allowedOrigins("http://localhost:5500", "https://aware-only-stork.ngrok-free.app") // frontend domain
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // các method được phép
                         .allowedHeaders("*")
                         .allowCredentials(true); // cho phép gửi cookie nếu cần

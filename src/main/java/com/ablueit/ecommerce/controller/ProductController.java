@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,8 +51,14 @@ public class ProductController {
     }
 
     @PostMapping("/create-variation-product/")
-    public ResponseEntity<?> createVariationProduct(@ModelAttribute  ProductRequest request) throws IOException {
-        return ResponseEntity.ok().body(productService.addVariationProduct(request));
+    public ResponseEntity<?> createVariationProduct(@RequestParam("primaryImage") MultipartFile primaryImage,
+                                                    @RequestParam("file") MultipartFile sizeGuideImage,
+                                                    @RequestParam("galleryImage") List<MultipartFile> galleryImage,
+                                                    @ModelAttribute ProductRequest request) throws IOException {
+        log.info("POST /create-variation-product");
+
+
+        return ResponseEntity.ok(productService.addVariationProduct(request, primaryImage, sizeGuideImage, galleryImage));
     }
 
     @GetMapping("/show-product/{id}")
@@ -60,9 +67,10 @@ public class ProductController {
         model.addAttribute("productId", id);
         return "product-dashboard/show-product";
     }
+
     @GetMapping(value = "/get-product/{id}", produces = "application/json")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
-       log.info("GET /get-product/{}", id);
+        log.info("GET /get-product/{}", id);
         return ResponseEntity.ok().body(productService.getProduct(id));
     }
 
