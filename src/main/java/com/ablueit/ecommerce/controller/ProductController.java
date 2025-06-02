@@ -74,12 +74,12 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.getProduct(id));
     }
 
-    @GetMapping("/category/{id}")
+    @PostMapping("/category/{id}")
     public ResponseEntity<List<ProductPreviewResponse>> getProductByCategory(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getAllProductByCategory(id));
     }
 
-    @GetMapping("/store/{id}")
+    @PostMapping("/store/{id}")
     public ResponseEntity<List<ProductPreviewResponse>> getAllProductByStore(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getAllProductByStore(id));
     }

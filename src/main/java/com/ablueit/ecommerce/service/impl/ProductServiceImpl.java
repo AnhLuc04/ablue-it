@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,12 +94,14 @@ public class ProductServiceImpl implements ProductService {
                         .variation(variation)
                         .attributeTerm(attributeTerm)
                         .build();
-            }).toList();
+            }).collect(Collectors.toCollection(ArrayList::new));
 
             variation.setAttributes(variationAttributes);
             variation.setProduct(product);
             return variation;
         }).toList();
+
+        product.setUpVariations(variations);
 
         fileService.upload(primaryImage, product, ImageType.PRIMARY);
 
@@ -115,6 +118,12 @@ public class ProductServiceImpl implements ProductService {
                 }
             });
         }
+
+        Categories categories = categoriesRepository
+                .findById(request.getCategoryId()).orElseThrow();
+
+
+        product.setCategories(new ArrayList<>(List.of(categories)));
 
         productRepository.save(product);
 
@@ -163,7 +172,7 @@ public class ProductServiceImpl implements ProductService {
                 .sku(product.getSku())
                 .variationsData(variationResponses)
 //                .stockQuantity(product.getStockQuantity().longValue())
-                .stockStatus(product.getStockStatus().name())
+//                .stockStatus(product.getStockStatus().name())
 //                .backorders(product.getBackOrderAllowed() ? "yes" : "no")
                 .build();
     }

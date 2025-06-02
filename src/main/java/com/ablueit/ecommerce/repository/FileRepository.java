@@ -20,8 +20,8 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileRepository {
 
-    String STORAGE_DIR = "/home/vandunxg/Documents/resource_image/";
-    String URL_PREFIX = "http://localhost:8080/";
+    String STORAGE_DIR = "/home/vandunxg/Documents/resource_images/";
+    String URL_PREFIX = "http://localhost:8081/";
 
     public FileInfo store(MultipartFile file) throws IOException {
         Path folder = Paths.get(STORAGE_DIR);

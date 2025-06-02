@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -91,12 +92,12 @@ public class Product extends AuditEntity<Long> {
     @ToString.Exclude
     List<ProductImage> productImages;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<Categories> categories;
+    private List<Categories> categories = new ArrayList<>();
 
 
 //    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -114,4 +115,13 @@ public class Product extends AuditEntity<Long> {
     public Product(Long id) {
         this.id = id;
     }
+
+
+    public void setUpVariations(List<Variation> variationList) {
+        if(Objects.isNull(this.variations)) {
+            this.variations = new ArrayList<>();
+        }
+        this.variations.addAll(variationList);
+    }
+
 }

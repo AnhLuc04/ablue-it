@@ -29,6 +29,6 @@ public class Categories extends AbstractEntity<Long> {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Product> products;
 }

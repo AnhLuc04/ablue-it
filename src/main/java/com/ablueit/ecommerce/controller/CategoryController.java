@@ -76,7 +76,7 @@ public class CategoryController {
         return ResponseEntity.ok(savedCategory);
     }
 
-    @GetMapping("/{id}/list-category/")
+    @PostMapping("/{id}/list-category/")
     ResponseEntity<List<CategoryResponse>> getAllCategory(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.getAllCategoryByStoreId(id));
     }
