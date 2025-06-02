@@ -1,310 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Navbar Test</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-<!--        /* Gộp CSS từ bạn ở đây */-->
-<!--/* ========== BODY ========== */-->
-<!--body {-->
-<!--    font-family: 'Segoe UI', 'Arial', sans-serif;-->
-<!--    background-color: #f4f6f8;-->
-<!--    padding-top: 70px;-->
-<!--    color: #333;-->
-<!--}-->
-
-<!--/* ========== NAVBAR ========== */-->
-<!--.navbar {-->
-<!--    background: linear-gradient(90deg, #1976d2, #1565c0);-->
-<!--    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);-->
-<!--    position: fixed;-->
-<!--    top: 0;-->
-<!--    left: 0;-->
-<!--    width: 100%;-->
-<!--    z-index: 1050;-->
-<!--    transition: all 0.3s ease-in-out;-->
-<!--}-->
-
-<!--.navbar-brand,-->
-<!--.nav-link {-->
-<!--    color: #fff !important;-->
-<!--    font-weight: 500;-->
-<!--}-->
-
-<!--.nav-link:hover {-->
-<!--    background-color: rgba(255, 255, 255, 0.15);-->
-<!--    border-radius: 6px;-->
-<!--    padding: 4px 8px;-->
-<!--    transition: background-color 0.2s;-->
-<!--}-->
-
-<!--.material-icons {-->
-<!--    vertical-align: middle;-->
-<!--    margin-right: 6px;-->
-<!--}-->
-
-/* ========== ATTRIBUTES ========== */
-.attribute-values-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.attribute-value-tag {
-    background-color: #e0f2fe;
-    color: #0c4a6e;
-    padding: 4px 8px;
-    border-radius: 9999px;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-/* ========== TABLE HOVER ========== */
-.variation-row:hover {
-    background-color: #f1f5f9;
-    transition: background-color 0.2s;
-}
-
-/* ========== MODAL ========== */
-.bulk-modal {
-    max-height: 80vh;
-    overflow-y: auto;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-/* ========== ERROR STYLES ========== */
-.error-border {
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
-}
-
-.error-message {
-    background-color: #fef2f2;
-    color: #b91c1c;
-    border-left: 4px solid #b91c1c;
-    padding: 8px 12px;
-    border-radius: 4px;
-    margin-top: 8px;
-}
-
-/* ========== IMAGE PREVIEW ========== */
-.image-preview img {
-    max-height: 120px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1px solid #ddd;
-    transition: transform 0.2s;
-}
-
-.image-preview img:hover {
-    transform: scale(1.05);
-}
-
-
-
-    </style>
+  <meta charset="UTF-8">
+  <title>Add / Edit Product</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
 <nav class="bg-white shadow p-4">
-    <div class="container mx-auto flex justify-between items-center">
-        <a class="flex items-center gap-2 text-xl font-semibold text-indigo-600" href="#">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
-        </a>
-        <div class="hidden md:flex gap-6">
-            <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-home"></i> Home</a>
-            <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-list"></i> Categories</a>
-            <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-shopping-cart"></i> Orders</a>
-            <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-box"></i> Products</a>
-            <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-tags"></i> Promotions</a>
-        </div>
+  <div class="container mx-auto flex justify-between items-center">
+    <a class="flex items-center gap-2 text-xl font-semibold text-indigo-600" href="#">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+    <div class="hidden md:flex gap-6">
+      <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-home"></i> Home</a>
+      <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-list"></i> Categories</a>
+      <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-shopping-cart"></i> Orders</a>
+      <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-box"></i> Products</a>
+      <a href="#" class="text-gray-700 hover:text-indigo-600"><i class="fas fa-tags"></i> Promotions</a>
     </div>
+  </div>
 </nav>
 
+<!-- Main Content -->
 <div class="container mx-auto px-4 py-8 max-w-6xl">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Add New Product</h1>
-    <form id="productForm" enctype="multipart/form-data">
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <!-- Error Message -->
-            <div id="errorMessage" class="error-message hidden p-4 mb-6 rounded">
-                <div class="flex">
-                    <div class="flex-shrink-0"><i class="fas fa-exclamation-circle"></i></div>
-                    <div class="ml-3">
-                        <p id="errorText" class="text-sm"></p>
-                    </div>
-                </div>
-            </div>
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">Add / Edit Product</h1>
 
-            <!-- Basic Product Info -->
-            <div class="mb-6">
-                <label for="productName" class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
-                <input type="text" id="productName" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter product name" required>
-            </div>
-            <div class="mb-6">
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea id="description" name="description" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" rows="4" placeholder="Enter product description"></textarea>
-            </div>
-            <div class="mb-6">
-                <label for="shortDescription" class="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
-                <textarea id="shortDescription" name="shortDescription" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Enter short description"></textarea>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label for="regularPrice" class="block text-sm font-medium text-gray-700 mb-2">Regular Price ($)</label>
-                    <input type="number" id="regularPrice" name="regularPrice" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.00" step="0.01" required>
-                </div>
-                <div>
-                    <label for="salePrice" class="block text-sm font-medium text-gray-700 mb-2">Sale Price ($)</label>
-                    <input type="number" id="salePrice" name="salePrice" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.00" step="0.01">
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                    <select id="categorySelect" name="categoryId"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                            required>
-                        <option value="" disabled selected>-- Chọn danh mục --</option>
-                    </select>
-                </div>
+  <form id="productForm" enctype="multipart/form-data">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <!-- Error Message -->
+      <div id="errorMessage" class="hidden bg-red-100 text-red-700 p-4 rounded mb-6">
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        <span id="errorText"></span>
+      </div>
 
-                <div>
-                    <label for="storeId" class="block text-sm font-medium text-gray-700 mb-2">Store ID</label>
-                    <input type="number" id="storeId" name="storeId" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" value="1" required readonly>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label for="sku" class="block text-sm font-medium text-gray-700 mb-2">SKU</label>
-                    <input type="text" id="sku" name="sku" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter SKU" required>
-                </div>
-                <div>
-                    <label for="stockQuantity" class="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
-                    <input type="number" id="stockQuantity" name="stockQuantity" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter quantity" required>
-                </div>
-            </div>
-            <div class="mb-6">
-                <label for="stockStatus" class="block text-sm font-medium text-gray-700 mb-2">Stock Status</label>
-                <select id="stockStatus" name="stockStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="instock">In Stock</option>
-                    <option value="outofstock">Out of Stock</option>
-                    <option value="onbackorder">On Backorder</option>
-                </select>
-            </div>
+      <!-- Basic Info -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Product Name</label>
+        <input type="text" name="name" class="w-full border rounded p-2" placeholder="Product name" required>
+      </div>
 
-            <!-- Images -->
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Primary Image</label>
-                <input type="file" id="primaryImage" name="primaryImage" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" multiple>
-                <div id="primaryImagePreview" class="mt-2 flex flex-wrap gap-2"></div>
-            </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Size Guide Image</label>
-                <input type="file" id="sizeGuideImage" name="sizeGuideImage" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" multiple>
-                <div id="sizeGuideImagePreview" class="mt-2 flex flex-wrap gap-2"></div>
-            </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Gallery Images</label>
-                <input type="file" id="galleryImages" name="galleryImages" accept="image/*" multiple class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                <div id="galleryImagesPreview" class="mt-2 flex flex-wrap gap-2"></div>
-            </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Description</label>
+        <textarea name="description" class="w-full border rounded p-2" rows="4" placeholder="Full description"></textarea>
+      </div>
 
-            <!-- Attributes and Variations -->
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Product Options</h2>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <div id="attributesContainer" class="space-y-4">
-                        <!-- Attribute Entry -->
-                        <div class="attribute-entry border p-4 rounded-md bg-white">
-                            <div class="flex items-center gap-4 mb-2">
-                                <div class="flex-1">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Attribute Name</label>
-                                    <input type="text" class="attribute-name w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Color">
-                                </div>
-                                <button type="button" class="remove-attribute text-red-600 hover:text-red-800 mt-4">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                            <div class="mb-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Values (comma-separated)</label>
-                                <input type="text" class="attribute-values w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Red, Blue, Green">
-                            </div>
-                            <div class="attribute-values-container"></div>
-                        </div>
-                    </div>
-                    <button type="button" id="addAttribute" class="mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-                        <i class="fas fa-plus mr-1"></i> Add Attribute
-                    </button>
-                </div>
-            </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Short Description</label>
+        <textarea name="shortDescription" class="w-full border rounded p-2" rows="2" placeholder="Short summary"></textarea>
+      </div>
 
-            <!-- Variations -->
-            <div class="mb-6">
-                <div class="flex items-center gap-4 mb-4">
-                    <button type="button" id="generateVariations" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                        <i class="fas fa-sync mr-1"></i> Generate Variations
-                    </button>
-                    <button type="button" id="bulkEditBtn" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
-                        <i class="fas fa-edit mr-1"></i> Bulk Edit
-                    </button>
-                </div>
-                <div id="variationsContainer">
-                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0"><i class="fas fa-info-circle text-yellow-400"></i></div>
-                            <div class="ml-3">
-                                <p class="text-sm text-yellow-700">No variations generated. Add attributes and click "Generate Variations".</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- Price -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label class="block text-sm font-medium mb-2">Regular Price ($)</label>
+          <input type="number" name="regularPrice" class="w-full border rounded p-2" step="0.01" required>
         </div>
-
-        <!-- Submit Button -->
-        <div class="flex justify-end mb-4">
-            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
-                <i class="fas fa-upload mr-2"></i> Create Product
-            </button>
+        <div>
+          <label class="block text-sm font-medium mb-2">Sale Price ($)</label>
+          <input type="number" name="salePrice" class="w-full border rounded p-2" step="0.01">
         </div>
-    </form>
+      </div>
 
-    <!-- Bulk Edit Modal -->
-    <div id="bulkEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl bulk-modal">
-            <h2 class="text-lg font-medium mb-4">Bulk Edit Variations</h2>
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Attributes</label>
-                <div id="bulkFilterAttributes" class="space-y-2"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                    <input type="number" id="bulkPrice" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter price">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
-                    <input type="number" id="bulkStock" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter quantity">
-                </div>
-            </div>
-            <div class="flex justify-end gap-4">
-                <button type="button" id="cancelBulkEdit" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancel</button>
-                <button type="button" id="applyBulkEdit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Apply</button>
-            </div>
+      <!-- SKU, Stock -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label class="block text-sm font-medium mb-2">SKU</label>
+          <input type="text" name="sku" class="w-full border rounded p-2" required>
         </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Stock Quantity</label>
+          <input type="number" name="stockQuantity" class="w-full border rounded p-2" required>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Stock Status</label>
+        <select name="stockStatus" class="w-full border rounded p-2">
+          <option value="instock">In Stock</option>
+          <option value="outofstock">Out of Stock</option>
+          <option value="onbackorder">On Backorder</option>
+        </select>
+      </div>
+
+      <!-- Category & Store -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label class="block text-sm font-medium mb-2">Category</label>
+          <select name="categoryId" class="w-full border rounded p-2" required>
+            <option value="">-- Select Category --</option>
+            <!-- JS will populate -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Store ID</label>
+          <input type="number" name="storeId" class="w-full border rounded p-2" value="1" readonly>
+        </div>
+      </div>
+
+      <!-- Images -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Primary Image</label>
+        <input type="file" name="primaryImage" accept="image/*" class="w-full border rounded p-2">
+        <div id="primaryImagePreview" class="mt-2 flex gap-2 flex-wrap"></div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Size Guide Image</label>
+        <input type="file" name="sizeGuideImage" accept="image/*" class="w-full border rounded p-2">
+        <div id="sizeGuideImagePreview" class="mt-2 flex gap-2 flex-wrap"></div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Gallery Images</label>
+        <input type="file" name="galleryImages" accept="image/*" multiple class="w-full border rounded p-2">
+        <div id="galleryImagesPreview" class="mt-2 flex gap-2 flex-wrap"></div>
+      </div>
+
+      <!-- Attributes -->
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold mb-4">Product Options</h2>
+        <div id="attributesContainer" class="space-y-4">
+          <div class="attribute-entry p-4 bg-gray-50 rounded-md">
+            <div class="flex gap-4 mb-2">
+              <div class="flex-1">
+                <label class="block text-sm mb-1">Attribute Name</label>
+                <input type="text" class="attribute-name w-full border rounded p-2" placeholder="e.g., Color">
+              </div>
+              <button type="button" class="remove-attribute text-red-600 mt-6"><i class="fas fa-trash"></i></button>
+            </div>
+            <label class="block text-sm mb-1">Values (comma-separated)</label>
+            <input type="text" class="attribute-values w-full border rounded p-2" placeholder="e.g., Red, Blue, Green">
+          </div>
+        </div>
+        <button type="button" id="addAttribute" class="mt-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">
+          <i class="fas fa-plus mr-1"></i> Add Attribute
+        </button>
+      </div>
+
+      <!-- Variation Controls -->
+      <div class="mb-6">
+        <div class="flex gap-4">
+          <button type="button" id="generateVariations" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+            <i class="fas fa-sync mr-1"></i> Generate Variations
+          </button>
+          <button type="button" id="bulkEditBtn" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+            <i class="fas fa-edit mr-1"></i> Bulk Edit
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex justify-end">
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow">
+          <i class="fas fa-save mr-2"></i> Save Product
+        </button>
+      </div>
     </div>
+  </form>
 </div>
-
 <script>
         // Utility Functions
         const $ = (selector, context = document) => context.querySelector(selector);

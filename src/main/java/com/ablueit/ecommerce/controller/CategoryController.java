@@ -21,8 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,9 +39,30 @@ public class CategoryController {
     CategoryService categoryService;
     CategoriesRepository categoriesRepository;
     StoreRepository storeRepository;
+
+
+    @GetMapping("/api/{storeId}")
+    @ResponseBody
+    public List<Map<String, Object>> getCategoriesByStoreId(@PathVariable("storeId") Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+
+        List<Categories> categories = categoryService.getCategoriesByStore(store);
+
+        // Trả về danh sách Map với id và name
+        return categories.stream().map(cat -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", cat.getId());
+            map.put("name", cat.getName());
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+
+
     @GetMapping("/{id}")
     public ModelAndView showDetailDashboard(@PathVariable("id") Long id) {
-        ModelAndView modelAndView = new ModelAndView("store-dashboard/dashboard-store");
+        ModelAndView modelAndView = new ModelAndView("categories/manager");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -78,7 +102,7 @@ public class CategoryController {
 
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id){
+    public String delete(@PathVariable("id") Long id){
         log.info("POST /category/delete/{}", id);
 
 
@@ -86,7 +110,7 @@ public class CategoryController {
     }
 
     @PostMapping("/edit/{id}")
-    public String edit(@PathVariable Long id, @ModelAttribute CategoryRequest request, RedirectAttributes redirectAttributes) {
+    public String edit(@PathVariable("id")Long id, @ModelAttribute CategoryRequest request, RedirectAttributes redirectAttributes) {
         log.info("POST /category/edit/{}", id);
 
         return categoryService.edit(id, request, redirectAttributes);

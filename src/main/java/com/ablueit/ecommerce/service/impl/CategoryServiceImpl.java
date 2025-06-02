@@ -42,13 +42,13 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoriesRepository.existsByName(request.name())) {
             log.error("category name existed={}", request.name());
             redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name existed");
-      return String.format("redirect:/store/dashboard/%s/category", store.getId());
+      return String.format("redirect:/category/"+ store.getId());
         }
 
         if (categoriesRepository.existsByName(request.name())) {
             log.error("category name existed={}", request.name());
             redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name existed");
-      return String.format("redirect:/store/dashboard/%s/category", store.getId());
+      return String.format("redirect:/category/"+ store.getId());
         }
 
         Categories category = Categories.builder()
@@ -61,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         redirectAttributes.addFlashAttribute("successMessageCategory", "Created successfully");
 
-    return String.format("redirect:/store/dashboard/%s/category", store.getId());
+    return String.format("redirect:/category/"+ store.getId());
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     // get owner store
 
-    return String.format("redirect:/store/dashboard/%s/category", store.getId());
+    return String.format("redirect:/category/"+ store.getId());
     }
 
     private Categories getCategoriesById(Long id) {
@@ -105,13 +105,13 @@ public class CategoryServiceImpl implements CategoryService {
         if (Objects.isNull(request.name())) {
             log.error("request.name() is null");
             redirectAttributes.addFlashAttribute("errorMessageCategory", "Category name is null");
-      return String.format("redirect:/store/dashboard/%s/category", store.getId());
+      return String.format("redirect:/category/"+ store.getId());
         }
 
         if (categoriesRepository.existsByName(request.name())) {
             log.error("category name existed={}", request.name());
             redirectAttributes.addFlashAttribute("errorEditMessageCategory", "Category name existed");
-      return String.format("redirect:/store/dashboard/%s/category", store.getId());
+      return String.format("redirect:/category/"+ store.getId());
         }
 
         category.setName(request.name());
@@ -120,7 +120,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoriesRepository.save(category);
         redirectAttributes.addFlashAttribute("successEditMessageCategory", "Updated successfully");
 
-    return String.format("redirect:/store/dashboard/%s/category", store.getId());
+    return String.format("redirect:/category/"+ store.getId());
     }
 
     private User getUserFromAuthenticated() {
